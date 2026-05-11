@@ -1,0 +1,24 @@
+{
+  "name": "My True Siblings",
+  "short_name": "My Siblings",
+  "description": "A global safe space built on love, belonging, and real human connection.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1d8a82",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["social", "community"],
+  "lang": "en"
+}

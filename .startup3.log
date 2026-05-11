@@ -1,0 +1,40 @@
+   ▲ Next.js 15.5.16
+   - Local:        http://localhost:3000
+   - Network:      http://172.20.10.7:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.4s
+ ○ Compiling / ...
+ ✓ Compiled / in 2.1s (1511 modules)
+ GET / 200 in 3563ms
+ ○ Compiling /save-a-sibling ...
+ ✓ Compiled /save-a-sibling in 1027ms (1533 modules)
+ GET /save-a-sibling 200 in 1250ms
+ ✓ Compiled /manifest.webmanifest in 388ms (1555 modules)
+ GET /manifest.webmanifest 200 in 553ms
+ ✓ Compiled in 785ms (866 modules)
+ ✓ Compiled in 815ms (1534 modules)
+ ✓ Compiled in 675ms (866 modules)
+ ✓ Compiled in 769ms (1534 modules)
+ ✓ Compiled in 498ms (1534 modules)
+ ✓ Compiled in 1218ms (1534 modules)
+ ✓ Compiled in 612ms (1534 modules)
+ ✓ Compiled in 659ms (1536 modules)
+ ✓ Compiled in 365ms (1536 modules)
+ ✓ Compiled in 371ms (669 modules)
+ ✓ Compiled in 1049ms (1536 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 2.6s (1883 modules)
+ GET /save-a-sibling 500 in 7491ms
+ GET /save-a-sibling 500 in 509ms
+ ✓ Compiled in 956ms (1883 modules)
+ ✓ Compiled in 780ms (1787 modules)
+ ✓ Compiled in 823ms (1787 modules)
+ ✓ Compiled in 792ms (1787 modules)
+ ✓ Compiled in 815ms (1787 modules)
+ ✓ Compiled in 663ms (1787 modules)
+ ✓ Compiled in 294ms (1787 modules)
+ ✓ Compiled in 447ms (1787 modules)
+ ✓ Compiled in 231ms (1787 modules)
+ ✓ Compiled in 276ms (1787 modules)
+[?25h
