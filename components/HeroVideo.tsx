@@ -43,40 +43,31 @@ type HeroSlide = HeroVideoSlide | HeroImageSlide;
 const HERO_SLIDES: HeroSlide[] = [
   {
     kind: "video",
-    id: "hero-ocean-moments",
+    id: "hero-kids-arcade",
     poster:
-      "https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1920&q=80",
-    mp4:
-      "https://videos.pexels.com/video-files/3209828/3209828-uhd_3840_2160_25fps.mp4",
-  },
-  {
-    kind: "image",
-    id: "hero-circle-laugh",
-    src:
       "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1920&q=85",
-    alt: "Group of friends sitting together, relaxed and connected",
-  },
-  {
-    kind: "image",
-    id: "hero-two-listening",
-    src:
-      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1920&q=85",
-    alt: "Two people in a warm, supportive conversation",
+    mp4: "/videos/hero-kids-arcade.mp4",
   },
   {
     kind: "video",
-    id: "hero-city-together",
+    id: "hero-boy-arcade",
     poster:
-      "https://images.unsplash.com/photo-1469571486292-0bba724bfbc9?auto=format&fit=crop&w=1920&q=85",
-    mp4:
-      "https://videos.pexels.com/video-files/3045163/3045163-hd_1920_1080_30fps.mp4",
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=1920&q=85",
+    mp4: "/videos/hero-boy-arcade.mp4",
   },
   {
-    kind: "image",
-    id: "hero-hands-community",
-    src:
+    kind: "video",
+    id: "hero-girl-dance",
+    poster:
+      "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1920&q=85",
+    mp4: "/videos/hero-girl-dance.mp4",
+  },
+  {
+    kind: "video",
+    id: "hero-pool-fun",
+    poster:
       "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=1920&q=85",
-    alt: "Circle of people sharing stories and support together",
+    mp4: "/videos/hero-pool-fun.mp4",
   },
 ];
 

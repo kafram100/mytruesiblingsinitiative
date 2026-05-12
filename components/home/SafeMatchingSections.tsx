@@ -36,7 +36,7 @@ const safeSteps: SafeStep[] = [
   {
     n: "01",
     title: "Onboarding Complete",
-    text: "User finishes profile setup — age, identity, language, goals captured securely.",
+    text: "User finishes profile setup: age, identity, language, goals captured securely.",
     Icon: UserRound,
     iconBox: "bg-primary text-primary-foreground",
   },
@@ -50,7 +50,7 @@ const safeSteps: SafeStep[] = [
   {
     n: "03",
     title: "High-Risk Routing",
-    text: "If high risk — route to crisis support, notify safeguarding team, no peer matching.",
+    text: "If high risk, route to crisis support, notify safeguarding team, no peer matching.",
     Icon: AlertTriangle,
     iconBox: "bg-brand-orange text-primary-foreground",
   },

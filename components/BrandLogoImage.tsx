@@ -1,17 +1,17 @@
 import Image from "next/image";
 
 export const BRAND_LOGO_SRC = "/nav-logo.png";
-/** File on disk: `public/nav-logo.png` (navbar-only lockup). Must match real pixels for layout width. */
-export const BRAND_LOGO_DIMENSIONS = { width: 1227, height: 331 } as const;
-/** Responsive width hint for next/image (~32–40px-tall toolbar lockups). */
+/** File on disk: `public/nav-logo.png` (cleaned shared brand lockup). */
+export const BRAND_LOGO_DIMENSIONS = { width: 1200, height: 654 } as const;
+/** Responsive width hint for the updated, taller logo treatment. */
 export const BRAND_LOGO_SIZES =
-  "(max-width: 768px) 96px, (max-width: 1200px) 118px, 140px";
+  "(max-width: 768px) 60px, (max-width: 1200px) 74px, 83px";
 
 /**
- * Navbar logo: height-led scale (professional bar standard ~28–36px usable height).
+ * Navbar logo: slightly taller so the cleaned mark stays legible in the header.
  */
 export const BRAND_LOGO_CLASS =
-  "h-7 w-auto max-w-full object-contain object-left sm:h-8 md:h-8 lg:h-9 xl:h-9";
+  "h-8 w-auto max-w-full object-contain object-left sm:h-9 md:h-10 lg:h-10 xl:h-11";
 
 type BrandLogoImageProps = {
   className?: string;
@@ -25,7 +25,7 @@ export default function BrandLogoImage({
   return (
     <Image
       src={BRAND_LOGO_SRC}
-      alt="My True Siblings Initiative"
+      alt="My True Siblings logo"
       width={BRAND_LOGO_DIMENSIONS.width}
       height={BRAND_LOGO_DIMENSIONS.height}
       sizes={BRAND_LOGO_SIZES}

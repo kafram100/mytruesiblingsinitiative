@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
-import { headers } from "next/headers";
 
-import SiteFooter from "@/components/SiteFooter";
-import SiteHeader from "@/components/SiteHeader";
-import WelcomeModal from "@/components/WelcomeModal";
-import InstallPrompt from "@/components/InstallPrompt";
+import AppShell from "@/components/AppShell";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSiteMetadataBase } from "@/lib/metadata-base";
 
@@ -24,45 +20,81 @@ const fontDisplay = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: getSiteMetadataBase(),
   title: {
-    default: "My True Siblings: A Lifetime Platform for Belonging",
-    template: "%s · My True Siblings",
+    default:
+      "MyTrueSiblings | A Global Safe Space for Belonging, Support & Human Connection",
+    template: "%s | MyTrueSiblings",
   },
   description:
-    "A global safe space built on love, belonging, and real human connection. Connection, mentorship, and a safe place to be heard, from childhood through adulthood.",
-  applicationName: "My True Siblings",
+    "MyTrueSiblings is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, healing, safe conversations, disability support, and lifelong human connection.",
+  applicationName: "MyTrueSiblings",
+  authors: [{ name: "MyTrueSiblings Initiative" }],
+  keywords: [
+    "MyTrueSiblings",
+    "MTSI",
+    "emotional support",
+    "belonging platform",
+    "safe space community",
+    "support network",
+    "human connection",
+    "mentorship platform",
+    "disability inclusion",
+    "youth support",
+    "adult safe place",
+    "loneliness support",
+    "global community",
+    "healing community",
+    "sibling connection",
+    "safe conversations",
+    "inclusive community",
+    "support circles",
+    "mental wellness support",
+    "caregiver support",
+  ],
+  robots: { index: true, follow: true },
+  alternates: {
+    canonical: "https://www.mytruesiblings.org",
+  },
   openGraph: {
-    title: "My True Siblings: A Lifetime Platform for Belonging",
-    description:
-      "A global safe space built on love, belonging, and real human connection. Join a global movement turning loneliness into belonging.",
     type: "website",
-    siteName: "My True Siblings",
+    url: "https://www.mytruesiblings.org",
+    title: "MyTrueSiblings | A Lifetime Platform for Belonging",
+    description:
+      "A global safe space built on love, belonging, support, inclusion, empathy, and real human connection.",
+    siteName: "MyTrueSiblings",
+    locale: "en_US",
     images: [
       {
-        url: "/logo.png",
-        width: 210,
-        height: 119,
-        alt: "My True Siblings: A Safe Space Initiative",
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "MyTrueSiblings — A Global Safe Space for Belonging",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "My True Siblings: A Lifetime Platform for Belonging",
+    title: "MyTrueSiblings | A Lifetime Platform for Belonging",
     description:
-      "A global safe space built on love, belonging, and real human connection.",
-    images: ["/logo.png"],
+      "A global safe space where strangers become siblings through support, healing, mentorship, inclusion, and belonging.",
+    images: ["/og-image.jpg"],
   },
+  icons: {
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png" }],
+  },
+  manifest: "/manifest.webmanifest",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const headersList = await headers();
-  const pathname = headersList.get("x-pathname") || "";
-  const isAdmin = pathname.startsWith("/admin");
-
   return (
     <html
       lang="en"
@@ -71,19 +103,36 @@ export default async function RootLayout({
     >
       <head>
         <link rel="stylesheet" href="/site.css" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1d8a82" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="My Siblings" />
-        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#009FAF" />
+        <meta name="apple-mobile-web-app-title" content="MyTrueSiblings" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "MyTrueSiblings",
+              alternateName: "MTSI",
+              url: "https://www.mytruesiblings.org",
+              logo: "https://www.mytruesiblings.org/logo.png",
+              description:
+                "MyTrueSiblings is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, healing, and lifelong human connection.",
+              sameAs: [
+                "https://facebook.com/mytruesiblings",
+                "https://instagram.com/mytruesiblings",
+                "https://x.com/mytruesiblings",
+                "https://linkedin.com/company/mytruesiblings",
+              ],
+            }),
+          }}
+        />
         {process.env.NODE_ENV === "production" ? (
           <script
             dangerouslySetInnerHTML={{
               __html: `
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/sw.js?v=4").catch(function () {});
+    navigator.serviceWorker.register("/sw.js?v=5").catch(function () {});
   });
 }`,
             }}
@@ -92,11 +141,7 @@ if ("serviceWorker" in navigator) {
       </head>
       <body className={fontSans.className}>
         <TooltipProvider>
-          {!isAdmin && <WelcomeModal />}
-          {!isAdmin && <InstallPrompt />}
-          {!isAdmin && <SiteHeader />}
-          <main id="main-content">{children}</main>
-          {!isAdmin && <SiteFooter />}
+          <AppShell>{children}</AppShell>
         </TooltipProvider>
       </body>
     </html>

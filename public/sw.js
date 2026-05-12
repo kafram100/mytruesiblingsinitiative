@@ -1,5 +1,5 @@
 /** Bump when precache/network strategy changes so old caches are dropped. */
-const CACHE = "my-siblings-v4";
+const CACHE = "my-siblings-v5";
 
 /** Precache static assets only — never freeze HTML for `/`; it breaks fresh JS/UI. */
 const PRECACHE_URLS = ["/site.css"];
