@@ -14,14 +14,14 @@ type FormData = {
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
-const NAME_REGEX = /^[A-Za-z\s]*$/;
+const LETTERS_ONLY = /^[A-Za-z\s]*$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validateField(name: keyof FormData, value: string): string | undefined {
   switch (name) {
     case "name":
       if (!value.trim()) return "Name is required";
-      if (!NAME_REGEX.test(value)) return "Name can only contain letters";
+      if (!LETTERS_ONLY.test(value)) return "Name can only contain letters";
       return undefined;
     case "email":
       if (!value.trim()) return "Email is required";
@@ -29,6 +29,8 @@ function validateField(name: keyof FormData, value: string): string | undefined 
       return undefined;
     case "subject":
       if (!value.trim()) return "Subject is required";
+      if (!LETTERS_ONLY.test(value)) return "Subject can only contain letters";
+      if (value.trim().length < 3) return "Subject must be at least 3 characters";
       return undefined;
     case "message":
       if (!value.trim()) return "Message is required";
@@ -55,7 +57,7 @@ export default function ContactForm() {
     const { name, value } = e.target;
     const key = name as keyof FormData;
 
-    if (key === "name" && value !== "" && !NAME_REGEX.test(value)) return;
+    if ((key === "name" || key === "subject") && value !== "" && !LETTERS_ONLY.test(value)) return;
 
     setForm((prev) => ({ ...prev, [key]: value }));
     setErrors((prev) => ({ ...prev, [key]: validateField(key, value) }));
