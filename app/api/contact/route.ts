@@ -7,16 +7,14 @@ import { rateLimitByIp } from "@/lib/rate-limit";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const allowedOrigins = [
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-  process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`,
-].filter(Boolean) as string[];
-
 export async function POST(request: Request) {
   try {
+    const host = request.headers.get("host");
+    const proto = request.headers.get("x-forwarded-proto") || "http";
     const origin = request.headers.get("origin");
     const referer = request.headers.get("referer");
-    const isValidOrigin = allowedOrigins.some(o => origin === o || referer?.startsWith(o));
+    const expectedOrigin = `${proto}://${host}`;
+    const isValidOrigin = origin === expectedOrigin || referer?.startsWith(expectedOrigin);
     if (!isValidOrigin) {
       return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
     }
