@@ -64,6 +64,13 @@ export default function ContactForm() {
     setErrors((prev) => ({ ...prev, [key]: validateField(key, value) }));
   };
 
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const key = e.target.name as keyof FormData;
+    setErrors((prev) => ({ ...prev, [key]: validateField(key, form[key]) }));
+  };
+
   const validate = (): boolean => {
     const nextErrors: FormErrors = {};
     for (const key of Object.keys(form) as (keyof FormData)[]) {
@@ -147,6 +154,7 @@ export default function ContactForm() {
             type="text"
             value={form.name}
             onChange={handleChange}
+            onBlur={handleBlur}
             className={`${inputBase} ${errors.name ? errorClass : ""}`}
             placeholder="Your Name"
           />
@@ -165,6 +173,7 @@ export default function ContactForm() {
             type="email"
             value={form.email}
             onChange={handleChange}
+            onBlur={handleBlur}
             className={`${inputBase} ${errors.email ? errorClass : ""}`}
             placeholder="Email Address"
           />
@@ -184,6 +193,7 @@ export default function ContactForm() {
           type="text"
           value={form.subject}
           onChange={handleChange}
+          onBlur={handleBlur}
           className={`${inputBase} ${errors.subject ? errorClass : ""}`}
           placeholder="Subject"
         />
@@ -202,6 +212,7 @@ export default function ContactForm() {
           rows={6}
           value={form.message}
           onChange={handleChange}
+          onBlur={handleBlur}
           className={`${inputBase} min-h-[9rem] resize-y py-4 ${errors.message ? errorClass : ""}`}
           placeholder="Your Message"
         />
