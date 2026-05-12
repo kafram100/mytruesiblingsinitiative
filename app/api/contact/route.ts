@@ -43,6 +43,12 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+    if (name.trim().length < 3) {
+      return NextResponse.json(
+        { error: "Name must be at least 3 characters" },
+        { status: 400 }
+      );
+    }
     if (!LETTERS_ONLY.test(subject)) {
       return NextResponse.json(
         { error: "Subject can only contain letters" },

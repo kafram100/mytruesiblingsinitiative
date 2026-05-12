@@ -22,6 +22,7 @@ function validateField(name: keyof FormData, value: string): string | undefined 
     case "name":
       if (!value.trim()) return "Name is required";
       if (!LETTERS_ONLY.test(value)) return "Name can only contain letters";
+      if (value.trim().length < 3) return "Name must be at least 3 characters";
       return undefined;
     case "email":
       if (!value.trim()) return "Email is required";
