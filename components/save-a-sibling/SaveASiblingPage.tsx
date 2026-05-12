@@ -8,15 +8,41 @@ import {
   HandHeart, Heart, Loader2, Lock, RefreshCw, Shield, Sparkles, Users,
 } from "lucide-react";
 
+import * as Tooltip from "@radix-ui/react-tooltip";
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { C, CurrencyCode, CURRENCY_CONFIG, Recurrence } from "./config";
 import { IMPACT_AMOUNT_PRESETS, DONATION_PURPOSES, PAYMENT_BADGES, TRANSPARENCY, SPONSOR_TIERS, STORIES } from "./data";
 import { formatCurrencyAmount, convertUsdAmount, formatEditableAmount } from "./currency";
 
+
 const CURRENCY_CODES = Object.keys(CURRENCY_CONFIG) as CurrencyCode[];
 
 const HERO_ALT = "Diverse group of friends smiling and linking arms in community";
+
+const PAYMENT_LOGO_MAP: Record<string, string> = {
+  Stripe: "/icons/payment/stripe.svg",
+  Visa: "/icons/payment/visa.svg",
+  Mastercard: "/icons/payment/mastercard.svg",
+  "American Express": "/icons/payment/americanexpress.svg",
+  "Google Pay": "/icons/payment/googlepay.svg",
+  "Apple Pay": "/icons/payment/applepay.svg",
+  PayPal: "/icons/payment/paypal.svg",
+  Paystack: "/icons/payment/paystack.svg",
+  Flutterwave: "/icons/payment/flutterwave.svg",
+  Moniepoint: "/icons/payment/moniepoint.svg",
+  Opay: "/icons/payment/opay.svg",
+  "M Pesa": "/icons/payment/mpesa.svg",
+  "Airtel Money": "/icons/payment/airtel.svg",
+  "MTN Mobile Money": "/icons/payment/mtn.svg",
+  "Bank Transfer": "/icons/payment/banktransfer.svg",
+   USSD: "/icons/payment/ussd.svg",
+  Klarna: "/icons/payment/klarna.svg",
+  "Amazon Pay": "/icons/payment/amazonpay.svg",
+  Link: "/icons/payment/link.svg",
+  "Local mobile money options": "/icons/payment/localmobile.svg",
+};
 
 export default function SaveASiblingPage() {
   const formId = useId();
@@ -305,21 +331,39 @@ function DonationFormSection({
 
 function PaymentMethodsSection() {
   return (
-    <section className="border-y border-[#555555]/10 bg-white py-16 md:py-20">
-      <div className="container mx-auto px-4">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-display text-3xl font-bold text-[#555555] md:text-4xl">Give From Anywhere</h2>
-          <p className="mt-4 text-base leading-relaxed text-[#555555]/88">Support MyTrueSiblings securely using multiple global and local payment options.</p>
+    <Tooltip.Provider delayDuration={200}>
+      <section className="border-y border-[#555555]/10 bg-white py-16 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="font-display text-3xl font-bold text-[#555555] md:text-4xl">Give From Anywhere</h2>
+            <p className="mt-4 text-base leading-relaxed text-[#555555]/88">Support MyTrueSiblings securely using multiple global and local payment options.</p>
+          </div>
+          <div className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-3 md:gap-4">
+            {PAYMENT_BADGES.map((name) => {
+              const src = PAYMENT_LOGO_MAP[name];
+              return (
+                <Tooltip.Root key={name}>
+                  <Tooltip.Trigger asChild>
+                    <button type="button" className="flex h-12 w-[84px] items-center justify-center overflow-hidden rounded-lg border border-[#555555]/12 bg-white p-2 shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009FAF]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={src} alt={name} className="h-full w-full object-contain" />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content sideOffset={4} className="z-50 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white shadow-md animate-in fade-in">
+                      {name}
+                      <Tooltip.Arrow className="fill-gray-900" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              );
+            })}
+            <span className="inline-flex h-10 items-center rounded-lg border border-dashed border-[#009FAF]/40 bg-[#009FAF]/08 px-3 text-xs font-semibold text-[#009FAF]">Cryptocurrency (where legally enabled)</span>
+          </div>
+          <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-[#555555]/75">Payment options may vary by country and availability.</p>
         </div>
-        <div className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-2">
-          {PAYMENT_BADGES.map((name) => (
-            <span key={name} className="rounded-full border border-[#555555]/12 bg-[#F2F2F2] px-3 py-1.5 text-xs font-semibold text-[#555555] md:text-sm">{name}</span>
-          ))}
-          <span className="rounded-full border border-dashed border-[#009FAF]/40 bg-[#009FAF]/08 px-3 py-1.5 text-xs font-semibold text-[#009FAF] md:text-sm">Cryptocurrency (where legally enabled)</span>
-        </div>
-        <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-[#555555]/75">Payment options may vary by country and availability.</p>
-      </div>
-    </section>
+      </section>
+    </Tooltip.Provider>
   );
 }
 

@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 
 import db from "@/lib/db";
 import { checkAdmin, ContactRow } from "@/lib/auth";
-import { createTransporter, getSettings } from "@/lib/mail";
+import { escapeHtml } from "@/lib/escape";
+import { getSettings } from "@/lib/settings";
+import { createTransporter } from "@/lib/mail";
 
 export async function POST(
   _request: Request,
@@ -30,10 +32,6 @@ export async function POST(
 
   if (!subject || !message) {
     return NextResponse.json({ error: "Subject and message are required" }, { status: 400 });
-  }
-
-  function escapeHtml(s: string): string {
-    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
   const transporter = await createTransporter();

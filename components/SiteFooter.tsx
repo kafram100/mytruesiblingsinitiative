@@ -18,13 +18,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { resolvePublicFooterLogo } from "@/lib/footer-logo";
+import { FOOTER_LOGO } from "@/lib/footer-logo";
 
-const FOOTER_LOGO = resolvePublicFooterLogo();
-
-/** Footer-only full lockup PNG; height-capped for the grid. */
+/** Footer logo stays readable without stretching the cleaned mark full-width. */
 const FOOTER_LOGO_CLASS =
-  "h-auto w-full max-w-full max-h-40 object-contain object-left sm:max-h-44 md:max-h-48 lg:max-h-52 xl:max-h-56";
+  "h-auto w-auto max-w-full max-h-24 object-contain object-left sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-36";
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -102,10 +100,10 @@ export default function SiteFooter() {
             >
               <Image
                 src={FOOTER_LOGO.src}
-                alt="My True Siblings footer lockup, linking to home"
+                alt="My True Siblings logo, linking to home"
                 width={FOOTER_LOGO.width}
                 height={FOOTER_LOGO.height}
-                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 380px, 480px"
+                sizes="(max-width: 640px) 180px, (max-width: 1024px) 220px, 260px"
                 className={`${FOOTER_LOGO_CLASS} block`}
               />
             </Link>

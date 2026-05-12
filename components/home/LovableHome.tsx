@@ -22,7 +22,7 @@ import {
   Users,
 } from "lucide-react";
 
-import MatchingAlgorithmFlow from "@/components/MatchingAlgorithmFlow";
+import SafeMatchingSections from "./SafeMatchingSections";
 import HeroVideo from "@/components/HeroVideo";
 import { Button } from "@/components/ui/button";
 
@@ -470,7 +470,7 @@ export default function LovableHome() {
         </div>
       </section>
 
-      <MatchingAlgorithmFlow />
+      <SafeMatchingSections />
 
       <section className="mt-10 w-full bg-background pb-12 pt-2 md:mt-16 md:pb-16 md:pt-4">
         <div className="relative isolate w-full min-h-[320px] overflow-hidden rounded-none shadow-[0_24px_48px_-18px_rgba(0,0,0,0.22)] ring-1 ring-black/5">

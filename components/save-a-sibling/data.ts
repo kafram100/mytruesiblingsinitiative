@@ -24,7 +24,7 @@ export const DONATION_PURPOSES = [
 export const PAYMENT_BADGES = [
   "Stripe", "Visa", "Mastercard", "American Express", "Google Pay", "Apple Pay",
   "PayPal", "Paystack", "Flutterwave", "Moniepoint", "Opay", "M Pesa",
-  "Airtel Money", "MTN Mobile Money", "Bank Transfer", "USSD", "Verve",
+  "Airtel Money", "MTN Mobile Money", "Bank Transfer", "USSD",
   "Klarna", "Amazon Pay", "Link", "Local mobile money options",
 ];
 
@@ -49,20 +49,20 @@ export const SPONSOR_TIERS = [
 export const STORIES = [
   {
     title: "A young person who needed mentorship",
-    quote: "I thought I had to pretend I was okay. My sibling listened without fixing me\u2014they walked beside me until the storm passed.",
+    quote: "I thought I had to pretend I was okay. My sibling listened without fixing me. They walked beside me until the storm passed.",
     image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80",
     alt: "Young friends laughing together outdoors in warm sunlight",
   },
   {
     title: "An adult who needed a safe place",
-    quote: "At 34, I realized I wasn't failing\u2014I was unheard. Anonymous support gave my heart room to exhale.",
+    quote: "At 34, I realized I wasn't failing. I was unheard. Anonymous support gave my heart room to exhale.",
     image: "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?auto=format&fit=crop&w=900&q=80",
     alt: "Two adults sitting together in calm conversation indoors",
   },
   {
     title: "Someone who needed inclusion and support",
-    quote: "Being disabled shouldn't erase belonging. Accessible circles meant I showed up exactly as I am\u2014and stayed.",
-    image: "https://images.unsplash.com/photo-1576765608535-5f07d9266691?auto=format&fit=crop&w=900&q=80",
-    alt: "Person using a wheelchair smiling with a friend at a community event",
+    quote: "Being disabled shouldn't erase belonging. Accessible circles meant I showed up exactly as I am and stayed.",
+    image: "https://images.unsplash.com/photo-1732194438700-c7eb8cc16cb6?auto=format&fit=crop&w=900&q=80",
+    alt: "Group of friends in wheelchairs sitting around a table in community",
   },
 ] as const;

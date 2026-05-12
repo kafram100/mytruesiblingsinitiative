@@ -1,24 +1,7 @@
 import nodemailer from "nodemailer";
 
-import db from "@/lib/db";
-
-interface SettingsRow {
-  key: string;
-  value: string;
-}
-
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-
-export async function getSettings() {
-  const [rows] = await db.execute("SELECT `key`, `value` FROM settings");
-  const settings: Record<string, string> = {};
-  for (const row of rows as SettingsRow[]) {
-    settings[row.key] = row.value || "";
-  }
-  return settings;
-}
+import { escapeHtml } from "@/lib/escape";
+import { getSettings } from "@/lib/settings";
 
 export async function createTransporter() {
   const settings = await getSettings();

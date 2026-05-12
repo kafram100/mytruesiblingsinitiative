@@ -1,22 +1,12 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 
-import db from "@/lib/db";
-import { SettingsRow } from "@/lib/auth";
+import { getSettings } from "@/lib/settings";
 import SettingsForm from "@/components/admin/SettingsForm";
 
 export const metadata: Metadata = {
   title: "Settings",
 };
-
-async function getSettings() {
-  const [rows] = await db.execute("SELECT `key`, `value` FROM settings");
-  const settings: Record<string, string> = {};
-  for (const row of rows as SettingsRow[]) {
-    settings[row.key] = row.value || "";
-  }
-  return settings;
-}
 
 export default async function AdminSettingsPage() {
   const settings = await getSettings();
