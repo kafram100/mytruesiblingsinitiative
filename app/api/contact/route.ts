@@ -5,6 +5,7 @@ import db from "@/lib/db";
 import { sendNotificationEmail } from "@/lib/mail";
 import { rateLimitByIp } from "@/lib/rate-limit";
 
+const NAME_REGEX = /^[A-Za-z\s]+$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request) {
@@ -36,6 +37,12 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!NAME_REGEX.test(name)) {
+      return NextResponse.json(
+        { error: "Name can only contain letters" },
+        { status: 400 }
+      );
+    }
     if (name.length > 100 || subject.length > 200 || message.length > 5000) {
       return NextResponse.json(
         { error: "Fields exceed maximum length" },

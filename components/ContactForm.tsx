@@ -14,6 +14,29 @@ type FormData = {
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
 
+const NAME_REGEX = /^[A-Za-z\s]*$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validateField(name: keyof FormData, value: string): string | undefined {
+  switch (name) {
+    case "name":
+      if (!value.trim()) return "Name is required";
+      if (!NAME_REGEX.test(value)) return "Name can only contain letters";
+      return undefined;
+    case "email":
+      if (!value.trim()) return "Email is required";
+      if (!EMAIL_REGEX.test(value)) return "Enter a valid email address";
+      return undefined;
+    case "subject":
+      if (!value.trim()) return "Subject is required";
+      return undefined;
+    case "message":
+      if (!value.trim()) return "Message is required";
+      if (value.trim().length < 10) return "Message must be at least 10 characters";
+      return undefined;
+  }
+}
+
 export default function ContactForm() {
   const formId = useId();
   const [form, setForm] = useState<FormData>({
@@ -30,28 +53,20 @@ export default function ContactForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormData]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
+    const key = name as keyof FormData;
+
+    if (key === "name" && value !== "" && !NAME_REGEX.test(value)) return;
+
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setErrors((prev) => ({ ...prev, [key]: validateField(key, value) }));
   };
 
   const validate = (): boolean => {
     const nextErrors: FormErrors = {};
-
-    if (!form.name.trim()) nextErrors.name = "Name is required";
-    if (!form.email.trim()) {
-      nextErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      nextErrors.email = "Enter a valid email address";
+    for (const key of Object.keys(form) as (keyof FormData)[]) {
+      const err = validateField(key, form[key]);
+      if (err) nextErrors[key] = err;
     }
-    if (!form.subject.trim()) nextErrors.subject = "Subject is required";
-    if (!form.message.trim()) {
-      nextErrors.message = "Message is required";
-    } else if (form.message.trim().length < 10) {
-      nextErrors.message = "Message must be at least 10 characters";
-    }
-
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
   };
