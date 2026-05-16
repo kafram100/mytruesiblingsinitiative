@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useId, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import {
-  ArrowRight, BadgeCheck, Building2, Calendar, CreditCard, Globe2,
+  ArrowRight, BadgeCheck, Building2, Calendar, CheckCircle2, CreditCard, Globe2,
   HandHeart, Heart, Loader2, Lock, RefreshCw, Shield, Sparkles, Users,
 } from "lucide-react";
 
@@ -46,6 +47,9 @@ const PAYMENT_LOGO_MAP: Record<string, string> = {
 
 export default function SaveASiblingPage() {
   const formId = useId();
+
+  const searchParams = useSearchParams();
+
   const [purpose, setPurpose] = useState<string>(DONATION_PURPOSES[0]);
   const [amountId, setAmountId] = useState<string>("25");
   const [customAmount, setCustomAmount] = useState("");
@@ -55,6 +59,21 @@ export default function SaveASiblingPage() {
   const [recurrence, setRecurrence] = useState<Recurrence>("once");
   const [sponsorTier, setSponsorTier] = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [customAmountError, setCustomAmountError] = useState("");
+
+  useEffect(() => {
+    const amountParam = searchParams.get("amount");
+    const frequencyParam = searchParams.get("frequency");
+    if (amountParam) setAmountId(amountParam);
+    if (frequencyParam === "monthly") setRecurrence("monthly");
+  }, [searchParams]);
+
+  const validateCustomAmount = (value: string): string => {
+    if (!value.trim()) return "";
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed <= 0) return "Enter a valid amount greater than 0.";
+    return "";
+  };
   const selectedPreset = IMPACT_AMOUNT_PRESETS.find((preset) => preset.id === amountId);
 
   const amountLabel =
@@ -78,7 +97,9 @@ export default function SaveASiblingPage() {
   const handleCustomAmountChange = (value: string) => {
     setCustomAmount(value);
     setCustomAmountInput(value);
-    if (!value.trim()) { setCustomAmountUsd(null); return; }
+    const err = validateCustomAmount(value);
+    setCustomAmountError(err);
+    if (err || !value.trim()) { setCustomAmountUsd(null); return; }
     const parsedValue = Number(value);
     if (!Number.isFinite(parsedValue) || parsedValue <= 0) { setCustomAmountUsd(null); return; }
     setCustomAmountUsd(parsedValue / CURRENCY_CONFIG[currency].rateFromUsd);
@@ -123,6 +144,7 @@ export default function SaveASiblingPage() {
         amountLabel={amountLabel}
         checkoutLoading={checkoutLoading}
         handleCheckout={handleCheckout}
+        customAmountError={customAmountError}
       />
       <PaymentMethodsSection />
       <MonthlySponsorSection
@@ -157,7 +179,7 @@ function HeroSection() {
             Your gift helps someone feel seen, heard, supported, and never alone. Every donation strengthens safe spaces, emotional support circles, disability inclusion, youth mentorship, adult care, and community outreach.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Button size="lg" className="rounded-full border-0 px-7 font-semibold shadow-lg" style={{ backgroundColor: C.yellow, color: C.gray }} asChild>
+            <Button variant="primary" size="lg" className="rounded-full border-0 px-7 font-semibold shadow-lg" style={{ backgroundColor: C.yellow, color: C.gray }} asChild>
               <a href="#give">Donate Now <ArrowRight className="h-4 w-4" aria-hidden /></a>
             </Button>
             <Button size="lg" variant="secondary" className="rounded-full border-2 border-white/40 bg-white/15 px-7 text-white backdrop-blur hover:bg-white/25" asChild>
@@ -206,12 +228,13 @@ interface DonationFormSectionProps {
   amountLabel: string;
   checkoutLoading: boolean;
   handleCheckout: () => Promise<void>;
+  customAmountError: string;
 }
 
 function DonationFormSection({
   formId, amountId, setAmountId, purpose, setPurpose, currency, handleCurrencyChange,
   recurrence, setRecurrence, sponsorTier, setSponsorTier, customAmountInput,
-  handleCustomAmountChange, amountLabel, checkoutLoading, handleCheckout,
+  handleCustomAmountChange, amountLabel, checkoutLoading, handleCheckout, customAmountError,
 }: DonationFormSectionProps) {
   return (
     <section id="give" className="scroll-mt-28 py-16 md:py-24">
@@ -221,35 +244,63 @@ function DonationFormSection({
           <p className="mt-4 text-base leading-relaxed text-[#555555]/90">Every tier is a promise: someone will be met with dignity, care, and a pathway back to hope.</p>
         </div>
 
-        <div className="mx-auto mt-12 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mx-auto mt-12 grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="donation-cards-v3">
           {IMPACT_AMOUNT_PRESETS.map((tier) => {
             const selected = amountId === tier.id;
+            const baseClass = "relative flex flex-col items-start justify-start gap-0 rounded-2xl border-2 bg-white p-5 text-left shadow-sm transition-all duration-200 cursor-pointer";
+            const selClass = selected
+              ? "border-[#009FAF] bg-[#009FAF]/5 shadow-md ring-2 ring-[#009FAF]/20"
+              : "border-gray-200 hover:border-[#009FAF]/50 hover:shadow-md hover:-translate-y-0.5";
             return (
-              <button key={tier.id} type="button" onClick={() => { setAmountId(tier.id); setSponsorTier(null); }}
-                className={cn("flex h-full flex-col rounded-2xl border-2 bg-white p-5 text-left shadow-sm transition-all hover:shadow-md",
-                  selected ? "border-[#009FAF] ring-2 ring-[#009FAF]/25" : "border-[#F2F2F2] hover:border-[#009FAF]/40")}>
+              <button
+                key={tier.id}
+                type="button"
+                onClick={() => {
+                  setAmountId(tier.id);
+                  setSponsorTier(null);
+                }}
+                className={baseClass + " " + selClass}
+                aria-pressed={selected}
+              >
                 <span className="text-2xl font-bold tabular-nums" style={{ color: C.teal }}>
                   {formatCurrencyAmount(convertUsdAmount(tier.amountUsd, currency), currency)}
                 </span>
-                <span className="mt-1 font-display text-lg font-semibold text-[#555555]">{tier.title}</span>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-[#555555]/85">{tier.detail}</p>
+                <span className="mt-3 font-display text-base font-semibold text-[#555555]">{tier.title}</span>
+                <p className="mt-2 text-sm leading-relaxed text-[#555555]/75">{tier.detail}</p>
+                {selected && (
+                  <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-[#009FAF] px-2.5 py-0.5 text-[10px] font-semibold text-white">
+                    <CheckCircle2 className="h-3 w-3" /> Selected
+                  </span>
+                )}
               </button>
             );
           })}
           <button type="button" onClick={() => { setAmountId("custom"); setSponsorTier(null); }}
-            className={cn("flex h-full flex-col rounded-2xl border-2 bg-gradient-to-br from-[#E93D8F]/08 to-[#009FAF]/08 p-5 text-left shadow-sm transition-all hover:shadow-md",
-              amountId === "custom" ? "border-[#E93D8F] ring-2 ring-[#E93D8F]/20" : "border-transparent ring-1 ring-[#555555]/10")}>
+            className={"relative flex flex-col items-start justify-start gap-0 rounded-2xl border-2 bg-white p-5 text-left shadow-sm transition-all duration-200 cursor-pointer" + (amountId === "custom"
+                ? " border-[#E93D8F] bg-[#E93D8F]/5 shadow-md ring-2 ring-[#E93D8F]/20"
+                : " border-gray-200 hover:border-[#E93D8F]/50 hover:shadow-md hover:-translate-y-0.5")}
+            aria-pressed={amountId === "custom"}
+          >
             <span className="text-2xl font-bold" style={{ color: C.pink }}>Custom Amount</span>
-            <span className="mt-1 text-sm leading-relaxed text-[#555555]/90">Name your gift\u2014every amount stitches someone back into belonging.</span>
+            <span className="mt-3 font-display text-base font-semibold text-[#555555]">Name your gift</span>
+            <p className="mt-2 text-sm leading-relaxed text-[#555555]/75">Every amount stitches someone back into belonging.</p>
             {amountId === "custom" && (
-              <label className="mt-4 block text-xs font-semibold text-[#555555]">
+              <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-[#E93D8F] px-2.5 py-0.5 text-[10px] font-semibold text-white">
+                <CheckCircle2 className="h-3 w-3" /> Selected
+              </span>
+            )}
+            {amountId === "custom" && (
+              <label className="mt-4 block w-full text-xs font-semibold text-[#555555]">
                 <span className="sr-only" id={`${formId}-custom`}>Custom donation amount</span>
                 <div className="mt-1 flex overflow-hidden rounded-xl border border-[#555555]/20 bg-white">
                   <span className="flex items-center border-r border-[#555555]/15 bg-[#F2F2F2] px-3 text-sm font-semibold text-[#555555]/80">{currency}</span>
                   <input id={`${formId}-custom`} type="number" inputMode="decimal" min={1} step="0.01" placeholder="Enter amount"
                     value={customAmountInput} onChange={(e) => handleCustomAmountChange(e.target.value)}
-                    className="w-full border-0 bg-white px-3 py-2 text-base text-[#555555] outline-none ring-[#009FAF]/40 focus:ring-2" />
+                    className={`w-full border-0 bg-white px-3 py-2 text-base text-[#555555] outline-none ring-2 ${
+                      customAmountError ? "ring-red-400" : "ring-[#009FAF]/40 focus:ring-[#009FAF]"
+                    }`} />
                 </div>
+                {customAmountError && <p className="mt-1.5 text-xs text-red-500">{customAmountError}</p>}
               </label>
             )}
           </button>
@@ -264,11 +315,18 @@ function DonationFormSection({
             {DONATION_PURPOSES.map((p) => {
               const active = purpose === p;
               return (
-                <button key={p} type="button" onClick={() => setPurpose(p)}
-                  className={cn("rounded-full border-2 px-4 py-2 text-left text-xs font-semibold transition-colors md:text-sm",
-                    active ? "border-[#009FAF] bg-[#009FAF] text-white shadow-md" : "border-[#555555]/15 bg-white text-[#555555] hover:border-[#009FAF]/50")}>
+                <Button
+                  key={p}
+                  type="button"
+                  variant={active ? "primary" : "secondary"}
+                  onClick={() => setPurpose(p)}
+                  className={cn(
+                    "rounded-full px-4 py-2 text-left text-xs font-semibold md:text-sm",
+                    active && "border-[#009FAF] bg-[#009FAF] text-primary-foreground shadow-md hover:bg-[#009FAF]/90 hover:text-primary-foreground"
+                  )}
+                >
                   {p}
-                </button>
+                </Button>
               );
             })}
           </div>
@@ -296,11 +354,18 @@ function DonationFormSection({
                 const k = key as Recurrence;
                 const on = recurrence === k;
                 return (
-                  <button key={key} type="button" onClick={() => setRecurrence(k)}
-                    className={cn("flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 px-3 py-3 text-xs font-semibold md:text-sm",
-                      on ? "border-[#FF7A00] bg-[#FF7A00]/10 text-[#555555]" : "border-[#555555]/12 bg-[#F2F2F2] text-[#555555]/90 hover:border-[#FF7A00]/40")}>
+                  <Button
+                    key={key}
+                    type="button"
+                    variant={on ? "secondary" : "tertiary"}
+                    onClick={() => setRecurrence(k)}
+                    className={cn(
+                      "flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 px-3 py-3 text-xs font-semibold shadow-none hover:shadow-sm motion-safe:hover:-translate-y-0 md:text-sm",
+                      on ? "border-[#FF7A00] bg-[#FF7A00]/10 text-[#555555]" : "border-[#555555]/12 bg-[#F2F2F2] text-[#555555]/90 hover:border-[#FF7A00]/40"
+                    )}
+                  >
                     <Icon className="h-4 w-4 shrink-0" aria-hidden /> {label}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
@@ -315,7 +380,7 @@ function DonationFormSection({
             {recurrence === "annual" && `Annual \u00B7 ${amountLabel} \u00B7 ${currency}`}
           </p>
           <p className="mt-2 text-sm text-white/90">{purpose}</p>
-          <Button size="lg" className="mt-8 rounded-full border-0 px-10 font-semibold shadow-lg" style={{ backgroundColor: C.yellow, color: C.gray }}
+          <Button variant="primary" size="lg" className="mt-8 rounded-full border-0 px-10 font-semibold shadow-lg" style={{ backgroundColor: C.yellow, color: C.gray }}
             type="button" disabled={checkoutLoading} onClick={handleCheckout}>
             {checkoutLoading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <CreditCard className="h-4 w-4" aria-hidden />}
             {checkoutLoading ? "Processing..." : "Continue to secure checkout"}
@@ -343,11 +408,15 @@ function PaymentMethodsSection() {
               const src = PAYMENT_LOGO_MAP[name];
               return (
                 <Tooltip.Root key={name}>
-                  <Tooltip.Trigger asChild>
-                    <button type="button" className="flex h-12 w-[84px] items-center justify-center overflow-hidden rounded-lg border border-[#555555]/12 bg-white p-2 shadow-sm transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#009FAF]">
+                    <Tooltip.Trigger asChild>
+                    <Button
+                      type="button"
+                      variant="tertiary"
+                      className="h-12 w-[84px] overflow-hidden rounded-lg border border-[#555555]/12 bg-white p-2 shadow-sm hover:bg-white hover:shadow-md"
+                    >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={src} alt={name} className="h-full w-full object-contain" />
-                    </button>
+                    </Button>
                   </Tooltip.Trigger>
                   <Tooltip.Portal>
                     <Tooltip.Content sideOffset={4} className="z-50 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white shadow-md animate-in fade-in">
@@ -384,24 +453,35 @@ function MonthlySponsorSection({ currency, sponsorTier, setSponsorTier, setRecur
           <h2 className="mt-4 font-display text-3xl font-bold text-[#555555] md:text-4xl">Sponsor A Sibling Monthly</h2>
           <p className="mt-4 text-base text-[#555555]/88">Predictable love in the inbox. Pick a lane of monthly care\u2014change or pause any time.</p>
         </div>
-        <div className="mx-auto mt-12 grid max-w-6xl gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SPONSOR_TIERS.map((s) => {
             const selected = sponsorTier === s.id;
+            const baseClass = "flex flex-col items-start justify-start gap-0 rounded-2xl border-2 bg-white p-5 text-left shadow-sm transition-all duration-200 cursor-pointer whitespace-normal overflow-hidden";
+            const selClass = selected
+              ? "border-[#E93D8F] ring-2 ring-[#E93D8F]/20"
+              : "border-[#F2F2F2] hover:border-[#E93D8F]/35 hover:shadow-md hover:-translate-y-0.5";
             return (
-              <button key={s.id} type="button" onClick={() => { setSponsorTier(s.id); setRecurrence("monthly"); setAmountId(String(s.amountUsd)); }}
-                className={cn("flex h-full flex-col rounded-2xl border-2 bg-white p-6 text-left shadow-sm transition-all",
-                  selected ? "border-[#E93D8F] ring-2 ring-[#E93D8F]/20" : "border-[#F2F2F2] hover:border-[#E93D8F]/35")}>
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => { setSponsorTier(s.id); setRecurrence("monthly"); setAmountId(String(s.amountUsd)); }}
+                className={baseClass + " " + selClass}
+                aria-pressed={selected}
+              >
                 <span className="text-sm font-bold uppercase tracking-widest text-[#FF7A00]">{formatCurrencyAmount(convertUsdAmount(s.amountUsd, currency), currency)}/month</span>
                 <span className="mt-2 font-display text-xl font-bold text-[#555555]">{s.title}</span>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-[#555555]/85">{s.blurb}</p>
+                <p className="mt-2 text-sm leading-relaxed text-[#555555]/85">{s.blurb}</p>
               </button>
             );
           })}
           <button type="button" onClick={() => { setSponsorTier("custom"); setRecurrence("monthly"); setAmountId("custom"); }}
-            className={cn("flex h-full flex-col rounded-2xl border-2 border-dashed bg-[#F2F2F2] p-6 text-left transition-all",
-              sponsorTier === "custom" ? "border-[#009FAF] ring-2 ring-[#009FAF]/25" : "border-[#555555]/20 hover:border-[#009FAF]/45")}>
+            className={"flex flex-col items-start justify-start gap-0 rounded-2xl border-2 border-dashed bg-[#F2F2F2] p-5 text-left shadow-sm transition-all duration-200 cursor-pointer whitespace-normal overflow-hidden" + (sponsorTier === "custom"
+              ? " border-[#009FAF] ring-2 ring-[#009FAF]/25"
+              : " border-[#555555]/20 hover:border-[#009FAF]/45 hover:shadow-md hover:-translate-y-0.5")}
+            aria-pressed={sponsorTier === "custom"}
+          >
             <span className="font-display text-xl font-bold text-[#009FAF]">Custom Monthly Support</span>
-            <p className="mt-3 text-sm leading-relaxed text-[#555555]/85">Build a bespoke monthly pledge for schools, caregivers, or a whole circle\u2014our team will confirm impact reporting with you.</p>
+            <p className="mt-2 text-sm leading-relaxed text-[#555555]/85">Build a bespoke monthly pledge for schools, caregivers, or a whole circle\u2014our team will confirm impact reporting with you.</p>
           </button>
         </div>
       </div>
@@ -468,13 +548,13 @@ function FinalCTASection() {
         <Users className="mx-auto h-10 w-10 text-white/90" aria-hidden />
         <h2 className="mt-4 font-display text-3xl font-bold md:text-4xl lg:text-[2.65rem]">One gift can make someone feel less alone today.</h2>
         <div className="mx-auto mt-10 flex flex-wrap justify-center gap-3">
-          <Button size="lg" className="rounded-full border-0 px-8 font-semibold shadow-lg" style={{ backgroundColor: C.yellow, color: C.gray }} asChild>
+          <Button variant="primary" size="lg" className="rounded-full border-0 px-8 font-semibold shadow-lg" style={{ backgroundColor: C.yellow, color: C.gray }} asChild>
             <a href="#give">Donate Now <Heart className="h-4 w-4" aria-hidden /></a>
           </Button>
-          <Button size="lg" className="rounded-full border-2 border-white/50 bg-white/15 px-8 text-white backdrop-blur hover:bg-white/25" asChild>
+          <Button variant="secondary" size="lg" className="rounded-full border-2 border-white/50 bg-white/15 px-8 text-primary-foreground backdrop-blur hover:bg-white/25" asChild>
             <a href="#monthly-sponsor">Become A Monthly Sponsor</a>
           </Button>
-          <Button size="lg" className="rounded-full border-2 border-white/50 bg-white/10 px-8 text-white hover:bg-white/20" asChild>
+          <Button variant="secondary" size="lg" className="rounded-full border-2 border-white/50 bg-white/10 px-8 text-primary-foreground hover:bg-white/20" asChild>
             <Link href="/corporate-partnership">Partner With Us</Link>
           </Button>
         </div>

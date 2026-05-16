@@ -7,9 +7,13 @@ import db from "@/lib/db";
 import { ProfileRow } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { rateLimitByIp } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 export async function POST(request: Request) {
   try {
+    const csrf = validateOrigin(request);
+    if (!csrf.ok) return csrf.error;
+
     const { ok, remaining } = await rateLimitByIp(request, "login", 10, 60_000);
     if (!ok) {
       return NextResponse.json(

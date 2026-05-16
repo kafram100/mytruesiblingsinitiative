@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 
 import db from "@/lib/db";
 import { rateLimitByIp } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 interface PasswordResetRow {
   id: string;
@@ -14,6 +15,9 @@ interface PasswordResetRow {
 
 export async function POST(request: Request) {
   try {
+    const csrf = validateOrigin(request);
+    if (!csrf.ok) return csrf.error;
+
     const { ok } = await rateLimitByIp(request, "reset-password", 5, 60_000);
     if (!ok) {
       return NextResponse.json(

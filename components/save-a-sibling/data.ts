@@ -1,11 +1,11 @@
 export const IMPACT_AMOUNT_PRESETS = [
-  { id: "5", amountUsd: 5, title: "Feeds hope", detail: "A small gesture that confirms someone matters\u2014fueling reminders, encouragement, and a first moment of belonging." },
-  { id: "10", amountUsd: 10, title: "Supports a check-in", detail: "Helps volunteers reach someone with trauma-informed follow-through so no one slips through silent days alone." },
-  { id: "25", amountUsd: 25, title: "Sponsors a support circle seat", detail: "Funds a warm, moderated space where siblings listen, uplift, and grow together\u2014not as strangers, but as family." },
-  { id: "50", amountUsd: 50, title: "Disability inclusion access", detail: "Underwrites accessibility tools and accommodations so belonging is reachable for disabled siblings everywhere." },
-  { id: "100", amountUsd: 100, title: "One sibling outreach package", detail: "Resources for matching, safeguarding review, onboarding care, and a dignified welcome into community." },
-  { id: "250", amountUsd: 250, title: "Community safe space programs", detail: "Bolsters training, facilitation, and care for grassroots circles that stitch neighborhoods back together." },
-  { id: "500", amountUsd: 500, title: "Full outreach activation", detail: "Powers mentorship touchpoints, school and community corridors, trauma-aware facilitation, and follow-through." },
+  { id: "5", amountUsd: 5, title: "A Meal of Hope", detail: "A warm meal and a kind word\u2014a small gesture that tells someone they are seen." },
+  { id: "10", amountUsd: 10, title: "A Check-In That Matters", detail: "Funds a caring follow-up call so no one slips through silence alone." },
+  { id: "25", amountUsd: 25, title: "A Seat at the Circle", detail: "Reserves a place in a safe support circle where real connection begins." },
+  { id: "50", amountUsd: 50, title: "Access for All", detail: "Provides accessibility tools so every sibling can fully belong." },
+  { id: "100", amountUsd: 100, title: "Welcome One Sibling", detail: "Covers matching, safeguarding, and a dignified welcome into the community." },
+  { id: "250", amountUsd: 250, title: "Strengthen a Circle", detail: "Funds facilitator training and materials for local safe-space programs." },
+  { id: "500", amountUsd: 500, title: "Full Outreach Activation", detail: "Powers mentorship, school outreach, and trauma-aware care for an entire cohort." },
 ] as const;
 
 export const DONATION_PURPOSES = [
@@ -43,7 +43,7 @@ export const SPONSOR_TIERS = [
   { id: "care", title: "Care Sponsor", amountUsd: 25, blurb: "Sustains moderated check-ins and light mentoring touchpoints throughout the month." },
   { id: "circle", title: "Circle Sponsor", amountUsd: 50, blurb: "Funds materials, facilitator stipends, and accessibility buffers for sibling circles." },
   { id: "outreach", title: "Outreach Sponsor", amountUsd: 100, blurb: "Amplifies boots-on-ground outreach, bilingual resources, and school corridor presence." },
-  { id: "legacy", title: "Legacy Sponsor", amountUsd: 250, blurb: "Anchors multi-city safe programs, caregiver relief, emergency pools, and platform safety upgrades." },
+  { id: "legacy", title: "Legacy Sponsor", amountUsd: 250, blurb: "Anchors safe programs across cities, caregiver relief, emergency pools, and platform safety upgrades." },
 ] as const;
 
 export const STORIES = [

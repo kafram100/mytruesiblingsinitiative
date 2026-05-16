@@ -4,6 +4,7 @@ import db from "@/lib/db";
 import { checkAdmin, getSessionUser, SettingsRow } from "@/lib/auth";
 import { sendTestEmail } from "@/lib/mail";
 import { logActivity } from "@/lib/activity-log";
+import { validateOrigin } from "@/lib/csrf";
 
 export async function GET() {
   if (!(await checkAdmin())) {
@@ -22,6 +23,9 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  const csrf = validateOrigin(request);
+  if (!csrf.ok) return csrf.error;
+
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -67,6 +71,9 @@ export async function PUT(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const csrf = validateOrigin(request);
+  if (!csrf.ok) return csrf.error;
+
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

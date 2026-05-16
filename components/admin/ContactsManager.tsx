@@ -6,6 +6,7 @@ import { MessageSquare, Trash2, Loader2 } from "lucide-react";
 
 import MarkReadOnOpen from "@/components/admin/MarkReadOnOpen";
 import ReplyDialog from "@/components/admin/ReplyDialog";
+import { Button } from "@/components/ui/button";
 
 interface Contact {
   id: string;
@@ -115,11 +116,12 @@ export default function ContactsManager({ contacts }: ContactsManagerProps) {
           <span className="text-sm text-muted-foreground">
             {selected.size} selected
           </span>
-          <button
+          <Button
             type="button"
+            variant="primary"
             onClick={deleteBulk}
             disabled={bulkDeleting}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-700 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-red-700"
           >
             {bulkDeleting ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -127,14 +129,15 @@ export default function ContactsManager({ contacts }: ContactsManagerProps) {
               <Trash2 className="h-3.5 w-3.5" />
             )}
             Delete Selected
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="tertiary"
             onClick={() => setSelected(new Set())}
-            className="ml-auto text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+            className="ml-auto h-auto p-0 text-xs font-normal underline underline-offset-2 shadow-none hover:bg-transparent motion-safe:hover:translate-y-0"
           >
             Clear selection
-          </button>
+          </Button>
         </div>
       )}
 
@@ -204,14 +207,16 @@ export default function ContactsManager({ contacts }: ContactsManagerProps) {
                     </span>
                   </td>
                   <td className="px-2 py-3">
-                    <button
+                    <Button
                       type="button"
+                      variant="tertiary"
+                      size="icon"
                       onClick={() => deleteSingle(c.id)}
-                      className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600"
+                      className="rounded-lg text-muted-foreground shadow-none hover:bg-red-50 hover:text-red-600"
                       aria-label={`Delete ${c.name}`}
                     >
                       <Trash2 className="h-4 w-4" />
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -260,14 +265,16 @@ export default function ContactsManager({ contacts }: ContactsManagerProps) {
                   >
                     {c.email}
                   </a>
-                  <button
+                  <Button
                     type="button"
+                    variant="tertiary"
+                    size="icon"
                     onClick={() => deleteSingle(c.id)}
-                    className="ml-auto rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-red-50 hover:text-red-600"
+                    className="ml-auto rounded-lg text-muted-foreground shadow-none hover:bg-red-50 hover:text-red-600"
                     aria-label={`Delete ${c.name}`}
                   >
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             </details>

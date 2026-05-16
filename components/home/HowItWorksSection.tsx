@@ -11,17 +11,17 @@ const steps = [
   {
     n: "01",
     title: "Join Safely",
-    desc: "Create a free account in minutes, anonymously if you prefer.",
+    desc: "Create a free account in minutes — anonymously if you prefer.",
   },
   {
     n: "02",
     title: "Connect With People",
-    desc: "Get matched to a circle, sibling, or one on one conversation.",
+    desc: "Get matched to a circle, sibling, or 1 on 1 conversation.",
   },
   {
     n: "03",
     title: "Grow & Heal Together",
-    desc: "Build belonging, share stories, and rise, one moment at a time.",
+    desc: "Build belonging, share stories, and rise — one moment at a time.",
   },
 ];
 

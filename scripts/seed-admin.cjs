@@ -3,11 +3,21 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
 async function main() {
+  const host = process.env.MYSQL_HOST || "localhost";
+  const user = process.env.MYSQL_USER;
+  const password = process.env.MYSQL_PASSWORD;
+  const database = process.env.MYSQL_DATABASE || "my_siblings";
+
+  if (!user || !password) {
+    console.error("ERROR: MYSQL_USER and MYSQL_PASSWORD environment variables are required.");
+    process.exit(1);
+  }
+
   const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "my_siblings",
+    host,
+    user,
+    password,
+    database,
     waitForConnections: true,
     connectionLimit: 1,
     queueLimit: 0,

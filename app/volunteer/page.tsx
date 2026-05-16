@@ -121,6 +121,7 @@ export default function VolunteerPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button
+              variant="primary"
               size="lg"
               className="bg-brand-orange hover:bg-brand-orange/90 text-primary-foreground rounded-full px-7"
               asChild
@@ -311,6 +312,7 @@ export default function VolunteerPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button
+              variant="primary"
               size="lg"
               className="bg-brand-orange hover:bg-brand-orange/90 text-primary-foreground rounded-full px-7"
               asChild

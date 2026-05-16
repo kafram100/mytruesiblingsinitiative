@@ -5,11 +5,15 @@ import { checkAdmin, ContactRow } from "@/lib/auth";
 import { escapeHtml } from "@/lib/escape";
 import { getSettings } from "@/lib/settings";
 import { createTransporter } from "@/lib/mail";
+import { validateOrigin } from "@/lib/csrf";
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const csrf = validateOrigin(request);
+  if (!csrf.ok) return csrf.error;
+
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -28,7 +32,7 @@ export async function POST(
 
   const contact = contacts[0];
 
-  const { subject, message } = await _request.json();
+  const { subject, message } = await request.json();
 
   if (!subject || !message) {
     return NextResponse.json({ error: "Subject and message are required" }, { status: 400 });

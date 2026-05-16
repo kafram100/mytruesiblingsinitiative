@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import SaveASiblingPage from "@/components/save-a-sibling/SaveASiblingPage";
+import SaveASiblingClient from "@/components/save-a-sibling/SaveASiblingClient";
 
 export const metadata: Metadata = {
   title: "Save A Sibling",
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function SaveASiblingRoute() {
-  return <SaveASiblingPage />;
+  return <SaveASiblingClient />;
 }

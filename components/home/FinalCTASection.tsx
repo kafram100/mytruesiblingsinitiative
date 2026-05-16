@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, HeartHandshake } from "lucide-react";
+import { ArrowRight, Heart, HeartHandshake } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useFadeAnimations } from "@/hooks/useFadeAnimations";
@@ -35,33 +35,48 @@ export default function FinalCTASection() {
             Join a global movement turning loneliness into belonging, one
             sibling at a time.
           </p>
-          <div className="mx-auto flex max-w-lg flex-col gap-3 sm:flex-row sm:justify-center">
+          <div className="flex flex-wrap justify-center gap-3">
             <Button
               variant="primary"
               size="lg"
-              className="group w-full justify-center gap-2 rounded-full !bg-card !text-primary px-7 shadow-xl shadow-black/25 hover:!bg-card/92 hover:shadow-2xl hover:shadow-black/25"
+              className="bg-brand-yellow text-foreground hover:bg-brand-yellow/90"
+              asChild
+            >
+              <Link href="/save-a-sibling">
+                <Heart className="h-4 w-4" aria-hidden="true" />
+                Save A Sibling
+              </Link>
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              className="!bg-card !text-primary hover:!bg-card/90"
               asChild
             >
               <Link href="/match">
                 Join Now
-                <ArrowRight
-                  className="h-4 w-4 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-0.5"
-                  aria-hidden="true"
-                />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
             <Button
               variant="secondary"
               size="lg"
-              className="group w-full justify-center gap-2 rounded-full border-white/35 !bg-white/12 px-7 !text-white shadow-md backdrop-blur hover:border-white/50 hover:!bg-white/20 hover:!text-white hover:shadow-lg"
+              className="border-white/35 !bg-white/12 !text-white backdrop-blur hover:border-white/50 hover:!bg-white/20 hover:!text-white"
               asChild
             >
               <Link href="/volunteer">
                 Become a Volunteer
-                <HeartHandshake
-                  className="h-4 w-4 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:translate-x-0.5 motion-safe:group-hover:-translate-y-px"
-                  aria-hidden="true"
-                />
+                <HeartHandshake className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button
+              variant="secondary"
+              size="lg"
+              className="border-white/35 !bg-white/12 !text-white backdrop-blur hover:border-white/50 hover:!bg-white/20 hover:!text-white"
+              asChild
+            >
+              <Link href="/corporate-partnership">
+                Partner With Us
               </Link>
             </Button>
           </div>

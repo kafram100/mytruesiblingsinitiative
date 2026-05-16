@@ -20,7 +20,7 @@ const PHOTO_ADULT =
 
 const adultFeatures = [
   { icon: Users, label: "Emotional Support Circles" },
-  { icon: MessageCircle, label: "Private one on one conversations" },
+  { icon: MessageCircle, label: "Private 1 on 1 Conversations" },
   { icon: EyeOff, label: "Anonymous Mode" },
   { icon: HeartHandshake, label: "Relationship & Life Support" },
   { icon: ShieldAlert, label: "Crisis Support Button" },
@@ -61,9 +61,8 @@ export default function AdultSafePlaceSection() {
                   Enter Safe Space
                 </Link>
               </Button>
-              {/* QW #2: Crisis button points to the dedicated /crisis page. */}
-              <Button variant="destructive" className="bg-brand-red text-primary-foreground hover:bg-brand-red/90" asChild>
-                <Link href="/crisis">
+              <Button variant="secondary" asChild>
+                <Link href="/contact">
                   <PhoneCall className="h-4 w-4" aria-hidden="true" />
                   Crisis Support
                 </Link>

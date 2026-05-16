@@ -5,9 +5,13 @@ import db from "@/lib/db";
 import { ProfileRow } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/mail";
 import { rateLimitByIp } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 export async function POST(request: Request) {
   try {
+    const csrf = validateOrigin(request);
+    if (!csrf.ok) return csrf.error;
+
     const { ok } = await rateLimitByIp(request, "forgot-password", 3, 60_000);
     if (!ok) {
       return NextResponse.json(
@@ -39,22 +43,6 @@ export async function POST(request: Request) {
     const sessionId = randomUUID();
     const token = randomUUID();
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-
-    await db.execute(`
-      CREATE TABLE IF NOT EXISTS password_resets (
-        id VARCHAR(36) PRIMARY KEY,
-        user_id VARCHAR(36) NOT NULL,
-        token VARCHAR(36) NOT NULL,
-        ip_address VARCHAR(45) DEFAULT NULL,
-        expires_at DATETIME NOT NULL,
-        used TINYINT NOT NULL DEFAULT 0,
-        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
-
-    try {
-      await db.execute("ALTER TABLE password_resets ADD COLUMN ip_address VARCHAR(45) DEFAULT NULL");
-    } catch {}
 
     await db.execute(
       "INSERT INTO password_resets (id, user_id, token, ip_address, expires_at) VALUES (?, ?, ?, ?, ?)",

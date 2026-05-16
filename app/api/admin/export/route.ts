@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import db from "@/lib/db";
 import { checkAdmin, ContactRow, DonationRow } from "@/lib/auth";
+import { rateLimitByIp } from "@/lib/rate-limit";
 import { logActivity } from "@/lib/activity-log";
 
 const PERIOD_SQL: Record<string, string> = {
@@ -73,6 +74,14 @@ const EXPORT_CONFIG: Record<
 };
 
 export async function GET(request: Request) {
+  const { ok: rlOk } = await rateLimitByIp(request, "admin-export", 30, 60_000);
+  if (!rlOk) {
+    return NextResponse.json(
+      { error: "Too many requests. Try again later." },
+      { status: 429 }
+    );
+  }
+
   const adminEmail = await checkAdmin();
   if (!adminEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

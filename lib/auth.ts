@@ -70,6 +70,24 @@ export interface SettingsRow {
   value: string | null;
 }
 
+export interface OrderRow {
+  id: string;
+  items: string;
+  total_amount: number;
+  currency: string;
+  status: string;
+  stripe_session_id: string | null;
+  stripe_payment_intent_id: string | null;
+  created_at: string;
+}
+
+export interface SubscriberRow {
+  id: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export async function getSessionUser(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin_token")?.value;

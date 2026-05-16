@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { ChevronDown, Heart, Menu, X } from "lucide-react";
+import { ChevronDown, Heart, Menu, ShoppingBag, X } from "lucide-react";
+
+import { useCart } from "@/context/cart";
 
 import BrandLogoImage, {
   BRAND_LOGO_CLASS,
@@ -30,6 +33,18 @@ const IMPACT_HOME_HASHES = new Set([
   "#matching",
   "#testimonials",
 ]);
+
+function navLinkLabel(item: NavItem): ReactNode {
+  if (item.label !== "Crisis Support") return item.label;
+  return (
+    <>
+      {item.label}
+      <span className="ml-1.5 inline-flex items-center rounded-full bg-red-600 px-2 py-0.5 text-[9px] font-extrabold uppercase leading-none tracking-wide text-white">
+        Important
+      </span>
+    </>
+  );
+}
 
 function pathOnly(href: string): string {
   if (href === "#") return "#";
@@ -94,6 +109,10 @@ function navItemActive(
 
 const navItems: NavItem[] = [
   { label: "Home", href: "/" },
+  {
+    label: "Crisis Support",
+    href: "/crisis",
+  },
   { label: "About", href: "/about" },
   {
     label: "Programs",
@@ -163,8 +182,22 @@ const navItems: NavItem[] = [
   {
     label: "Resources",
     href: "#",
-    children: [{ id: "nav-res-crisis", label: "Crisis Support", href: "/crisis" }],
+    children: [
+      { id: "nav-res-crisis", label: "🔴 Crisis Support", href: "/crisis" },
+      { id: "nav-res-faq", label: "FAQ", href: "/faq" },
+      {
+        id: "nav-res-safeguarding",
+        label: "Safeguarding Policy",
+        href: "/safeguarding-policy",
+      },
+      {
+        id: "nav-res-privacy",
+        label: "Privacy Policy",
+        href: "/privacy",
+      },
+    ],
   },
+  { label: "Shop", href: "/store" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -176,6 +209,7 @@ export default function SiteHeader() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [locationHash, setLocationHash] = useState("");
+  const { itemCount, openCart } = useCart();
 
   useEffect(() => {
     const sync = () => setLocationHash(window.location.hash);
@@ -250,7 +284,7 @@ export default function SiteHeader() {
                   aria-current={parentAriaCurrent}
                   aria-haspopup={hasChildren || undefined}
                 >
-                  {item.label}
+                  {navLinkLabel(item)}
                   {hasChildren && (
                     <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
                   )}
@@ -290,6 +324,18 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={openCart}
+            aria-label={`Shopping cart with ${itemCount} items`}
+            className="relative hidden rounded-full p-2 text-gray-600 transition-colors hover:bg-muted hover:text-brand-teal sm:inline-flex"
+          >
+            <ShoppingBag className="h-5 w-5" aria-hidden="true" />
+            {itemCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-brand-orange-hex px-1 text-[10px] font-bold text-white">
+                {itemCount > 9 ? "9+" : itemCount}
+              </span>
+            )}
+          </button>
           <Button
             variant="primary"
             className="hidden rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90 sm:inline-flex"
@@ -355,7 +401,7 @@ export default function SiteHeader() {
                           parentActive ? navActiveClass : navInactiveClass
                         }`}
                       >
-                        {item.label}
+                        {navLinkLabel(item)}
                       </Link>
                       {item.children && (
                         <div className="mt-1 flex flex-col gap-1 pl-4">

@@ -73,9 +73,9 @@ export default function InclusiveHubSection() {
               Belonging Without Barriers
             </h2>
             <p className="text-muted-foreground mb-6 leading-relaxed">
-              Accessibility first tools, disability specific communities,
-              caregiver support, opportunity access, and verified resources,
-              designed with, not for, our community.
+              Accessibility-first tools, disability-specific communities,
+              caregiver support, opportunity access, and verified resources
+              — designed with, not for, our community.
             </p>
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-7">
               {inclusiveFeatures.map((f, i) => {

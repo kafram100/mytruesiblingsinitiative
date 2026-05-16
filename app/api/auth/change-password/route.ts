@@ -4,9 +4,13 @@ import bcrypt from "bcryptjs";
 import db from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 import { rateLimitByIp } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 export async function POST(request: Request) {
   try {
+    const csrf = validateOrigin(request);
+    if (!csrf.ok) return csrf.error;
+
     const { ok } = await rateLimitByIp(request, "change-password", 5, 60_000);
     if (!ok) {
       return NextResponse.json({ error: "Too many attempts. Try again later." }, { status: 429 });

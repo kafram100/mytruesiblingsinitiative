@@ -14,15 +14,29 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validateEmail = (v: string) => {
+    if (!v.trim()) return "Email is required.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) return "Enter a valid email address.";
+    return "";
+  };
+
+  const validatePassword = (v: string) => {
+    if (!v) return "Password is required.";
+    if (v.length < 8) return "Password must be at least 8 characters.";
+    return "";
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (!email || !password) {
-      setError("Please enter your email and password.");
-      return;
-    }
+    const eErr = validateEmail(email);
+    const pErr = validatePassword(password);
+    setEmailError(eErr);
+    setPasswordError(pErr);
+    if (eErr || pErr) return;
 
     setLoading(true);
 
@@ -82,10 +96,14 @@ export default function AdminLoginPage() {
                 type="email"
                 autoComplete="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(validateEmail(e.target.value)); }}
+                onBlur={(e) => setEmailError(validateEmail(e.target.value))}
                 placeholder="admin@example.com"
-                className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className={`block w-full rounded-xl border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+                  emailError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+                }`}
               />
+              {emailError && <p className="mt-1 text-xs text-destructive">{emailError}</p>}
             </div>
 
             <div>
@@ -101,9 +119,12 @@ export default function AdminLoginPage() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(validatePassword(e.target.value)); }}
+                  onBlur={(e) => setPasswordError(validatePassword(e.target.value))}
                   placeholder="Enter your password"
-                  className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className={`block w-full rounded-xl border px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+                    passwordError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+                  }`}
                 />
                 <button
                   type="button"
@@ -118,6 +139,7 @@ export default function AdminLoginPage() {
                   )}
                 </button>
               </div>
+              {passwordError && <p className="mt-1 text-xs text-destructive">{passwordError}</p>}
             </div>
 
             {error && (

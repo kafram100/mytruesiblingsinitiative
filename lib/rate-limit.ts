@@ -5,23 +5,11 @@ interface RateLimitRow {
   reset_at: number;
 }
 
-async function ensureTable() {
-  await db.execute(`
-    CREATE TABLE IF NOT EXISTS rate_limits (
-      \`key\` VARCHAR(255) PRIMARY KEY,
-      \`count\` INT NOT NULL DEFAULT 1,
-      reset_at BIGINT NOT NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-}
-
 export async function rateLimit(
   key: string,
   maxAttempts: number,
   windowMs: number
 ): Promise<{ ok: boolean; remaining: number; resetAt: number }> {
-  await ensureTable();
 
   const now = Date.now();
 
@@ -52,7 +40,7 @@ export async function rateLimit(
 
     return { ok: true, remaining: maxAttempts - entry.count - 1, resetAt: entry.reset_at };
   } catch {
-    return { ok: true, remaining: maxAttempts - 1, resetAt: now + windowMs };
+    return { ok: false, remaining: 0, resetAt: now + windowMs };
   }
 }
 

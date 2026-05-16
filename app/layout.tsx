@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -138,6 +138,9 @@ if ("serviceWorker" in navigator) {
             }}
           />
         ) : null}
+        <script dangerouslySetInnerHTML={{
+          __html: "(function(){function c(){try{var e=document.querySelectorAll('.simulator-pre-loader,div[class*=simulator]');for(var i=0;i<e.length;i++)e[i].remove()}catch(e){}}c();try{new MutationObserver(c).observe(document.documentElement,{childList:true,subtree:true})}catch(e){}})()"
+        }} />
       </head>
       <body className={fontSans.className}>
         <TooltipProvider>

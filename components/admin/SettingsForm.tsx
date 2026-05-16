@@ -44,6 +44,29 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
     stripe_secret_key: initial.stripe_secret_key || "",
     stripe_webhook_secret: initial.stripe_webhook_secret || "",
   });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateField = (key: string, value: string): string => {
+    if (key === "notification_email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Enter a valid email.";
+    if (key === "smtp_from" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Enter a valid email.";
+    if (key === "smtp_port" && value && !/^\d+$/.test(value)) return "Port must be a number.";
+    return "";
+  };
+
+  const handleFieldChange = (key: string, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    if (errors[key]) {
+      const err = validateField(key, value);
+      setErrors((prev) => ({ ...prev, [key]: err }));
+    }
+  };
+
+  const handleFieldBlur = (key: string, value: string) => {
+    const err = validateField(key, value);
+    setErrors((prev) => ({ ...prev, [key]: err }));
+  };
+
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [message, setMessage] = useState<{
@@ -148,12 +171,14 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
           <input
             type="email"
             value={form.notification_email}
-            onChange={(e) =>
-              setForm({ ...form, notification_email: e.target.value })
-            }
+            onChange={(e) => handleFieldChange("notification_email", e.target.value)}
+            onBlur={(e) => handleFieldBlur("notification_email", e.target.value)}
             placeholder="admin@example.com"
-            className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className={`block w-full rounded-xl border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${
+              errors.notification_email ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+            }`}
           />
+          {errors.notification_email && <p className="mt-1 text-xs text-destructive">{errors.notification_email}</p>}
           <p className="mt-1 text-xs text-muted-foreground">
             New contact form submissions will be emailed here.
           </p>
@@ -183,7 +208,8 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
             <input
               type="text"
               value={form.smtp_host}
-              onChange={(e) => setForm({ ...form, smtp_host: e.target.value })}
+              onChange={(e) => handleFieldChange("smtp_host", e.target.value)}
+              onBlur={(e) => handleFieldBlur("smtp_host", e.target.value)}
               placeholder="smtp.gmail.com"
               className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
@@ -195,10 +221,14 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
             <input
               type="text"
               value={form.smtp_port}
-              onChange={(e) => setForm({ ...form, smtp_port: e.target.value })}
+              onChange={(e) => handleFieldChange("smtp_port", e.target.value)}
+              onBlur={(e) => handleFieldBlur("smtp_port", e.target.value)}
               placeholder="587"
-              className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className={`block w-full rounded-xl border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${
+                errors.smtp_port ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+              }`}
             />
+            {errors.smtp_port && <p className="mt-1 text-xs text-destructive">{errors.smtp_port}</p>}
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-foreground">
@@ -207,7 +237,8 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
             <input
               type="text"
               value={form.smtp_user}
-              onChange={(e) => setForm({ ...form, smtp_user: e.target.value })}
+              onChange={(e) => handleFieldChange("smtp_user", e.target.value)}
+              onBlur={(e) => handleFieldBlur("smtp_user", e.target.value)}
               placeholder="your@email.com"
               className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
@@ -220,14 +251,17 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
               <input
                 type={showPassword ? "text" : "password"}
                 value={form.smtp_pass}
-                onChange={(e) => setForm({ ...form, smtp_pass: e.target.value })}
+                onChange={(e) => handleFieldChange("smtp_pass", e.target.value)}
+                onBlur={(e) => handleFieldBlur("smtp_pass", e.target.value)}
                 placeholder="App password"
                 className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
-              <button
+              <Button
                 type="button"
+                variant="tertiary"
+                size="icon"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground shadow-none hover:bg-muted/50 hover:text-foreground"
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 tabIndex={-1}
               >
@@ -236,7 +270,7 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
                 ) : (
                   <Eye className="h-4 w-4" />
                 )}
-              </button>
+              </Button>
             </div>
           </div>
           <div className="sm:col-span-2">
@@ -246,10 +280,14 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
             <input
               type="email"
               value={form.smtp_from}
-              onChange={(e) => setForm({ ...form, smtp_from: e.target.value })}
+              onChange={(e) => handleFieldChange("smtp_from", e.target.value)}
+              onBlur={(e) => handleFieldBlur("smtp_from", e.target.value)}
               placeholder="noreply@yourdomain.com"
-              className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className={`block w-full rounded-xl border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 ${
+                errors.smtp_from ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+              }`}
             />
+            {errors.smtp_from && <p className="mt-1 text-xs text-destructive">{errors.smtp_from}</p>}
             <p className="mt-1 text-xs text-muted-foreground">
               Optional. Defaults to SMTP user if left empty.
             </p>
@@ -281,9 +319,8 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
             <input
               type="text"
               value={form.stripe_publishable_key}
-              onChange={(e) =>
-                setForm({ ...form, stripe_publishable_key: e.target.value })
-              }
+              onChange={(e) => handleFieldChange("stripe_publishable_key", e.target.value)}
+              onBlur={(e) => handleFieldBlur("stripe_publishable_key", e.target.value)}
               placeholder="pk_live_..."
               className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
@@ -298,21 +335,22 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
               <input
                 type={showSecretKey ? "text" : "password"}
                 value={form.stripe_secret_key}
-                onChange={(e) =>
-                  setForm({ ...form, stripe_secret_key: e.target.value })
-                }
+                onChange={(e) => handleFieldChange("stripe_secret_key", e.target.value)}
+                onBlur={(e) => handleFieldBlur("stripe_secret_key", e.target.value)}
                 placeholder="sk_live_..."
                 className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
-              <button
+              <Button
                 type="button"
+                variant="tertiary"
+                size="icon"
                 onClick={() => setShowSecretKey(!showSecretKey)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground shadow-none hover:bg-muted/50 hover:text-foreground"
                 aria-label={showSecretKey ? "Hide secret key" : "Show secret key"}
                 tabIndex={-1}
               >
                 {showSecretKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -325,21 +363,22 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
               <input
                 type={showWebhookSecret ? "text" : "password"}
                 value={form.stripe_webhook_secret}
-                onChange={(e) =>
-                  setForm({ ...form, stripe_webhook_secret: e.target.value })
-                }
+                onChange={(e) => handleFieldChange("stripe_webhook_secret", e.target.value)}
+                onBlur={(e) => handleFieldBlur("stripe_webhook_secret", e.target.value)}
                 placeholder="whsec_..."
                 className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
-              <button
+              <Button
                 type="button"
+                variant="tertiary"
+                size="icon"
                 onClick={() => setShowWebhookSecret(!showWebhookSecret)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 text-muted-foreground shadow-none hover:bg-muted/50 hover:text-foreground"
                 aria-label={showWebhookSecret ? "Hide webhook secret" : "Show webhook secret"}
                 tabIndex={-1}
               >
                 {showWebhookSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
+              </Button>
             </div>
           </div>
 

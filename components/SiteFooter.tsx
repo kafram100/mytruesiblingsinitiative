@@ -39,11 +39,13 @@ function TikTokIcon({ className }: { className?: string }) {
 
 const navigation = [
   { label: "Home", href: "/" },
+  { label: "Crisis Support", href: "/crisis" },
   { label: "About MTSI", href: "/about" },
   { label: "Programs", href: "/programs" },
   { label: "Match A Sibling", href: "/match" },
   { label: "Volunteer", href: "/volunteer" },
   { label: "Save A Sibling", href: "/save-a-sibling" },
+  { label: "Store", href: "/store" },
   { label: "Donate", href: "/save-a-sibling" },
   { label: "Impact & Reports", href: "/corporate-partnership" },
   { label: "Stories", href: "/#testimonials" },
@@ -177,7 +179,7 @@ export default function SiteFooter() {
             <ul className="mt-6 flex flex-col gap-2 text-sm text-zinc-400">
               <li>
                 <Link
-                  href="/about#safeguarding"
+                  href="/safeguarding-policy"
                   className="transition hover:text-white focus-visible:outline-none focus-visible:underline"
                 >
                   Safeguarding policy
@@ -270,6 +272,17 @@ export default function SiteFooter() {
         <div className="mt-10 border-t border-white/10 pt-8 text-center text-xs text-zinc-500">
           <p>
             &copy; {year} My True Siblings Initiative. All rights reserved.
+          </p>
+          <p className="mt-1">
+            Made with love by{" "}
+            <a
+              href="https://tacefoundation.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-yellow/80 transition hover:text-brand-yellow"
+            >
+              TACE Foundation
+            </a>
           </p>
         </div>
       </div>

@@ -44,7 +44,7 @@ const tiers = [
     detail:
       "Give your employees free, anonymous access to sibling support. Shows up as a benefit, not a referral.",
     bullets: [
-      "Per-seat pricing",
+      "Per seat pricing",
       "SSO / SCIM provisioning",
       "Anonymous aggregate dashboards",
     ],
@@ -52,7 +52,7 @@ const tiers = [
   {
     icon: HeartHandshake,
     label: "NGO collaboration",
-    title: "Co-build a community",
+    title: "Build a community together",
     detail:
       "Bring a constituency you serve into a dedicated, jointly moderated space inside My Siblings.",
     bullets: [
@@ -74,7 +74,7 @@ const why = [
     icon: ShieldCheck,
     title: "Privacy first by design",
     detail:
-      "We never expose individual user data. Aggregate, anonymous, opt-in only.",
+      "We never expose individual user data. Aggregate, anonymous, opt in only.",
   },
   {
     icon: Globe,
@@ -91,7 +91,7 @@ const why = [
 ];
 
 const trustItems = [
-  "Trauma-informed moderator training",
+  "Trauma informed moderator training",
   "Independent ethics advisory board",
   "Annual third party safety audit",
   "Transparent annual impact report",
@@ -112,12 +112,13 @@ export default function CorporatePartnershipPage() {
             Belonging, at the scale of your business.
           </h1>
           <p className="text-lg md:text-xl text-primary-foreground/90 leading-relaxed mb-8">
-            Sponsors, employers, and aligned non-profits help us turn loneliness
+            Sponsors, employers, and aligned nonprofits help us turn loneliness
             into belonging, without compromising the privacy or autonomy of
             the people we serve.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button
+              variant="primary"
               size="lg"
               className="bg-card text-primary hover:bg-card/90 rounded-full px-7"
               asChild
@@ -275,6 +276,7 @@ export default function CorporatePartnershipPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button
+              variant="primary"
               size="lg"
               className="bg-card text-primary hover:bg-card/90 rounded-full px-7"
               asChild

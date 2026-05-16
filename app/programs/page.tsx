@@ -223,7 +223,7 @@ export default function ProgramsPage() {
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
               Explore the six pillars behind My True Siblings, from school
               outreach and faith communities to human reviewed matching,
-              emotional healing, and long-term community impact.
+              emotional healing, and long term community impact.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

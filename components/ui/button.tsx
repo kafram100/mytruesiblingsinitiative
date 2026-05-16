@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-/** Primary / secondary / tertiary + legacy shadcn names (default, outline, ghost, muted). */
+/** Button styles: use `primary` | `secondary` | `tertiary` across the app; `muted`/`destructive` reserved for special cases; `default`/`outline`/`ghost`/`link` mirror those for legacy shadcn usage. */
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold tracking-tight ring-offset-background motion-safe:transition-[transform,box-shadow,background-color,color,border-color,opacity] motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {

@@ -96,7 +96,7 @@ const features = [
   },
   {
     icon: Accessibility,
-    title: "Easy-read mode",
+    title: "Easy read mode",
     detail:
       "Plain language version of every page, on demand. Bigger type, simpler sentences, no jargon.",
   },

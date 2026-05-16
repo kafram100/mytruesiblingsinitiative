@@ -2,11 +2,15 @@ import { NextResponse } from "next/server";
 
 import db from "@/lib/db";
 import { checkAdmin } from "@/lib/auth";
+import { validateOrigin } from "@/lib/csrf";
 
 export async function PUT(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const csrf = validateOrigin(request);
+  if (!csrf.ok) return csrf.error;
+
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

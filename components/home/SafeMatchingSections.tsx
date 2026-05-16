@@ -49,7 +49,7 @@ const safeSteps: SafeStep[] = [
   },
   {
     n: "03",
-    title: "High-Risk Routing",
+    title: "High Risk Routing",
     text: "If high risk, route to crisis support, notify safeguarding team, no peer matching.",
     Icon: AlertTriangle,
     iconBox: "bg-brand-orange text-primary-foreground",
@@ -92,7 +92,7 @@ const safeSteps: SafeStep[] = [
   {
     n: "09",
     title: "If Accepted",
-    text: "Open guided conversation, display safety rules, schedule first check-in.",
+    text: "Open guided conversation, display safety rules, schedule first check in.",
     Icon: MessageCircle,
     iconBox: "bg-primary text-primary-foreground",
   },
@@ -155,7 +155,7 @@ export default function SafeMatchingSections() {
               How We Match Siblings — Safely
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
-              A trauma-informed, safety-first algorithm that prioritises wellbeing
+              A trauma informed, safety first algorithm that prioritises wellbeing
               before compatibility. Every match passes through 10 protective
               layers.
             </p>

@@ -3,6 +3,8 @@ import { randomUUID } from "crypto";
 
 import { getStripe } from "@/lib/stripe";
 import db from "@/lib/db";
+import { rateLimitByIp } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 const CURRENCY_PAYMENT_METHODS: Record<string, string[]> = {
   USD: ["card", "link", "us_bank_account"],
@@ -33,20 +35,57 @@ function getPaymentMethods(
 
 export async function POST(request: Request) {
   try {
+    const csrf = validateOrigin(request);
+    if (!csrf.ok) return csrf.error;
+
+    const { ok: rlOk } = await rateLimitByIp(request, "donate-checkout", 10, 60_000);
+    if (!rlOk) {
+      return NextResponse.json(
+        { error: "Too many requests. Try again later." },
+        { status: 429 }
+      );
+    }
+
+    const VALID_CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AED", "SAR", "NGN", "KES", "GHS", "UGX", "TZS", "RWF", "ZAR"];
+    const VALID_RECURRENCE = ["once", "monthly", "annual"];
+    const MAX_AMOUNT = 999999.99;
+
     const body = await request.json();
     const { amount, currency, recurrence, purpose, sponsorTier } = body;
 
-    if (!amount || amount <= 0) {
+    if (typeof amount !== "number" || !isFinite(amount) || amount <= 0 || amount > MAX_AMOUNT) {
       return NextResponse.json(
         { error: "Invalid donation amount" },
         { status: 400 }
       );
     }
 
+    const normalizedCurrency = (currency || "USD").toUpperCase();
+    if (!VALID_CURRENCIES.includes(normalizedCurrency)) {
+      return NextResponse.json(
+        { error: "Unsupported currency" },
+        { status: 400 }
+      );
+    }
+
+    const normalizedRecurrence = (recurrence || "once").toLowerCase();
+    if (!VALID_RECURRENCE.includes(normalizedRecurrence)) {
+      return NextResponse.json(
+        { error: "Invalid recurrence value" },
+        { status: 400 }
+      );
+    }
+
     const amountInCents = Math.round(amount * 100);
     const donationId = randomUUID();
-    const normalizedCurrency = (currency || "USD").toUpperCase();
-    const isRecurring = recurrence === "monthly" || recurrence === "annual";
+    const isRecurring = normalizedRecurrence !== "once";
+
+    const normalizedPurpose = typeof purpose === "string" && purpose.length > 0
+      ? purpose.slice(0, 255)
+      : "General Outreach Fund";
+    const normalizedTier = typeof sponsorTier === "string" && sponsorTier.length > 0
+      ? sponsorTier.slice(0, 100)
+      : null;
 
     await db.execute(
       `INSERT INTO donations (id, amount_usd, currency, recurrence, purpose, sponsor_tier, status)
@@ -54,10 +93,10 @@ export async function POST(request: Request) {
       [
         donationId,
         amount,
-        currency || "USD",
-        recurrence || "once",
-        purpose || "General Outreach Fund",
-        sponsorTier || null,
+        normalizedCurrency,
+        normalizedRecurrence,
+        normalizedPurpose,
+        normalizedTier,
       ]
     );
 
@@ -65,7 +104,7 @@ export async function POST(request: Request) {
     const stripe = await getStripe();
 
     const recurringInterval = isRecurring
-      ? recurrence === "monthly"
+      ? normalizedRecurrence === "monthly"
         ? "month"
         : "year"
       : null;
@@ -76,9 +115,9 @@ export async function POST(request: Request) {
       line_items: [
         {
           price_data: {
-            currency: currency?.toLowerCase() || "usd",
+            currency: normalizedCurrency.toLowerCase(),
             product_data: {
-              name: purpose || "Donation to My True Siblings",
+              name: normalizedPurpose,
             },
             unit_amount: amountInCents,
             ...(recurringInterval
@@ -90,8 +129,8 @@ export async function POST(request: Request) {
       ],
       metadata: {
         donation_id: donationId,
-        purpose: purpose || "General Outreach Fund",
-        recurrence,
+        purpose: normalizedPurpose,
+        recurrence: normalizedRecurrence,
       },
       success_url: `${origin}/save-a-sibling?donation=success`,
       cancel_url: `${origin}/save-a-sibling?donation=cancelled`,

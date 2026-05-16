@@ -12,6 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
 interface ExportButtonProps {
   type: "contacts" | "donations";
@@ -77,10 +78,12 @@ export default function ExportButton({ type, label }: ExportButtonProps) {
     <div ref={dropdownRef} className="relative">
       <Tooltip>
         <TooltipTrigger asChild>
-          <button
+          <Button
+            type="button"
+            variant="secondary"
             onClick={() => setOpen(!open)}
             disabled={loading !== null}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-muted disabled:pointer-events-none disabled:opacity-50"
+            className="gap-2 rounded-xl px-4 py-2 shadow-sm"
           >
             {loading ? (
               <>
@@ -94,7 +97,7 @@ export default function ExportButton({ type, label }: ExportButtonProps) {
                 <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
               </>
             )}
-          </button>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>Download {type} as CSV</TooltipContent>
       </Tooltip>
@@ -109,11 +112,13 @@ export default function ExportButton({ type, label }: ExportButtonProps) {
             </div>
             <div className="p-1.5">
               {periods.map((p) => (
-                <button
+                <Button
                   key={p.value}
+                  type="button"
+                  variant="tertiary"
                   onClick={() => handleExport(p.value)}
                   disabled={loading !== null}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors hover:bg-muted disabled:opacity-50"
+                  className="h-auto w-full justify-start gap-3 rounded-xl px-3 py-2.5 text-left font-normal shadow-none hover:bg-muted motion-safe:hover:translate-y-0"
                 >
                   <Calendar className="h-4 w-4 shrink-0 text-muted-foreground" />
                   <div className="min-w-0 flex-1">
@@ -122,7 +127,7 @@ export default function ExportButton({ type, label }: ExportButtonProps) {
                       {p.description}
                     </p>
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
           </div>

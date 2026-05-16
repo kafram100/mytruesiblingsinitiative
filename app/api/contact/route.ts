@@ -4,21 +4,15 @@ import { randomUUID } from "crypto";
 import db from "@/lib/db";
 import { sendNotificationEmail } from "@/lib/mail";
 import { rateLimitByIp } from "@/lib/rate-limit";
+import { validateOrigin } from "@/lib/csrf";
 
 const LETTERS_ONLY = /^[A-Za-z\s]+$/;
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
 
 export async function POST(request: Request) {
   try {
-    const host = request.headers.get("host");
-    const proto = request.headers.get("x-forwarded-proto") || "http";
-    const origin = request.headers.get("origin");
-    const referer = request.headers.get("referer");
-    const expectedOrigin = `${proto}://${host}`;
-    const isValidOrigin = origin === expectedOrigin || referer?.startsWith(expectedOrigin);
-    if (!isValidOrigin) {
-      return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
-    }
+    const csrf = validateOrigin(request);
+    if (!csrf.ok) return csrf.error;
 
     const { ok } = await rateLimitByIp(request, "contact", 5, 60_000);
     if (!ok) {

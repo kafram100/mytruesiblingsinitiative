@@ -11,15 +11,20 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (v: string) => {
+    if (!v.trim()) return "Email is required.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) return "Enter a valid email address.";
+    return "";
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (!email) {
-      setError("Please enter your email address.");
-      return;
-    }
+    const eErr = validateEmail(email);
+    setEmailError(eErr);
+    if (eErr) return;
 
     setLoading(true);
 
@@ -88,10 +93,14 @@ export default function ForgotPasswordPage() {
                   type="email"
                   autoComplete="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); if (emailError) setEmailError(validateEmail(e.target.value)); }}
+                  onBlur={(e) => setEmailError(validateEmail(e.target.value))}
                   placeholder="admin@example.com"
-                  className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className={`block w-full rounded-xl border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+                    emailError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+                  }`}
                 />
+                {emailError && <p className="mt-1 text-xs text-destructive">{emailError}</p>}
               </div>
 
               {error && (

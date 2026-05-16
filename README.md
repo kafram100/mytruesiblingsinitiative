@@ -54,15 +54,13 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 - `npm run lint` — lint with Next ESLint config
 - `npm run typecheck` — TypeScript-only check
 
-## Roadmap
+## Roadmap — Quick-Wins Status
 
-The home page (`app/page.tsx`) is intentionally checked in **as-is** from the original design. Open quick-wins (tracked in chat) include:
-
-1. Fix dynamic Tailwind class names in pillar cards.
-2. Re-route Crisis Support to a dedicated `/crisis` page (or `tel:988`) and elevate visibility.
-3. Remove unused imports.
-4. Honour `prefers-reduced-motion` via `useReducedMotion`.
-5. Make pillar cards fully clickable + add `focus-visible` states.
-6. Mark decorative icons / gradients `aria-hidden`; label star ratings.
-7. Replace fabricated marketing metrics with real data or TODO markers.
-8. Split `app/page.tsx` into per-section components under `components/home/`.
+- [x] Split `app/page.tsx` into per-section components under `components/home/`
+- [x] Honour `prefers-reduced-motion` via `useConsistentReducedMotion`
+- [x] Crisis Support routed to dedicated `/crisis` page
+- [x] Remove unused imports (ongoing)
+- [ ] Fix dynamic Tailwind class names in pillar cards
+- [ ] Make pillar cards fully clickable + add `focus-visible` states
+- [ ] Mark decorative icons / gradients `aria-hidden`; label star ratings
+- [ ] Replace fabricated marketing metrics with real data or TODO markers

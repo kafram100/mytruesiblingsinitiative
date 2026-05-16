@@ -3,6 +3,7 @@ import { Users } from "lucide-react";
 
 import db from "@/lib/db";
 import { ProfileRow } from "@/lib/auth";
+import DeleteUserButton from "@/components/admin/DeleteUserButton";
 
 export const metadata: Metadata = {
   title: "Users",
@@ -63,6 +64,7 @@ export default async function AdminUsersPage() {
                   <th className="px-4 py-3 font-semibold text-foreground">
                     Joined
                   </th>
+                  <th className="w-14 px-2 py-3" />
                 </tr>
               </thead>
               <tbody>
@@ -90,6 +92,11 @@ export default async function AdminUsersPage() {
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
                       {formatDate(p.created_at)}
+                    </td>
+                    <td className="px-2 py-3">
+                      {p.role !== "admin" && (
+                        <DeleteUserButton userId={p.id} userEmail={p.email || ""} />
+                      )}
                     </td>
                   </tr>
                 ))}

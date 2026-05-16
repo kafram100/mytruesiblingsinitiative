@@ -24,12 +24,15 @@ import {
 
 import SafeMatchingSections from "./SafeMatchingSections";
 import HeroVideo from "@/components/HeroVideo";
+import SafetyBanner from "@/components/crisis/SafetyBanner";
 import { Button } from "@/components/ui/button";
 
 const PHOTO_ADULT =
   "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=1200&q=80";
 const PHOTO_INCLUSIVE =
   "https://images.unsplash.com/photo-1626278664285-f796b9ee7806?auto=format&fit=crop&w=1200&q=80";
+const PHOTO_COMMUNITY =
+  "https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=1200&q=80";
 
 type PillarColor = "brand-yellow" | "brand-pink" | "primary";
 
@@ -55,7 +58,7 @@ const pillars = [
   {
     icon: Users,
     title: "Sibling Community",
-    desc: "Connection, mentorship, and belonging for youth and general members.",
+    desc: "Connection, mentorship, belonging — for youth and general members.",
     color: "brand-yellow" as const,
     href: "/sibling-connect",
   },
@@ -77,7 +80,7 @@ const pillars = [
 
 const adultFeatures = [
   { icon: Users, label: "Emotional Support Circles" },
-  { icon: MessageCircle, label: "Private one to one conversations" },
+  { icon: MessageCircle, label: "Private 1 on 1 Conversations" },
   { icon: EyeOff, label: "Anonymous Mode" },
   { icon: HeartHandshake, label: "Relationship & Life Support" },
   { icon: ShieldAlert, label: "Crisis Support Button" },
@@ -96,26 +99,42 @@ const steps = [
   {
     n: "01",
     title: "Join Safely",
-    desc: "Create a free account in minutes (anonymously if you prefer).",
+    desc: "Create a free account in minutes.",
   },
   {
     n: "02",
     title: "Connect With People",
-    desc: "Get matched to a circle, sibling, or one to one conversation.",
+    desc: "Get matched to a circle, sibling, or 1 on 1 conversation.",
   },
   {
     n: "03",
     title: "Grow & Heal Together",
-    desc: "Build belonging, share stories, and rise, one moment at a time.",
+    desc: "Build belonging, share stories, and rise.",
   },
 ];
 
 const metrics = [
-  { value: "12,400+", label: "People Connected" },
-  { value: "38,900+", label: "Support Sessions" },
-  { value: "27", label: "Countries Reached" },
-  { value: "100K+", label: "Lives Impacted" },
-];
+  {
+    value: "12,400+",
+    label: "People Connected",
+    shortLabel: "Connected",
+  },
+  {
+    value: "38,900+",
+    label: "Support Sessions",
+    shortLabel: "Sessions",
+  },
+  {
+    value: "27",
+    label: "Countries Reached",
+    shortLabel: "Countries",
+  },
+  {
+    value: "100K+",
+    label: "Lives Impacted",
+    shortLabel: "Impact",
+  },
+] as const;
 
 const testimonials = [
   {
@@ -140,9 +159,14 @@ export default function LovableHome() {
     <div>
       <HeroVideo />
 
-      <section id="pillars" className="scroll-mt-28 bg-background py-20 md:py-28">
+      <SafetyBanner />
+
+      <section
+        id="pillars"
+        className="scroll-mt-28 bg-background pt-12 pb-16 md:pt-14 md:pb-24"
+      >
         <div className="container mx-auto px-4">
-          <div className="mx-auto mb-14 max-w-2xl text-center">
+          <div className="mx-auto mb-10 max-w-2xl text-center md:mb-12">
             <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-brand-orange">
               Three Pillars · One Family
             </p>
@@ -164,25 +188,29 @@ export default function LovableHome() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.08 }}
                   transition={{ delay: i * 0.1 }}
-                  className="group relative rounded-3xl border-2 border-border bg-card p-8 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-teal"
+                  className="group relative overflow-hidden rounded-3xl border-2 border-border bg-card p-8 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-teal"
                 >
                   <div
                     className={`mb-5 flex h-14 w-14 items-center justify-center rounded-2xl ${vis.iconBg}`}
                   >
                     <p.icon className={`h-7 w-7 ${vis.iconText}`} aria-hidden />
                   </div>
-                  <h3 className="mb-3 font-display text-2xl font-bold">
+                  <h3 className="mb-3 break-words font-display text-2xl font-bold">
                     {p.title}
                   </h3>
-                  <p className="mb-6 leading-relaxed text-muted-foreground">
+                  <p className="mb-6 break-words leading-relaxed text-muted-foreground">
                     {p.desc}
                   </p>
-                  <Link
-                    href={p.href}
-                    className="inline-flex items-center gap-1 text-sm font-semibold text-primary transition-all group-hover:gap-2"
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    className="rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90"
+                    asChild
                   >
-                    Explore <ArrowRight className="h-4 w-4" aria-hidden />
-                  </Link>
+                    <Link href={p.href}>
+                      Explore <ArrowRight className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </Button>
                 </motion.div>
               );
             })}
@@ -221,7 +249,7 @@ export default function LovableHome() {
                 </Button>
                 <Button variant="secondary" asChild>
                   <Link
-                    href="/contact"
+                    href="/crisis"
                     className="inline-flex items-center gap-2"
                   >
                     <PhoneCall className="h-4 w-4" aria-hidden />
@@ -258,7 +286,7 @@ export default function LovableHome() {
                 {adultFeatures.slice(0, 4).map((f) => (
                   <div
                     key={f.label}
-                    className="flex items-center gap-2 rounded-xl border bg-card p-3"
+                    className="flex items-center gap-2 overflow-hidden rounded-xl border bg-card p-3"
                   >
                     <f.icon
                       className="h-4 w-4 shrink-0 text-brand-pink"
@@ -316,9 +344,8 @@ export default function LovableHome() {
                 Belonging Without Barriers
               </h2>
               <p className="mb-6 leading-relaxed text-muted-foreground">
-                Accessibility first tools and disability focused communities,
-                caregiver support, opportunity access, and verified resources,
-                designed with, not for, our community.
+                Accessibility first tools, disability specific communities,
+                caregiver support, opportunity access, and verified resources.
               </p>
               <div className="mb-7 grid grid-cols-2 gap-3 md:grid-cols-3">
                 {inclusiveFeatures.map((f, i) => (
@@ -328,7 +355,7 @@ export default function LovableHome() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true, amount: 0.08 }}
                     transition={{ delay: i * 0.05 }}
-                    className="rounded-xl border bg-gradient-to-br from-primary/5 to-brand-yellow/10 p-3 text-center"
+                    className="overflow-hidden rounded-xl border bg-gradient-to-br from-primary/5 to-brand-yellow/10 p-3 text-center"
                   >
                     <f.icon
                       className="mx-auto mb-1.5 h-5 w-5 text-primary"
@@ -377,13 +404,13 @@ export default function LovableHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.08 }}
                 transition={{ delay: i * 0.1 }}
-                className="rounded-3xl border bg-card p-8 text-center"
+                className="overflow-hidden rounded-3xl border bg-card p-8 text-center"
               >
                 <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-brand-pink font-display text-2xl font-bold text-primary-foreground">
                   {s.n}
                 </div>
-                <h3 className="mb-3 font-display text-xl font-bold">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <h3 className="mb-3 break-words font-display text-xl font-bold">{s.title}</h3>
+                <p className="break-words text-sm leading-relaxed text-muted-foreground">
                   {s.desc}
                 </p>
               </motion.div>
@@ -405,7 +432,7 @@ export default function LovableHome() {
               Belonging at Scale
             </h2>
           </div>
-          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:gap-6 md:grid-cols-4">
+          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4 md:gap-6">
             {metrics.map((m, i) => (
               <motion.div
                 key={m.label}
@@ -413,13 +440,16 @@ export default function LovableHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.08 }}
                 transition={{ delay: i * 0.1 }}
-                className="min-w-0 rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 p-3 text-center backdrop-blur sm:p-5 md:p-6"
+                role="figure"
+                aria-label={`${m.value} ${m.label}`}
+                className="overflow-hidden rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 px-2 py-3 text-center backdrop-blur sm:px-3 sm:py-4 md:p-6"
               >
-                <p className="mb-1 break-words font-display text-xl font-bold leading-none tracking-tight text-brand-yellow sm:mb-2 sm:text-2xl md:text-3xl lg:text-[1.75rem] xl:text-4xl">
+                <p className="break-words font-display text-lg font-bold tabular-nums text-brand-yellow sm:text-2xl md:text-5xl">
                   {m.value}
                 </p>
-                <p className="text-xs leading-snug text-primary-foreground/80 sm:text-sm">
-                  {m.label}
+                <p className="mt-1 break-words text-[10px] leading-tight text-primary-foreground/80 sm:text-xs sm:leading-snug md:mt-2 md:text-sm">
+                  <span className="md:hidden">{m.shortLabel}</span>
+                  <span className="hidden md:inline">{m.label}</span>
                 </p>
               </motion.div>
             ))}
@@ -448,7 +478,7 @@ export default function LovableHome() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.08 }}
                 transition={{ delay: i * 0.1 }}
-                className="rounded-3xl border-2 border-border bg-card p-7 transition-all hover:border-brand-yellow/50"
+                className="overflow-hidden rounded-3xl border-2 border-border bg-card p-7 transition-all hover:border-brand-yellow/50"
               >
                 <div className="mb-4 flex gap-1" aria-hidden>
                   {Array.from({ length: 5 }).map((_, j) => (
@@ -458,7 +488,7 @@ export default function LovableHome() {
                     />
                   ))}
                 </div>
-                <p className="mb-5 leading-relaxed italic text-foreground/85">
+                <p className="mb-5 break-words leading-relaxed italic text-foreground/85">
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -493,6 +523,17 @@ export default function LovableHome() {
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Button
+                  variant="primary"
+                  size="lg"
+                  className="bg-brand-yellow text-foreground hover:bg-brand-yellow/90"
+                  asChild
+                >
+                  <Link href="/save-a-sibling">
+                    <Heart className="h-4 w-4" aria-hidden />
+                    Save A Sibling
+                  </Link>
+                </Button>
+                <Button
                   variant="secondary"
                   size="lg"
                   className="border-primary-foreground/25 bg-card text-primary hover:bg-card/90"
@@ -504,17 +545,6 @@ export default function LovableHome() {
                   </Link>
                 </Button>
                 <Button
-                  variant="primary"
-                  size="lg"
-                  className="bg-brand-yellow text-foreground hover:bg-brand-yellow/90"
-                  asChild
-                >
-                  <Link href="/save-a-sibling">
-                    Save A Sibling
-                    <Heart className="h-4 w-4" aria-hidden />
-                  </Link>
-                </Button>
-                <Button
                   variant="tertiary"
                   size="lg"
                   className="border border-primary-foreground/35 text-primary-foreground hover:bg-primary-foreground/12"
@@ -523,6 +553,16 @@ export default function LovableHome() {
                   <Link href="/volunteer">
                     Become a Volunteer
                     <HeartHandshake className="h-4 w-4" aria-hidden />
+                  </Link>
+                </Button>
+                <Button
+                  variant="tertiary"
+                  size="lg"
+                  className="border border-primary-foreground/35 text-primary-foreground hover:bg-primary-foreground/12"
+                  asChild
+                >
+                  <Link href="/corporate-partnership">
+                    Partner With Us
                   </Link>
                 </Button>
               </div>

@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
 
-import StubPage from "@/components/StubPage";
+import FaqContent from "@/components/faq/FaqContent";
 
 export const metadata: Metadata = {
   title: "FAQ",
-  description: "Answers to common questions about My True Siblings Initiative.",
+  description: "Answers to common questions about MyTrueSiblings — our programs, shop, donations, membership, matching, safety, and global belonging movement.",
+  openGraph: {
+    title: "FAQ · MyTrueSiblings",
+    description: "Everything you need to know about the MyTrueSiblings belonging movement.",
+  },
 };
 
 export default function FaqPage() {
-  return (
-    <StubPage
-      eyebrow="Help"
-      title="Frequently asked questions"
-      description="We are building a full FAQ. Many questions are quickest to answer through our contact channels. Choose the topic that fits and we will reply as soon as we can."
-      accent="text-brand-yellow"
-    />
-  );
+  return <FaqContent />;
 }

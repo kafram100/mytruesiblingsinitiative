@@ -16,25 +16,35 @@ export default function ChangePasswordPage() {
   const [showNew, setShowNew] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [currentError, setCurrentError] = useState("");
+  const [newError, setNewError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
+
+  const validateRequired = (v: string) => v ? "" : "This field is required.";
+
+  const validateNewPassword = (v: string) => {
+    if (!v) return "New password is required.";
+    if (v.length < 8) return "Password must be at least 8 characters.";
+    return "";
+  };
+
+  const validateConfirm = (v: string, pw: string) => {
+    if (!v) return "Please confirm your password.";
+    if (v !== pw) return "Passwords do not match.";
+    return "";
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      setError("All fields are required.");
-      return;
-    }
-
-    if (newPassword.length < 8) {
-      setError("New password must be at least 8 characters.");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+    const cErr = validateRequired(currentPassword);
+    const nErr = validateNewPassword(newPassword);
+    const cfErr = validateConfirm(confirmPassword, newPassword);
+    setCurrentError(cErr);
+    setNewError(nErr);
+    setConfirmError(cfErr);
+    if (cErr || nErr || cfErr) return;
 
     setLoading(true);
 
@@ -91,9 +101,12 @@ export default function ChangePasswordPage() {
                   type={showCurrent ? "text" : "password"}
                   autoComplete="current-password"
                   value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  onChange={(e) => { setCurrentPassword(e.target.value); if (currentError) setCurrentError(validateRequired(e.target.value)); }}
+                  onBlur={(e) => setCurrentError(validateRequired(e.target.value))}
                   placeholder="Enter your current password"
-                  className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className={`block w-full rounded-xl border px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+                    currentError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+                  }`}
                 />
                 <button
                   type="button"
@@ -104,6 +117,7 @@ export default function ChangePasswordPage() {
                   {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {currentError && <p className="mt-1 text-xs text-destructive">{currentError}</p>}
             </div>
 
             <div>
@@ -119,9 +133,12 @@ export default function ChangePasswordPage() {
                   type={showNew ? "text" : "password"}
                   autoComplete="new-password"
                   value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  onChange={(e) => { setNewPassword(e.target.value); if (newError) setNewError(validateNewPassword(e.target.value)); if (confirmPassword) setConfirmError(validateConfirm(confirmPassword, e.target.value)); }}
+                  onBlur={(e) => { setNewError(validateNewPassword(e.target.value)); if (confirmPassword) setConfirmError(validateConfirm(confirmPassword, e.target.value)); }}
                   placeholder="At least 8 characters"
-                  className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className={`block w-full rounded-xl border px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+                    newError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+                  }`}
                 />
                 <button
                   type="button"
@@ -132,6 +149,7 @@ export default function ChangePasswordPage() {
                   {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {newError && <p className="mt-1 text-xs text-destructive">{newError}</p>}
             </div>
 
             <div>
@@ -146,10 +164,14 @@ export default function ChangePasswordPage() {
                 type="password"
                 autoComplete="new-password"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Re-enter your new password"
-                className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                onChange={(e) => { setConfirmPassword(e.target.value); if (confirmError) setConfirmError(validateConfirm(e.target.value, newPassword)); }}
+                onBlur={(e) => setConfirmError(validateConfirm(e.target.value, newPassword))}
+                placeholder="Reenter your new password"
+                className={`block w-full rounded-xl border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+                  confirmError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+                }`}
               />
+              {confirmError && <p className="mt-1 text-xs text-destructive">{confirmError}</p>}
             </div>
 
             {error && (

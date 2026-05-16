@@ -118,7 +118,7 @@ export default async function AdminDonationsPage() {
                       {d.currency.toUpperCase()}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
-                      {d.recurrence === "once" ? "One-time" : d.recurrence}
+                      {d.recurrence === "once" ? "One time" : d.recurrence}
                     </td>
                     <td className="max-w-[200px] truncate px-4 py-3 text-muted-foreground">
                       {d.purpose}

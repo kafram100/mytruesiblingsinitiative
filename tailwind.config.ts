@@ -64,6 +64,13 @@ const config: Config = {
         "brand-orange": "hsl(var(--brand-orange))",
         "brand-red": "hsl(var(--brand-red))",
         "deep-teal": "hsl(var(--deep-teal))",
+        "brand-teal": "#009FAF",
+        "brand-orange-hex": "#FF7A00",
+        "brand-yellow-hex": "#FFC400",
+        "brand-pink-hex": "#E93D8F",
+        "brand-red-hex": "#F52A3D",
+        "brand-dark": "#555555",
+        "brand-light": "#F2F2F2",
       },
       borderRadius: {
         lg: "var(--radius)",

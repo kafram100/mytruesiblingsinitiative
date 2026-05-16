@@ -25,6 +25,20 @@ function ResetForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmError, setConfirmError] = useState("");
+
+  const validatePassword = (v: string) => {
+    if (!v) return "Password is required.";
+    if (v.length < 8) return "Password must be at least 8 characters.";
+    return "";
+  };
+
+  const validateConfirm = (v: string, pw: string) => {
+    if (!v) return "Please confirm your password.";
+    if (v !== pw) return "Passwords do not match.";
+    return "";
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -35,15 +49,11 @@ function ResetForm() {
       return;
     }
 
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
+    const pErr = validatePassword(password);
+    const cErr = validateConfirm(confirmPassword, password);
+    setPasswordError(pErr);
+    setConfirmError(cErr);
+    if (pErr || cErr) return;
 
     setLoading(true);
 
@@ -117,9 +127,12 @@ function ResetForm() {
             type={showPassword ? "text" : "password"}
             autoComplete="new-password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => { setPassword(e.target.value); if (passwordError) setPasswordError(validatePassword(e.target.value)); if (confirmPassword) setConfirmError(validateConfirm(confirmPassword, e.target.value)); }}
+            onBlur={(e) => { setPasswordError(validatePassword(e.target.value)); if (confirmPassword) setConfirmError(validateConfirm(confirmPassword, e.target.value)); }}
             placeholder="At least 8 characters"
-            className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className={`block w-full rounded-xl border px-4 py-2.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+              passwordError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+            }`}
           />
           <button
             type="button"
@@ -144,11 +157,17 @@ function ResetForm() {
           type="password"
           autoComplete="new-password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Re-enter your new password"
-          className="block w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+          onChange={(e) => { setConfirmPassword(e.target.value); if (confirmError) setConfirmError(validateConfirm(e.target.value, password)); }}
+          onBlur={(e) => setConfirmError(validateConfirm(e.target.value, password))}
+          placeholder="Reenter your new password"
+          className={`block w-full rounded-xl border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 bg-background ${
+            confirmError ? "border-destructive/60 focus:border-destructive focus:ring-destructive/20" : "border-input focus:border-primary focus:ring-primary/20"
+          }`}
         />
+        {confirmError && <p className="mt-1 text-xs text-destructive">{confirmError}</p>}
       </div>
+
+      {passwordError && <p className="mt-1 text-xs text-destructive">{passwordError}</p>}
 
       {error && (
         <div className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
