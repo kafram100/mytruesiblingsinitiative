@@ -78,38 +78,38 @@ const socialPlatforms: {
 }[] = [
   {
     label: "Facebook",
-    href: "https://www.facebook.com/mytruesiblings",
+    href: "https://www.facebook.com/My True Siblings Initiative",
     Icon: Facebook,
   },
   {
     label: "Instagram",
-    href: "https://www.instagram.com/mytruesiblings",
+    href: "https://www.instagram.com/My True Siblings Initiative",
     Icon: Instagram,
   },
   {
     label: "X (Twitter)",
-    href: "https://x.com/mytruesiblings",
+    href: "https://x.com/My True Siblings Initiative",
     Icon: Twitter,
   },
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/company/mytruesiblings",
+    href: "https://www.linkedin.com/company/My True Siblings Initiative",
     Icon: Linkedin,
   },
   {
     label: "YouTube",
-    href: "https://www.youtube.com/@mytruesiblings",
+    href: "https://www.youtube.com/@My True Siblings Initiative",
     Icon: Youtube,
   },
   {
     label: "TikTok",
-    href: "https://www.tiktok.com/@mytruesiblings",
+    href: "https://www.tiktok.com/@My True Siblings Initiative",
     Icon: TikTokIcon,
   },
   { label: "WhatsApp", href: "/contact", Icon: MessageCircle },
   {
     label: "Telegram",
-    href: "https://t.me/mytruesiblings",
+    href: "https://t.me/My True Siblings Initiative",
     Icon: Send,
   },
 ];
@@ -129,7 +129,7 @@ export default function SiteFooter() {
             >
               <Image
                 src={FOOTER_LOGO.src}
-                alt="MyTrueSiblings logo"
+                alt="My True Siblings Initiative logo"
                 width={FOOTER_LOGO.width}
                 height={FOOTER_LOGO.height}
                 sizes="(max-width: 640px) 180px, (max-width: 1024px) 220px, 260px"
@@ -137,7 +137,7 @@ export default function SiteFooter() {
               />
             </Link>
             <p className="mt-6 max-w-xl text-sm leading-relaxed text-zinc-300">
-              MyTrueSiblings is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, and belonging.
+              My True Siblings Initiative is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, and belonging.
             </p>
             <p className="mt-6 max-w-xl text-sm italic leading-relaxed text-zinc-200/95">
               &ldquo;Turning loneliness into belonging, one sibling at a time.&rdquo;
@@ -189,11 +189,11 @@ export default function SiteFooter() {
             </h2>
             <div className="mt-5 space-y-4 text-sm">
               <a
-                href="mailto:info@mytruesiblingsinitiative.org"
+                href="mailto:info@MyTrueSiblingsInitiative.org"
                 className="flex items-start gap-2.5 text-brand-yellow/90 transition hover:text-brand-yellow"
               >
                 <Mail className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                <span>info@mytruesiblingsinitiative.org</span>
+                <span>info@MyTrueSiblingsInitiative.org</span>
               </a>
               <p className="flex items-start gap-2.5 text-brand-yellow/90">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
@@ -298,7 +298,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-8 text-center text-xs text-zinc-500">
-          <p>&copy; {year} MyTrueSiblings Initiative. All rights reserved.</p>
+          <p>&copy; {year} MyTrueSiblingsInitiative. All rights reserved.</p>
           <p className="mt-1">
             Made with love by{" "}
             <a

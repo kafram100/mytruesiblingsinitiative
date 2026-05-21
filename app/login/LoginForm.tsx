@@ -1,18 +1,26 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, type FormEvent, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Heart, Loader2, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (searchParams.get("registered") === "mentor") {
+      setSuccess("Your mentor account has been created and is pending admin approval. You'll be notified once approved.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -85,6 +93,12 @@ export default function LoginForm() {
           </button>
         </div>
       </div>
+
+      {success && (
+        <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
+          {success}
+        </div>
+      )}
 
       {error && (
         <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">

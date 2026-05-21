@@ -1145,16 +1145,16 @@ export const CRISIS_FAQ_ITEMS = [
     a: "Call your local emergency number immediately (911 in US/Canada, 999 in UK, 112 in EU/Nigeria, 000 in Australia). If you cannot speak, leave the line open so dispatchers can trace your location. If possible, get to a safe place, alert someone you trust, or go to the nearest hospital, police station, or fire station."
   },
   {
-    q: "Is MyTrueSiblings a crisis hotline?",
-    a: "No. MyTrueSiblings is not an emergency service, suicide hotline, hospital, police department, or licensed crisis response center. We provide connection, emotional support guidance, and resource navigation to help you find verified crisis support. Always contact professional emergency services for immediate danger."
+    q: "Is My True Siblings Initiative a crisis hotline?",
+    a: "No. My True Siblings Initiative is not an emergency service, suicide hotline, hospital, police department, or licensed crisis response center. We provide connection, emotional support guidance, and resource navigation to help you find verified crisis support. Always contact professional emergency services for immediate danger."
   },
   {
-    q: "Can I speak to someone on MyTrueSiblings?",
-    a: "MyTrueSiblings provides peer support, mentorship, and community connection, but we are not a crisis counseling service. If you need immediate crisis support, please use the hotlines and resources listed on this page. Our community will be here when you are ready."
+    q: "Can I speak to someone on My True Siblings Initiative?",
+    a: "My True Siblings Initiative provides peer support, mentorship, and community connection, but we are not a crisis counseling service. If you need immediate crisis support, please use the hotlines and resources listed on this page. Our community will be here when you are ready."
   },
   {
     q: "Is this support free?",
-    a: "Yes. All crisis resources listed on this page are free to access. MyTrueSiblings community support is also free. We believe no one should be denied help because of cost."
+    a: "Yes. All crisis resources listed on this page are free to access. My True Siblings Initiative community support is also free. We believe no one should be denied help because of cost."
   },
   {
     q: "Can I use this page anonymously?",

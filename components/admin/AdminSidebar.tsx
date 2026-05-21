@@ -45,7 +45,7 @@ export default function AdminSidebar({
   sidebarOpen,
   onClose,
   onLogout,
-  appName = "MyTrueSiblings",
+  appName = "My True Siblings Initiative",
   appSubtitle = "Admin Console",
   onCollapsedChange,
 }: AdminSidebarProps) {

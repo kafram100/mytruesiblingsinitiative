@@ -32,7 +32,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <VisitTracker />
           <main id="main-content">{children}</main>
           {!isAdmin && isStore && <CartDrawer />}
-          <FloatingSafetyButton />
+          {!isAdmin && <FloatingSafetyButton />}
           {!isAdmin && !isCrisis && <SafetyReminderPopup />}
           {!isAdmin && <GuidedTour />}
           {!isAdmin && <OnboardingWizard />}

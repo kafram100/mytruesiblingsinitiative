@@ -80,9 +80,7 @@ export default function MentorRegisterPage() {
         setSubmitting(false);
         return;
       }
-      localStorage.setItem("guided_tour_enabled", "true");
-      router.push("/account/mentor");
-      router.refresh();
+      router.push("/login?registered=mentor");
     } catch {
       setError("Network error. Please try again.");
       setSubmitting(false);

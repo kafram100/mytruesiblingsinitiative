@@ -2,6 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { Users, DollarSign, ShoppingBag, Mail, ArrowUpRight } from "lucide-react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Filler,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line, Doughnut } from "react-chartjs-2";
 
 import {
   DonationRow,
@@ -9,20 +22,7 @@ import {
 } from "@/lib/auth";
 import { formatCurrency, formatNumber, formatDate } from "@/lib/admin-utils";
 
-function Donut({ pct, color = "#009FAF", label }: { pct: number; color?: string; label: string }) {
-  return (
-    <div className="flex flex-col items-center">
-      <div
-        className="relative grid h-[130px] w-[130px] place-items-center rounded-full"
-        style={{ background: `conic-gradient(${color} ${pct}%, #E6ECEF 0)` }}
-      >
-        <div className="flex h-[80px] w-[80px] items-center justify-center rounded-full bg-white text-2xl font-bold text-[#00736B]">
-          {label}
-        </div>
-      </div>
-    </div>
-  );
-}
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Filler, Title, Tooltip, Legend);
 
 interface MonthEngagement {
   label: string;
@@ -43,22 +43,6 @@ const monthlyEngagement: MonthEngagement[] = [
   tot({ label: "Apr", activeSessions: 1120, mentorCalls: 520, messagesSent: 1060 }),
   tot({ label: "May", activeSessions: 1340, mentorCalls: 610, messagesSent: 1150 }),
 ];
-
-/** Monthly bar colors: warm to cool progression (matches capsule chart reference) */
-const engagementCapsuleColors = [
-  "#E85D6C",
-  "#E87850",
-  "#E89A45",
-  "#D9A84C",
-  "#B8A85E",
-  "#9BA86E",
-  "#7BA896",
-  "#5D9B9E",
-  "#4FA8BD",
-  "#5EB0E8",
-  "#58C4D8",
-  "#4DCDEA",
-] as const;
 
 const matchingStats = [
   { label: "Pending Matches", value: "38", desc: "Awaiting mentor confirmation.", color: "text-[#FF7A00]" },
@@ -147,10 +131,10 @@ interface KpiCardProps {
 
 function KpiCard({ label, value, delta, borderColor, deltaClass }: KpiCardProps) {
   return (
-    <div className={`rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm ${borderColor} border-l-[4px]`}>
+    <div className={`rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm ${borderColor} border-l-[4px]`}>
       <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">{label}</p>
-      <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">{value}</p>
-      <p className={`mt-0.5 text-xs font-medium ${deltaClass || "text-[#0a8a4a]"}`}>{delta}</p>
+      <p className="mt-1.5 text-[26px] font-bold tracking-tight text-[#1a1a1a]">{value}</p>
+      <p className={`mt-1 text-xs font-medium ${deltaClass || "text-[#0a8a4a]"}`}>{delta}</p>
     </div>
   );
 }
@@ -165,16 +149,16 @@ function SectionCard({ children, className = "" }: { children: React.ReactNode; 
 
 function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
-    <div className="mb-4">
-      <h2 className="text-lg font-bold tracking-tight text-[#1a1a1a]">{title}</h2>
-      {subtitle && <p className="mt-0.5 text-sm text-[#888]">{subtitle}</p>}
+    <div className="mb-5">
+      <h2 className="text-xl font-bold tracking-tight text-[#1a1a1a]">{title}</h2>
+      {subtitle && <p className="mt-1 text-sm text-[#888]">{subtitle}</p>}
     </div>
   );
 }
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm ${className}`}>
+    <div className={`rounded-xl border border-[#E6ECEF] bg-white p-6 shadow-sm ${className}`}>
       {children}
     </div>
   );
@@ -187,7 +171,7 @@ function Table({ headers = [], children }: { headers: string[]; children: React.
         <thead>
           <tr className="border-b border-[#E6ECEF] bg-[#FAFAFA]">
             {headers.map((h) => (
-              <th key={h} className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#888]">{h}</th>
+              <th key={h} className="px-5 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-[#888]">{h}</th>
             ))}
           </tr>
         </thead>
@@ -260,12 +244,12 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-[#1a1a1a]">Dashboard</h1>
-          <p className="mt-0.5 text-sm text-[#888]">
-            MyTrueSiblings Foundation: Admin Control Center
+          <p className="mt-1 text-sm text-[#888]">
+            My True Siblings Initiative Foundation &mdash; Admin Control Center
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -282,73 +266,127 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
         </div>
       </div>
 
-      <section id="overview" className="scroll-mt-20">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <section id="overview" className="scroll-mt-24 space-y-5">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {kpiData.map((kpi) => <KpiCard key={kpi.label} {...kpi} />)}
         </div>
 
-        <Card className="w-full">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <h3 className="text-sm font-bold text-[#1a1a1a]">Sibling Engagement ({chartData[0]?.label ?? "Jan"} to {chartData[chartData.length - 1]?.label ?? "May"})</h3>
+        <Card>
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-[#1a1a1a]">Sibling Engagement</h3>
             <div className="flex items-center gap-3">
-              <span className="hidden text-[10px] text-[#888] sm:inline">
-                <strong className="text-[#1a1a1a]">Total:</strong> {formatNumber(chartTotal)}
-              </span>
-              <span className="rounded-full bg-[rgba(0,159,175,0.1)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#009FAF]">Live</span>
+              <span className="text-[11px] text-[#888]">Total: <strong className="text-[#1a1a1a]">{formatNumber(chartTotal)}</strong></span>
+              <span className="rounded-full bg-[rgba(0,159,175,0.1)] px-2 py-0.5 text-[10px] font-semibold text-[#009FAF]">Live</span>
             </div>
           </div>
-          <div className="rounded-xl bg-gray-50/80 px-3 py-6 sm:px-4 sm:py-8 md:px-6">
-            <div className="grid h-[min(64svh,52rem)] min-h-[min(40svh,20rem)] w-full grid-cols-12 gap-1.5 sm:h-[min(68svh,54rem)] sm:min-h-[min(46svh,24rem)] sm:gap-2 md:h-[min(72svh,56rem)] md:min-h-[min(50svh,28rem)] md:gap-3 lg:gap-4">
-              {chartData.map((m, i) => {
-                const pct = chartMax > 0 ? (m.total / chartMax) * 100 : 0;
-                const fill = engagementCapsuleColors[i] ?? "#58C4D8";
-                return (
-                  <div
-                    key={m.label}
-                    className="flex h-full min-h-0 min-w-0 flex-col items-stretch"
-                  >
-                    <div className="flex min-h-0 w-full flex-1 flex-col justify-end">
-                      <div className="flex h-full w-full flex-col justify-end overflow-hidden rounded-t-[9999px] bg-[#E6ECEF]">
-                        <div
-                          className="flex w-full flex-col items-center rounded-t-[9999px] px-0.5 pt-2 transition-opacity duration-200 hover:opacity-95 sm:pt-2.5"
-                          style={{
-                            height: `${pct}%`,
-                            backgroundColor: fill,
-                          }}
-                          title={`${m.label}: ${formatNumber(m.total)}. Sessions ${formatNumber(m.activeSessions)}, calls ${formatNumber(m.mentorCalls)}, messages ${formatNumber(m.messagesSent)}`}
-                        >
-                          <span className="max-w-full px-0.5 text-center text-[9px] font-bold leading-tight tracking-tight text-white sm:text-[10px] md:text-xs">
-                            {Math.round(pct)}%
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <span className="mt-2.5 shrink-0 text-center text-[9px] font-semibold uppercase tracking-wider text-[#888] sm:text-[10px]">
-                      {m.label}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="mt-5 flex flex-wrap justify-center gap-x-6 gap-y-1.5 text-[10px] text-[#888]">
-              <span>
-                Avg monthly:{" "}
-                <strong className="text-[#1a1a1a]">{formatNumber(chartAvg)}</strong>
-              </span>
-              <span>
-                Peak:{" "}
-                <strong className="text-[#1a1a1a]">
-                  {chartPeak.label} ({formatNumber(chartPeak.total)})
-                </strong>
-              </span>
-            </div>
+          <div className="rounded-xl bg-white px-2 py-2">
+            <Line
+              data={{
+                labels: chartData.map((m) => m.label),
+                datasets: [
+                  {
+                    label: "Total",
+                    data: chartData.map((m) => m.total),
+                    borderColor: "#009FAF",
+                    backgroundColor: (ctx) => {
+                      const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 100);
+                      g.addColorStop(0, "rgba(0,159,175,0.25)");
+                      g.addColorStop(1, "rgba(0,159,175,0)");
+                      return g;
+                    },
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    pointBackgroundColor: "#009FAF",
+                    pointBorderColor: "#fff",
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 5,
+                    borderWidth: 2,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { display: false },
+                  tooltip: {
+                    backgroundColor: "#1a1a1a",
+                    titleFont: { size: 11 },
+                    bodyFont: { size: 11 },
+                    padding: 10,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                      title: (items) => items[0].label,
+                      label: (ctx) => ` ${formatNumber(ctx.parsed.y)} total`,
+                      afterLabel: (ctx) => {
+                        const m = chartData[ctx.dataIndex];
+                        return [
+                          `  Sessions: ${formatNumber(m.activeSessions)}`,
+                          `  Calls: ${formatNumber(m.mentorCalls)}`,
+                          `  Messages: ${formatNumber(m.messagesSent)}`,
+                        ].join("\n");
+                      },
+                    },
+                  },
+                },
+                scales: {
+                  x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 10, family: "'Inter', sans-serif" }, color: "#888" },
+                  },
+                  y: {
+                    beginAtZero: true,
+                    grid: { color: "rgba(0,0,0,0.05)", drawBorder: false },
+                    ticks: { font: { size: 10 }, color: "#888", maxTicksLimit: 5 },
+                  },
+                },
+                interaction: { intersect: false, mode: "index" },
+              }}
+              height={90}
+            />
+          </div>
+          <div className="mt-2 flex items-center justify-center gap-4 text-[10px] text-[#888]">
+            <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#E85D6C]" />Sessions</span>
+            <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#58C4D8]" />Calls</span>
+            <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-[#B8A85E]" />Messages</span>
           </div>
         </Card>
 
-        <Card className="mx-auto w-full max-w-lg">
+        <div className="grid gap-5 md:grid-cols-2">
+        <Card>
           <h3 className="mb-4 text-sm font-bold text-[#1a1a1a]">Match Success Rate</h3>
-          <Donut pct={84} color="#009FAF" label="84%" />
-          <div className="mt-4 flex flex-wrap justify-center gap-4 text-xs text-[#888]">
+          <div className="flex justify-center">
+            <div className="w-36">
+              <Doughnut
+                data={{
+                  labels: ["Matched & Active", "Pending / Review"],
+                  datasets: [
+                    {
+                      data: [84, 16],
+                      backgroundColor: ["#009FAF", "#E6ECEF"],
+                      borderWidth: 0,
+                      hoverOffset: 8,
+                    },
+                  ],
+                }}
+                options={{
+                  cutout: "70%",
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                      callbacks: {
+                        label: (ctx) => `${ctx.label}: ${ctx.parsed}%`,
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+          <p className="mt-3 text-center text-2xl font-bold text-[#00736B]">84%</p>
+          <div className="mt-2 flex flex-wrap justify-center gap-4 text-xs text-[#888]">
             <span className="flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-sm bg-[#009FAF]" />
               Matched &amp; Active
@@ -359,6 +397,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
             </span>
           </div>
         </Card>
+        </div>
       </section>
 
       <Card>
@@ -373,13 +412,13 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
         </div>
         <Table headers={["Name", "Email", "Role", "Joined"]}>
           {profileRows.length === 0 ? (
-            <tr><td colSpan={4} className="px-4 py-8 text-center text-sm text-[#888]">No users yet.</td></tr>
+            <tr><td colSpan={4} className="px-5 py-8 text-center text-sm text-[#888]">No users yet.</td></tr>
           ) : profileRows.slice(0, 5).map((row) => (
             <tr key={row.id} className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA] last:border-0">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">{row.full_name || "\u2014"}</td>
-              <td className="px-4 py-3 text-[#888]">{row.email || "\u2014"}</td>
-              <td className="px-4 py-3"><Pill status={row.role} statusClass={row.role === "admin" ? "t" : "g"} /></td>
-              <td className="px-4 py-3 text-[#888]">{formatDate(row.created_at)}</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">{row.full_name || "\u2014"}</td>
+              <td className="px-5 py-3.5 text-[#888]">{row.email || "\u2014"}</td>
+              <td className="px-5 py-3.5"><Pill status={row.role} statusClass={row.role === "admin" ? "t" : "g"} /></td>
+              <td className="px-5 py-3.5 text-[#888]">{formatDate(row.created_at)}</td>
             </tr>
           ))}
         </Table>
@@ -390,36 +429,36 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
         <Card>
           <Table headers={["ID", "Name", "Age Stage", "Region", "Status", "Wellbeing"]}>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">SB-1042</td>
-              <td className="px-4 py-3 text-[#888]">Amara O.</td>
-              <td className="px-4 py-3 text-[#888]">Teen (13-17)</td>
-              <td className="px-4 py-3 text-[#888]">Lagos, NG</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">SB-1042</td>
+              <td className="px-5 py-3.5 text-[#888]">Amara O.</td>
+              <td className="px-5 py-3.5 text-[#888]">Teen (13-17)</td>
+              <td className="px-5 py-3.5 text-[#888]">Lagos, NG</td>
               <td className="px-4 py-3"><Pill status="Active" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">★★★★☆</td>
+              <td className="px-5 py-3.5 text-[#888]">★★★★☆</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">SB-1043</td>
-              <td className="px-4 py-3 text-[#888]">Liam P.</td>
-              <td className="px-4 py-3 text-[#888]">Young Adult (18-24)</td>
-              <td className="px-4 py-3 text-[#888]">London, UK</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">SB-1043</td>
+              <td className="px-5 py-3.5 text-[#888]">Liam P.</td>
+              <td className="px-5 py-3.5 text-[#888]">Young Adult (18-24)</td>
+              <td className="px-5 py-3.5 text-[#888]">London, UK</td>
               <td className="px-4 py-3"><Pill status="Active" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">★★★★★</td>
+              <td className="px-5 py-3.5 text-[#888]">★★★★★</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">SB-1044</td>
-              <td className="px-4 py-3 text-[#888]">Sara M.</td>
-              <td className="px-4 py-3 text-[#888]">Child (8-12)</td>
-              <td className="px-4 py-3 text-[#888]">Nairobi, KE</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">SB-1044</td>
+              <td className="px-5 py-3.5 text-[#888]">Sara M.</td>
+              <td className="px-5 py-3.5 text-[#888]">Child (8-12)</td>
+              <td className="px-5 py-3.5 text-[#888]">Nairobi, KE</td>
               <td className="px-4 py-3"><Pill status="Onboarding" statusClass="o" /></td>
-              <td className="px-4 py-3 text-[#888]">★★★☆☆</td>
+              <td className="px-5 py-3.5 text-[#888]">★★★☆☆</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">SB-1045</td>
-              <td className="px-4 py-3 text-[#888]">Diego R.</td>
-              <td className="px-4 py-3 text-[#888]">Adult (25-40)</td>
-              <td className="px-4 py-3 text-[#888]">São Paulo, BR</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">SB-1045</td>
+              <td className="px-5 py-3.5 text-[#888]">Diego R.</td>
+              <td className="px-5 py-3.5 text-[#888]">Adult (25-40)</td>
+              <td className="px-5 py-3.5 text-[#888]">São Paulo, BR</td>
               <td className="px-4 py-3"><Pill status="Active" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">★★★★☆</td>
+              <td className="px-5 py-3.5 text-[#888]">★★★★☆</td>
             </tr>
           </Table>
         </Card>
@@ -427,7 +466,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
 
       <section id="matching" className="scroll-mt-20">
         <SectionTitle title="Match A Sibling System" subtitle="Personality-based mentor matching via the Sibling Superpower quiz." />
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-3">
           {matchingStats.map((stat) => (
             <Card key={stat.label}>
               <p className="mb-1.5 text-xs font-semibold text-[#888]">{stat.label}</p>
@@ -443,36 +482,36 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
         <Card>
           <Table headers={["ID", "Mentor", "Specialty", "Background Check", "Active Matches", "Rating"]}>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">MN-201</td>
-              <td className="px-4 py-3 text-[#888]">Dr. Ifeoma A.</td>
-              <td className="px-4 py-3 text-[#888]">Trauma-informed listening</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">MN-201</td>
+              <td className="px-5 py-3.5 text-[#888]">Dr. Ifeoma A.</td>
+              <td className="px-5 py-3.5 text-[#888]">Trauma-informed listening</td>
               <td className="px-4 py-3"><Pill status="Verified" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">7</td>
-              <td className="px-4 py-3 text-[#888]">4.9</td>
+              <td className="px-5 py-3.5 text-[#888]">7</td>
+              <td className="px-5 py-3.5 text-[#888]">4.9</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">MN-202</td>
-              <td className="px-4 py-3 text-[#888]">Marcus T.</td>
-              <td className="px-4 py-3 text-[#888]">Youth mentorship</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">MN-202</td>
+              <td className="px-5 py-3.5 text-[#888]">Marcus T.</td>
+              <td className="px-5 py-3.5 text-[#888]">Youth mentorship</td>
               <td className="px-4 py-3"><Pill status="Verified" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">5</td>
-              <td className="px-4 py-3 text-[#888]">4.8</td>
+              <td className="px-5 py-3.5 text-[#888]">5</td>
+              <td className="px-5 py-3.5 text-[#888]">4.8</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">MN-203</td>
-              <td className="px-4 py-3 text-[#888]">Priya S.</td>
-              <td className="px-4 py-3 text-[#888]">Disability inclusion</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">MN-203</td>
+              <td className="px-5 py-3.5 text-[#888]">Priya S.</td>
+              <td className="px-5 py-3.5 text-[#888]">Disability inclusion</td>
               <td className="px-4 py-3"><Pill status="Verified" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">6</td>
-              <td className="px-4 py-3 text-[#888]">5.0</td>
+              <td className="px-5 py-3.5 text-[#888]">6</td>
+              <td className="px-5 py-3.5 text-[#888]">5.0</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">MN-204</td>
-              <td className="px-4 py-3 text-[#888]">Omar D.</td>
-              <td className="px-4 py-3 text-[#888]">Adult safe place</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">MN-204</td>
+              <td className="px-5 py-3.5 text-[#888]">Omar D.</td>
+              <td className="px-5 py-3.5 text-[#888]">Adult safe place</td>
               <td className="px-4 py-3"><Pill status="Renewing" statusClass="o" /></td>
-              <td className="px-4 py-3 text-[#888]">3</td>
-              <td className="px-4 py-3 text-[#888]">4.7</td>
+              <td className="px-5 py-3.5 text-[#888]">3</td>
+              <td className="px-5 py-3.5 text-[#888]">4.7</td>
             </tr>
           </Table>
         </Card>
@@ -484,10 +523,10 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
           <Table headers={["Program", "Lead", "Region", "Reach", "Status"]}>
             {programData.map((row, i) => (
               <tr key={i} className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA] last:border-0">
-                <td className="px-4 py-3 font-medium text-[#1a1a1a]">{row.program}</td>
-                <td className="px-4 py-3 text-[#888]">{row.lead}</td>
-                <td className="px-4 py-3 text-[#888]">{row.region}</td>
-                <td className="px-4 py-3 text-[#888]">{row.reach}</td>
+                <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">{row.program}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.lead}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.region}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.reach}</td>
                 <td className="px-4 py-3"><Pill status={row.status} statusClass={row.statusClass} /></td>
               </tr>
             ))}
@@ -497,20 +536,20 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
 
       <section id="sibling-connect" className="scroll-mt-20">
         <SectionTitle title="Sibling Connect Hub" subtitle="Badges, journals, toolkits, and safe video calls." />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#009FAF]">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#009FAF]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">Open Badges Earned</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">19,420</p>
           </div>
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#FF7A00]">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#FF7A00]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">Journals Written</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">38,901</p>
           </div>
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#E93D8F]">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#E93D8F]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">Toolkits Downloaded</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">12,066</p>
           </div>
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#FFC400]">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#FFC400]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">Safe Video Calls</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">7,432</p>
           </div>
@@ -523,10 +562,10 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
           <Table headers={["Stage", "Age", "Active Members", "Capacity"]}>
             {lifecycleData.map((row, i) => (
               <tr key={i} className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA] last:border-0">
-                <td className="px-4 py-3 font-medium text-[#1a1a1a]">{row.stage}</td>
-                <td className="px-4 py-3 text-[#888]">{row.age}</td>
-                <td className="px-4 py-3 text-[#888]">{row.active}</td>
-                <td className="px-4 py-3 text-[#888]">{row.capacity}</td>
+                <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">{row.stage}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.age}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.active}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.capacity}</td>
               </tr>
             ))}
           </Table>
@@ -535,7 +574,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
 
       <section id="safeguarding" className="scroll-mt-20">
         <SectionTitle title="Safeguarding & Trust" subtitle="Mandatory background checks, no private physical contact, GDPR/COPPA compliant." />
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-3">
           {safeguardingCards.map((card) => (
             <Card key={card.label}>
               <p className="mb-1.5 text-xs font-semibold text-[#888]">{card.label}</p>
@@ -551,28 +590,28 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
         <Card>
           <Table headers={["Framework", "Status", "Last Audit", "Next Review"]}>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">GDPR (EU)</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">GDPR (EU)</td>
               <td className="px-4 py-3"><Pill status="Compliant" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">2026-03-02</td>
-              <td className="px-4 py-3 text-[#888]">2026-09-02</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-03-02</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-09-02</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">COPPA (US, &lt;13)</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">COPPA (US, &lt;13)</td>
               <td className="px-4 py-3"><Pill status="Compliant" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">2026-02-18</td>
-              <td className="px-4 py-3 text-[#888]">2026-08-18</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-02-18</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-08-18</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">WCAG 2.2 AA</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">WCAG 2.2 AA</td>
               <td className="px-4 py-3"><Pill status="Pass" statusClass="g" /></td>
-              <td className="px-4 py-3 text-[#888]">2026-04-09</td>
-              <td className="px-4 py-3 text-[#888]">2026-10-09</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-04-09</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-10-09</td>
             </tr>
             <tr className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA]">
-              <td className="px-4 py-3 font-medium text-[#1a1a1a]">SOC 2 Type II</td>
+              <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">SOC 2 Type II</td>
               <td className="px-4 py-3"><Pill status="In progress" statusClass="o" /></td>
-              <td className="px-4 py-3 text-[#888]">&mdash;</td>
-              <td className="px-4 py-3 text-[#888]">2026-12-01</td>
+              <td className="px-5 py-3.5 text-[#888]">&mdash;</td>
+              <td className="px-5 py-3.5 text-[#888]">2026-12-01</td>
             </tr>
           </Table>
         </Card>
@@ -580,7 +619,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
 
       <section id="donations" className="scroll-mt-20">
         <SectionTitle title="Donations" />
-        <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+        <div className="grid gap-5 lg:grid-cols-[1.6fr_1fr]">
           <Card>
             <h3 className="mb-4 text-sm font-bold text-[#1a1a1a]">Recent Donations</h3>
             {donationsRows.length === 0 ? (
@@ -589,10 +628,10 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
               <Table headers={["Donor", "Amount", "Designation", "Date"]}>
                 {donationsRows.slice(0, 5).map((d) => (
                   <tr key={d.id} className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA] last:border-0">
-                    <td className="px-4 py-3 font-medium text-[#1a1a1a]">{d.donor_name || d.donor_email || "Anonymous"}</td>
-                    <td className="px-4 py-3 text-[#888]">{formatCurrency(Number(d.amount_usd))}</td>
-                    <td className="px-4 py-3 text-[#888]">{d.purpose}</td>
-                    <td className="px-4 py-3 text-[#888]">{formatDate(d.created_at)}</td>
+                    <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">{d.donor_name || d.donor_email || "Anonymous"}</td>
+                    <td className="px-5 py-3.5 text-[#888]">{formatCurrency(Number(d.amount_usd))}</td>
+                    <td className="px-5 py-3.5 text-[#888]">{d.purpose}</td>
+                    <td className="px-5 py-3.5 text-[#888]">{formatDate(d.created_at)}</td>
                   </tr>
                 ))}
               </Table>
@@ -600,7 +639,34 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
           </Card>
           <Card>
             <h3 className="mb-4 text-sm font-bold text-[#1a1a1a]">Allocation</h3>
-            <Donut pct={62} color="#009FAF" label="62%" />
+            <div className="flex justify-center">
+              <div className="w-36">
+                <Doughnut
+                  data={{
+                    labels: ["Programs", "Outreach", "Operations"],
+                    datasets: [
+                      {
+                        data: [62, 23, 15],
+                        backgroundColor: ["#009FAF", "#FF7A00", "#E93D8F"],
+                        borderWidth: 0,
+                        hoverOffset: 8,
+                      },
+                    ],
+                  }}
+                  options={{
+                    cutout: "70%",
+                    plugins: {
+                      legend: { display: false },
+                      tooltip: {
+                        callbacks: {
+                          label: (ctx) => `${ctx.label}: ${ctx.parsed}%`,
+                        },
+                      },
+                    },
+                  }}
+                />
+              </div>
+            </div>
             <p className="mt-3 text-center text-xs text-[#888]">Direct programs vs. operations</p>
             <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs text-[#888]">
               <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-2 rounded-sm bg-[#009FAF]" />Programs</span>
@@ -617,10 +683,10 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
           <Table headers={["Tier", "Price / mo", "Members", "Revenue / mo"]}>
             {membershipData.map((row, i) => (
               <tr key={i} className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA] last:border-0">
-                <td className="px-4 py-3 font-medium text-[#1a1a1a]">{row.tier}</td>
-                <td className="px-4 py-3 text-[#888]">{row.price}</td>
-                <td className="px-4 py-3 text-[#888]">{row.members}</td>
-                <td className="px-4 py-3 text-[#888]">{row.revenue}</td>
+                <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">{row.tier}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.price}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.members}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.revenue}</td>
               </tr>
             ))}
           </Table>
@@ -629,7 +695,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
 
       <section id="partners" className="scroll-mt-20">
         <SectionTitle title="Corporate Partnerships" subtitle="ESG/SDG packages: Bronze, Silver, Gold." />
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-3">
           {corporatePartners.map((partner) => (
             <Card key={partner.tier}>
               <div className="mb-1 flex items-center justify-between">
@@ -645,15 +711,15 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
       <section id="pwa" className="scroll-mt-20">
         <SectionTitle title="PWA / Mobile App" subtitle="Install metrics and engagement." />
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#009FAF]">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#009FAF]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">iOS Installs</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">8,210</p>
           </div>
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#FF7A00]">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#FF7A00]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">Android Installs</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">9,682</p>
           </div>
-          <div className="rounded-xl border border-[#E6ECEF] bg-white p-4 shadow-sm border-l-[4px] border-l-[#E93D8F]">
+          <div className="rounded-xl border border-[#E6ECEF] bg-white p-5 shadow-sm border-l-[4px] border-l-[#E93D8F]">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#888]">Affirmation Popups Sent</p>
             <p className="mt-1 text-[26px] font-bold tracking-tight text-[#1a1a1a]">412,900</p>
           </div>
@@ -666,8 +732,8 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
           <Table headers={["Page", "Last edited", "Status"]}>
             {contentData.map((row, i) => (
               <tr key={i} className="border-b border-[#E6ECEF] transition-colors hover:bg-[#FAFAFA] last:border-0">
-                <td className="px-4 py-3 font-medium text-[#1a1a1a]">{row.page}</td>
-                <td className="px-4 py-3 text-[#888]">{row.lastEdited}</td>
+                <td className="px-5 py-3.5 font-medium text-[#1a1a1a]">{row.page}</td>
+                <td className="px-5 py-3.5 text-[#888]">{row.lastEdited}</td>
                 <td className="px-4 py-3"><Pill status={row.status} statusClass={row.statusClass} /></td>
               </tr>
             ))}
@@ -677,7 +743,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
 
       <section id="integrations" className="scroll-mt-20">
         <SectionTitle title="Integrations" subtitle="Connected services powering the platform." />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {integrationsData.map((int) => (
             <Card key={int.name}>
               <h3 className="mb-1 text-sm font-bold text-[#1a1a1a]">{int.name}</h3>
@@ -710,7 +776,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
       </section>
 
       <footer className="border-t border-[#E6ECEF] pt-4 text-center text-xs text-[#888]">
-        &copy; 2026 MyTrueSiblings Foundation. Admin Dashboard
+        &copy; 2026 My True Siblings Initiative Foundation. Admin Dashboard
       </footer>
     </div>
   );

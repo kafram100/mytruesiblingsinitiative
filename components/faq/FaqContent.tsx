@@ -27,32 +27,32 @@ const sections: FAQSection[] = [
     bg: "bg-brand-teal/10",
     items: [
       {
-        q: "What is MyTrueSiblings?",
-        a: "MyTrueSiblings is a global nonprofit safe space platform where strangers become siblings. We provide emotional support, mentorship, safe conversations, community connection, disability inclusion, and belonging programs to anyone who needs them, completely free of charge.",
+        q: "What is My True Siblings Initiative?",
+        a: "My True Siblings Initiative is a global nonprofit safe space platform where strangers become siblings. We provide emotional support, mentorship, safe conversations, community connection, disability inclusion, and belonging programs to anyone who needs them, completely free of charge.",
       },
       {
-        q: "Is MyTrueSiblings free?",
+        q: "Is My True Siblings Initiative free?",
         a: "Yes. All support services, including mentorship, safe conversations, support circles, and community access, are completely free for anyone seeking help. We are a mission-driven nonprofit, not a paid service.",
       },
       {
-        q: "Who can join MyTrueSiblings?",
-        a: "Anyone. Regardless of age, gender, nationality, ability, religion, sexual orientation, or background. MyTrueSiblings is built on the belief that everyone deserves belonging. Youth, adults, seniors, families, and individuals of all abilities are welcome.",
+        q: "Who can join My True Siblings Initiative?",
+        a: "Anyone. Regardless of age, gender, nationality, ability, religion, sexual orientation, or background. My True Siblings Initiative is built on the belief that everyone deserves belonging. Youth, adults, seniors, families, and individuals of all abilities are welcome.",
       },
       {
-        q: "Is MyTrueSiblings a registered nonprofit?",
-        a: "Yes. MyTrueSiblings is a mission-driven nonprofit initiative focused on creating safe spaces, support systems, emotional connection, inclusion, mentorship, and community outreach worldwide. Our operations are funded through purchases, donations, memberships, partnerships, and sponsorships.",
+        q: "Is My True Siblings Initiative a registered nonprofit?",
+        a: "Yes. My True Siblings Initiative is a mission-driven nonprofit initiative focused on creating safe spaces, support systems, emotional connection, inclusion, mentorship, and community outreach worldwide. Our operations are funded through purchases, donations, memberships, partnerships, and sponsorships.",
       },
       {
         q: "Can adults join?",
-        a: "Absolutely. MyTrueSiblings has dedicated programs for all life stages, including our Adult Safe Place (18+) program which provides emotional support, safe conversations, mentorship opportunities, and community connection for adults.",
+        a: "Absolutely. My True Siblings Initiative has dedicated programs for all life stages, including our Adult Safe Place (18+) program which provides emotional support, safe conversations, mentorship opportunities, and community connection for adults.",
       },
       {
         q: "Can people living with disabilities join?",
         a: "Yes. Inclusion is at the heart of everything we do. Our Inclusive Support Hub is specifically designed for individuals with disabilities, offering adaptive programming, accessible communication tools, and a welcoming community. We continuously work to improve accessibility across all our programs and platforms.",
       },
       {
-        q: "Is MyTrueSiblings available globally?",
-        a: "Yes. MyTrueSiblings serves a global community across 40+ countries. Our programs are designed to be culturally sensitive and accessible worldwide. Our online platform allows anyone with internet access to connect with siblings from around the world.",
+        q: "Is My True Siblings Initiative available globally?",
+        a: "Yes. My True Siblings Initiative serves a global community across 40+ countries. Our programs are designed to be culturally sensitive and accessible worldwide. Our online platform allows anyone with internet access to connect with siblings from around the world.",
       },
     ],
   },
@@ -72,7 +72,7 @@ const sections: FAQSection[] = [
       },
       {
         q: "Are conversations confidential?",
-        a: "Yes. All conversations within MyTrueSiblings are confidential. We take your privacy seriously. The only exception is if someone is at immediate risk of harm. In that case our safeguarding protocol requires us to involve appropriate authorities to ensure everyone's safety.",
+        a: "Yes. All conversations within My True Siblings Initiative are confidential. We take your privacy seriously. The only exception is if someone is at immediate risk of harm. In that case our safeguarding protocol requires us to involve appropriate authorities to ensure everyone's safety.",
       },
       {
         q: "How are members protected?",
@@ -80,7 +80,7 @@ const sections: FAQSection[] = [
       },
       {
         q: "Can I report harmful behavior?",
-        a: "Yes. Every page and conversation includes reporting tools. Reports are reviewed by our safeguarding team within 24 hours (often much sooner). You can also email our safeguarding team directly at safeguarding@mytruesiblingsinitiative.org. All reports are treated with urgency, dignity, and confidentiality.",
+        a: "Yes. Every page and conversation includes reporting tools. Reports are reviewed by our safeguarding team within 24 hours (often much sooner). You can also email our safeguarding team directly at safeguarding@MyTrueSiblingsInitiative.org. All reports are treated with urgency, dignity, and confidentiality.",
       },
     ],
   },
@@ -104,11 +104,11 @@ const sections: FAQSection[] = [
       },
       {
         q: "Can families join?",
-        a: "Yes. MyTrueSiblings welcomes families. We offer family support programs, parent support circles, sibling connections for children and teens, and resources for families navigating challenges together. Every family member can create their own profile and find their own path to belonging.",
+        a: "Yes. My True Siblings Initiative welcomes families. We offer family support programs, parent support circles, sibling connections for children and teens, and resources for families navigating challenges together. Every family member can create their own profile and find their own path to belonging.",
       },
       {
         q: "Can mentors volunteer?",
-        a: "Yes! Mentors are the backbone of MyTrueSiblings. If you have life experience, professional skills, or simply a willingness to listen and support others, you can become a trained volunteer sibling. All mentors complete our comprehensive training program, background checks, and receive ongoing support from our team.",
+        a: "Yes! Mentors are the backbone of MyTrueSiblingsInitiative. If you have life experience, professional skills, or simply a willingness to listen and support others, you can become a trained volunteer sibling. All mentors complete our comprehensive training program, background checks, and receive ongoing support from our team.",
       },
     ],
   },
@@ -123,8 +123,8 @@ const sections: FAQSection[] = [
         a: "Our products are made on demand through Printify's global network of print providers. This means items ship from the facility closest to your location, reducing delivery times and carbon emissions. You'll receive a tracking number once your order is fulfilled.",
       },
       {
-        q: "How does the store support MyTrueSiblings?",
-        a: "Every purchase from the MyTrueSiblings store directly funds our mission. Proceeds support safe spaces, youth mentorship programs, community outreach, emotional wellness initiatives, disability inclusion programs, and operational costs that keep our platform free for everyone who needs support.",
+        q: "How does the store support My True Siblings Initiative?",
+        a: "Every purchase from the My True Siblings Initiative store directly funds our mission. Proceeds support safe spaces, youth mentorship programs, community outreach, emotional wellness initiatives, disability inclusion programs, and operational costs that keep our platform free for everyone who needs support.",
       },
       {
         q: "Are products made on demand?",
@@ -140,7 +140,7 @@ const sections: FAQSection[] = [
       },
       {
         q: "Can I become an ambassador?",
-        a: "Yes! Our ambassador program is for community members who want to spread the message of belonging. Ambassadors receive exclusive discounts, early access to new products, affiliate commissions, and special community recognition. Apply through our contact page or email ambassador@mytruesiblingsinitiative.org.",
+        a: "Yes! Our ambassador program is for community members who want to spread the message of belonging. Ambassadors receive exclusive discounts, early access to new products, affiliate commissions, and special community recognition. Apply through our contact page or email ambassador@MyTrueSiblingsInitiative.org.",
       },
     ],
   },
@@ -176,7 +176,7 @@ const sections: FAQSection[] = [
     items: [
       {
         q: "What membership options exist?",
-        a: "MyTrueSiblings offers several membership tiers: Free Community Access (always free), Supporter Membership (monthly/annual with impact badges and perks), Ambassador Membership (for active community builders), and Corporate Memberships (for organizational partners). Each tier helps sustain our mission while offering meaningful benefits.",
+        a: "My True Siblings Initiative offers several membership tiers: Free Community Access (always free), Supporter Membership (monthly/annual with impact badges and perks), Ambassador Membership (for active community builders), and Corporate Memberships (for organizational partners). Each tier helps sustain our mission while offering meaningful benefits.",
       },
       {
         q: "Is support still free without membership?",
@@ -266,7 +266,7 @@ export default function FaqContent() {
               Frequently Asked Questions
             </h1>
             <p className="mt-4 text-lg text-gray-600">
-              Everything you need to know about MyTrueSiblings, our programs, shop, and how you can be part of the belonging movement.
+              Everything you need to know about My True Siblings Initiative, our programs, shop, and how you can be part of the belonging movement.
             </p>
           </div>
         </div>
@@ -343,7 +343,7 @@ export default function FaqContent() {
                   Contact Us
                 </a>
                 <a
-                  href="mailto:info@mytruesiblingsinitiative.org"
+                  href="mailto:info@MyTrueSiblingsInitiative.org"
                   className="inline-flex items-center gap-2 rounded-full border-2 border-border/50 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-all hover:border-brand-teal/30 hover:shadow-md"
                 >
                   Email Us

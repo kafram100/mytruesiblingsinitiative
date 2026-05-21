@@ -33,8 +33,8 @@ export async function POST(request: Request) {
 
     const id = randomUUID();
     await db.execute(
-      `INSERT INTO products (id, title, price, compare_price, description, image_url, category, tags)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO products (id, title, price, compare_price, description, image_url, category, tags, is_active)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)`,
       [id, title, price, comparePrice || null, description || null, imageUrl || null, category || "general", JSON.stringify(tags || [])]
     );
 

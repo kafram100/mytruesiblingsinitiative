@@ -9,12 +9,12 @@ import {
 } from "@/lib/crisis";
 
 export const metadata: Metadata = {
-  title: "Crisis Support | MyTrueSiblings",
+  title: "Crisis Support | My True Siblings Initiative",
   description:
     "Find urgent crisis support, emergency resources, suicide prevention helplines, mental health support, domestic violence resources, and local help worldwide.",
   robots: { index: true, follow: true },
   openGraph: {
-    title: "Crisis Support · MyTrueSiblings",
+    title: "Crisis Support · My True Siblings Initiative",
     description:
       "Find urgent crisis support, emergency resources, suicide prevention helplines, and local help worldwide.",
     type: "website",

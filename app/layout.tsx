@@ -22,15 +22,15 @@ export const metadata: Metadata = {
   metadataBase: getSiteMetadataBase(),
   title: {
     default:
-      "MyTrueSiblings | A Global Safe Space for Belonging, Support & Human Connection",
-    template: "%s | MyTrueSiblings",
+      "My True Siblings Initiative | A Global Safe Space for Belonging, Support & Human Connection",
+    template: "%s | My True Siblings Initiative",
   },
   description:
-    "MyTrueSiblings is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, healing, safe conversations, disability support, and lifelong human connection.",
-  applicationName: "MyTrueSiblings",
-  authors: [{ name: "MyTrueSiblings Initiative" }],
+    "My True Siblings Initiative is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, healing, safe conversations, disability support, and lifelong human connection.",
+  applicationName: "My True Siblings Initiative",
+  authors: [{ name: "My True Siblings Initiative" }],
   keywords: [
-    "MyTrueSiblings",
+    "My True Siblings Initiative",
     "MTSI",
     "emotional support",
     "belonging platform",
@@ -53,28 +53,28 @@ export const metadata: Metadata = {
   ],
   robots: { index: true, follow: true },
   alternates: {
-    canonical: "https://www.mytruesiblings.org",
+    canonical: "https://www.MyTrueSiblingsInitiative.org",
   },
   openGraph: {
     type: "website",
-    url: "https://www.mytruesiblings.org",
-    title: "MyTrueSiblings | A Lifetime Platform for Belonging",
+    url: "https://www.MyTrueSiblingsInitiative.org",
+    title: "My True Siblings Initiative | A Lifetime Platform for Belonging",
     description:
       "A global safe space built on love, belonging, support, inclusion, empathy, and real human connection.",
-    siteName: "MyTrueSiblings",
+    siteName: "My True Siblings Initiative",
     locale: "en_US",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "MyTrueSiblings: A Global Safe Space for Belonging",
+        alt: "My True Siblings Initiative: A Global Safe Space for Belonging",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyTrueSiblings | A Lifetime Platform for Belonging",
+    title: "My True Siblings Initiative | A Lifetime Platform for Belonging",
     description:
       "A global safe space where strangers become siblings through support, healing, mentorship, inclusion, and belonging.",
     images: ["/og-image.jpg"],
@@ -99,24 +99,24 @@ export default async function RootLayout({
     >
       <head>
         <meta name="theme-color" content="#009FAF" />
-        <meta name="apple-mobile-web-app-title" content="MyTrueSiblings" />
+        <meta name="apple-mobile-web-app-title" content="My True Siblings Initiative" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "MyTrueSiblings",
+              name: "My True Siblings Initiative",
               alternateName: "MTSI",
-              url: "https://www.mytruesiblings.org",
-              logo: "https://www.mytruesiblings.org/logo.png",
+              url: "https://www.MyTrueSiblingsInitiative.org",
+              logo: "https://www.MyTrueSiblingsInitiative.org/logo.png",
               description:
-                "MyTrueSiblings is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, healing, and lifelong human connection.",
+                "My True Siblings Initiative is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, healing, and lifelong human connection.",
               sameAs: [
-                "https://facebook.com/mytruesiblings",
-                "https://instagram.com/mytruesiblings",
-                "https://x.com/mytruesiblings",
-                "https://linkedin.com/company/mytruesiblings",
+                "https://facebook.com/MyTrueSiblingsInitiative",
+                "https://instagram.com/MyTrueSiblingsInitiative",
+                "https://x.com/MyTrueSiblingsInitiative",
+                "https://linkedin.com/company/MyTrueSiblingsInitiative",
               ],
             }),
           }}

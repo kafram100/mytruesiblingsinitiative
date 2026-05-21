@@ -62,7 +62,7 @@ export default function FloatingNotifications() {
               <div>
                 <p className="text-sm font-medium text-gray-800">{msg.text}</p>
                 <p className="mt-0.5 text-xs text-gray-400">
-                  MyTrueSiblings
+                  My True Siblings Initiative
                 </p>
               </div>
             </div>

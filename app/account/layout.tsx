@@ -20,5 +20,5 @@ export default async function AccountLayout({
     redirect("/login");
   }
 
-  return <AccountShell user={user}>{children}</AccountShell>;
+  return <AccountShell user={user} isPendingMentor={!!user.isPendingMentor}>{children}</AccountShell>;
 }

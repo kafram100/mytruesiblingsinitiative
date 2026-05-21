@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
-import { Loader2, Plus, Trash2, Package } from "lucide-react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
+import { Loader2, Plus, Trash2, Package, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Product {
@@ -24,6 +24,8 @@ export default function StoreSection() {
   const [form, setForm] = useState({ title: "", price: "", description: "", imageUrl: "", category: "general" });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     try {
@@ -41,6 +43,26 @@ export default function StoreSection() {
     await fetch(`/api/admin/products/${id}`, { method: "DELETE" });
     setDeleting(null);
     load();
+  };
+
+  const handleUpload = async (file: File) => {
+    setUploading(true);
+    setError("");
+    try {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch("/api/admin/products/upload", { method: "POST", body: fd });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Upload failed");
+        return;
+      }
+      const data = await res.json();
+      setForm((p) => ({ ...p, imageUrl: data.imageUrl }));
+    } catch {
+      setError("Upload failed");
+    }
+    setUploading(false);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -106,8 +128,24 @@ export default function StoreSection() {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Image URL</label>
-              <input value={form.imageUrl} onChange={(e) => setForm((p) => ({ ...p, imageUrl: e.target.value }))} className="w-full rounded-xl border-2 border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none" />
+              <label className="block text-sm font-semibold mb-1">Product Image</label>
+              <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); }} />
+              <div className="flex items-center gap-3">
+                <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="rounded-full">
+                  {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  <span className="ml-1">{uploading ? "Uploading..." : "Choose File"}</span>
+                </Button>
+                {form.imageUrl && (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => setForm((p) => ({ ...p, imageUrl: "" }))} className="text-red-600 hover:bg-red-50 rounded-full">
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+              {form.imageUrl && (
+                <div className="mt-2 relative inline-block">
+                  <img src={form.imageUrl} alt="Preview" className="h-24 w-24 rounded-xl object-cover border border-border" />
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold mb-1">Category</label>

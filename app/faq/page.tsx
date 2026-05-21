@@ -5,10 +5,10 @@ import FaqContent from "@/components/faq/FaqContent";
 export const metadata: Metadata = {
   title: "FAQ",
   description:
-    "Answers to common questions about MyTrueSiblings: our programs, shop, donations, membership, matching, safety, and global belonging movement.",
+    "Answers to common questions about My True Siblings Initiative: our programs, shop, donations, membership, matching, safety, and global belonging movement.",
   openGraph: {
-    title: "FAQ · MyTrueSiblings",
-    description: "Everything you need to know about the MyTrueSiblings belonging movement.",
+    title: "FAQ · My True Siblings Initiative",
+    description: "Everything you need to know about the My True Siblings Initiative belonging movement.",
   },
 };
 

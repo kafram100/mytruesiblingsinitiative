@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -408,7 +408,7 @@ function PaymentMethodsSection() {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-bold text-[#555555] md:text-4xl">Give From Anywhere</h2>
-            <p className="mt-4 text-base leading-relaxed text-[#555555]/88">Support MyTrueSiblings securely using multiple global and local payment options.</p>
+            <p className="mt-4 text-base leading-relaxed text-[#555555]/88">Support My True Siblings Initiative securely using multiple global and local payment options.</p>
           </div>
           <div className="mx-auto mt-10 flex max-w-5xl flex-wrap justify-center gap-3 md:gap-4">
             {PAYMENT_BADGES.map((name) => {
@@ -538,7 +538,7 @@ function StoriesSection() {
               <div className="flex flex-1 flex-col p-6">
                 <h3 className="font-display text-lg font-bold text-[#009FAF]">{s.title}</h3>
                 <p className="mt-4 flex-1 text-sm italic leading-relaxed text-[#555555]/92">&ldquo;{s.quote}&rdquo;</p>
-                <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[#555555]/60">Anonymous \u00B7 MyTrueSiblings community</p>
+                <p className="mt-4 text-xs font-bold uppercase tracking-wider text-[#555555]/60">Anonymous \u00B7 My True Siblings Initiative community</p>
               </div>
             </article>
           ))}
@@ -578,7 +578,7 @@ function TrustSection() {
         <p className="mt-4 text-sm leading-relaxed text-[#555555]/88 md:text-base">Your donation is processed securely. Donor information is protected and never sold.</p>
         <p className="mt-4 text-sm leading-relaxed text-[#555555]/75">Donation receipts and nonprofit tax details will be provided where applicable.</p>
         <p className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-[#555555]/65">
-          <Building2 className="h-4 w-4 shrink-0" aria-hidden /> MyTrueSiblings \u00B7 Global belonging \u00B7 Local care
+          <Building2 className="h-4 w-4 shrink-0" aria-hidden /> My True Siblings Initiative \u00B7 Global belonging \u00B7 Local care
         </p>
       </div>
     </section>

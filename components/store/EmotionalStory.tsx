@@ -18,14 +18,14 @@ export default function EmotionalStory() {
             <blockquote className="relative">
               <Quote className="absolute -left-8 -top-6 h-12 w-12 text-brand-teal/20 md:-left-12" />
               <p className="font-display text-2xl leading-relaxed text-gray-800 md:text-3xl lg:text-4xl">
-                &ldquo;MyTrueSiblings exists to create spaces where people feel
+                &ldquo;My True Siblings Initiative exists to create spaces where people feel
                 seen, heard, valued, and supported.&rdquo;
               </p>
             </blockquote>
 
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-gray-600">
               Every item you wear carries this mission. When you choose
-              MyTrueSiblings merchandise, you are not just buying a product,
+              My True Siblings Initiative merchandise, you are not just buying a product,
               you are declaring that belonging matters, that connection heals,
               and that no one should walk through life alone.
             </p>

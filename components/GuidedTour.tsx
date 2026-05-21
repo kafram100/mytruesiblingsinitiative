@@ -100,13 +100,18 @@ export default function GuidedTour() {
       return;
     }
 
-    // Verify user is logged in
+    // Verify user is logged in and not a pending mentor
     fetch("/api/auth/sibling/me")
       .then((r) => {
         if (!r.ok) throw new Error("not logged in");
         return r.json();
       })
-      .then(() => {
+      .then((data) => {
+        if (data.isPendingMentor) {
+          localStorage.removeItem("guided_tour_enabled");
+          setDismissed(true);
+          return;
+        }
         setTimeout(() => setOpen(true), 800);
       })
       .catch(() => {

@@ -4,7 +4,7 @@ import { useState, useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard, User, Heart, MessageCircle, Bell, History, Settings, LogOut, Menu, X, GraduationCap,
+  LayoutDashboard, User, Heart, MessageCircle, Bell, History, Settings, LogOut, Menu, X, GraduationCap, Clock, LifeBuoy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { SiblingUser } from "@/lib/sibling-auth";
@@ -23,6 +23,7 @@ const baseNavItems: NavItem[] = [
   { label: "Messages", href: "/account/messages", icon: MessageCircle, badge: "message" },
   { label: "Notifications", href: "/account/notifications", icon: Bell, badge: "notification" },
   { label: "Activity", href: "/account/activity", icon: History },
+  { label: "Get Help", href: "/account/support", icon: LifeBuoy },
   { label: "Settings", href: "/account/settings", icon: Settings },
 ];
 
@@ -44,9 +45,11 @@ function roleBadge(role: string) {
 export default function AccountShell({
   user,
   children,
+  isPendingMentor,
 }: {
   user: SiblingUser;
   children: ReactNode;
+  isPendingMentor?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -90,6 +93,8 @@ export default function AccountShell({
 
   const displayName = (user.display_name || user.full_name).trim();
 
+  const disabledLinkClass = "pointer-events-none opacity-40 cursor-not-allowed";
+
   return (
     <div className="min-h-dvh bg-muted/30">
       <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur lg:hidden">
@@ -115,7 +120,11 @@ export default function AccountShell({
         >
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between px-4 h-16 border-b border-border">
-              <Link href="/account" className="font-display font-bold text-lg text-primary" onClick={() => setSidebarOpen(false)}>
+              <Link
+                href={isPendingMentor ? "#" : "/account"}
+                className={`font-display font-bold text-lg ${isPendingMentor ? disabledLinkClass : "text-primary"}`}
+                onClick={isPendingMentor ? undefined : () => setSidebarOpen(false)}
+              >
                 My Account
               </Link>
               <button
@@ -141,12 +150,14 @@ export default function AccountShell({
                     return (
                       <Link
                         key={item.href}
-                        href={item.href}
-                        onClick={() => setSidebarOpen(false)}
+                        href={isPendingMentor ? "#" : item.href}
+                        onClick={isPendingMentor ? undefined : () => setSidebarOpen(false)}
                         className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                          active
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          isPendingMentor
+                            ? `${disabledLinkClass} ${active ? "bg-primary/10 text-primary" : "text-muted-foreground"}`
+                            : active
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         }`}
                       >
                         <Icon className="h-4 w-4 shrink-0" />
@@ -166,12 +177,14 @@ export default function AccountShell({
                 return (
                   <Link
                     key={item.href}
-                    href={href}
-                    onClick={() => setSidebarOpen(false)}
+                    href={isPendingMentor ? "#" : href}
+                    onClick={isPendingMentor ? undefined : () => setSidebarOpen(false)}
                     className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                      active
-                        ? "bg-primary/10 text-primary"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      isPendingMentor
+                        ? `${disabledLinkClass} ${active ? "bg-primary/10 text-primary" : "text-muted-foreground"}`
+                        : active
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -214,7 +227,18 @@ export default function AccountShell({
 
         <main className="flex-1 min-h-dvh">
           <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-10">
-            {children}
+            {isPendingMentor ? (
+              <div className="max-w-lg mx-auto py-16">
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-8 text-center">
+                  <Clock className="h-12 w-12 text-amber-600 mx-auto mb-4" />
+                  <h2 className="text-xl font-display font-bold text-amber-800 mb-2">Pending Admin Approval</h2>
+                  <p className="text-sm text-amber-700">
+                    Your mentor account is pending review. An administrator will review your application shortly.
+                    You will be notified once approved.
+                  </p>
+                </div>
+              </div>
+            ) : children}
           </div>
         </main>
       </div>

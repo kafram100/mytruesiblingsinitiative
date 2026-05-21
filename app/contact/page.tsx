@@ -26,8 +26,8 @@ const contactDetails: ContactDetail[] = [
   {
     icon: Mail,
     title: "Email",
-    lines: ["info@mytruesiblingsinitiative.org"],
-    href: "mailto:info@mytruesiblingsinitiative.org",
+    lines: ["info@MyTrueSiblingsInitiative.org"],
+    href: "mailto:info@MyTrueSiblingsInitiative.org",
   },
   {
     icon: MapPin,

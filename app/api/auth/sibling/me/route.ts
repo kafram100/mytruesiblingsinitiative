@@ -15,6 +15,7 @@ export async function GET() {
       full_name: user.full_name,
       role: user.role,
       joined: user.created_at,
+      isPendingMentor: user.isPendingMentor ?? false,
     });
   } catch {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

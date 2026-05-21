@@ -13,7 +13,7 @@ interface ProductCardProps {
   title: string;
   price: number;
   image: string;
-  slogan: string;
+  slogan?: string;
   colors?: string[];
   className?: string;
 }
@@ -71,11 +71,13 @@ export default function ProductCard({
               )}
             />
           </button>
-          <div className="absolute bottom-3 left-3 right-3">
-            <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-brand-dark backdrop-blur-sm">
-              {slogan}
-            </span>
-          </div>
+          {slogan && (
+            <div className="absolute bottom-3 left-3 right-3">
+              <span className="inline-block rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-brand-dark backdrop-blur-sm">
+                {slogan}
+              </span>
+            </div>
+          )}
         </div>
       </Link>
       <div className="flex flex-1 flex-col gap-2 p-4">

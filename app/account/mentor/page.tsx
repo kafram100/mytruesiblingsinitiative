@@ -13,6 +13,7 @@ interface MentorProfile {
   maxMentees: number;
   currentMentees: number;
   isAvailable: boolean;
+  approved?: boolean;
 }
 
 interface MenteeRequest {
@@ -70,6 +71,23 @@ export default function MentorDashboard() {
     return (
       <div className="flex items-center justify-center py-20">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const isApproved = profile?.approved ?? true;
+
+  if (!loading && profile && !isApproved) {
+    return (
+      <div className="max-w-lg mx-auto py-16">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-8 text-center">
+          <Clock className="h-12 w-12 text-amber-600 mx-auto mb-4" />
+          <h2 className="text-xl font-display font-bold text-amber-800 mb-2">Pending Admin Approval</h2>
+          <p className="text-sm text-amber-700">
+            Your mentor account is pending review. An administrator will review your application shortly.
+            You will be notified once approved.
+          </p>
+        </div>
       </div>
     );
   }
@@ -216,7 +234,7 @@ export default function MentorDashboard() {
           <GraduationCap className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" />
           <h2 className="text-xl font-display font-bold mb-2">Welcome to the Mentor Program</h2>
           <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-            Your profile is live. Siblings looking for guidance will find you here. You&apos;ll get notified when someone requests your mentorship.
+            Your profile is live. Siblings looking for guidance will find you here. You'll get notified when someone requests your mentorship.
           </p>
           <Button asChild className="rounded-full">
             <Link href="/account/mentor/profile">

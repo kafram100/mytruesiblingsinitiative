@@ -4,8 +4,8 @@ import bcrypt from "bcryptjs";
 import db from "@/lib/db";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
-import { hashToken } from "@/lib/auth";
-import { cookies } from "next/headers";
+import { createNotification } from "@/lib/notifications";
+import { sendNewMentorPendingEmail } from "@/lib/mail";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -71,27 +71,32 @@ export async function POST(request: Request) {
       [mentorId, id, JSON.stringify(expertiseAreas), experienceYears, mentorshipBio || null, occupation || null, organization || null]
     );
 
-    const sessionId = randomUUID();
-    const token = randomUUID();
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    // Notify all admins about the new pending mentor
+    try {
+      const [adminRows] = await db.execute(
+        "SELECT id FROM profiles WHERE role = 'admin'"
+      );
+      const admins = adminRows as { id: string }[];
+      for (const admin of admins) {
+        await createNotification(
+          admin.id,
+          "mentor_pending",
+          "New Mentor Application",
+          `${fullName.trim()} has applied to become a mentor and is pending review.`,
+          "/admin/mentors"
+        );
+      }
+    } catch (err) {
+      console.error("Failed to notify admins:", err);
+    }
 
-    await db.execute(
-      "INSERT INTO sessions (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)",
-      [sessionId, id, hashToken(token), expiresAt]
-    );
-
-    const cookieStore = await cookies();
-    cookieStore.set("sibling_token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-      expires: expiresAt,
-    });
+    // Send email notification to admin
+    await sendNewMentorPendingEmail(fullName.trim(), email.trim().toLowerCase(), occupation, organization);
 
     return NextResponse.json({
       success: true,
-      user: { id, email: email.trim().toLowerCase(), name: fullName.trim() },
+      pending: true,
+      message: "Your mentor account has been created and is pending admin approval. You will be notified once approved.",
     });
   } catch (err) {
     console.error("Mentor registration error:", err);

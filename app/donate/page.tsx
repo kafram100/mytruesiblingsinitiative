@@ -101,7 +101,7 @@ function DonateContent() {
               </h1>
               <p className="mt-5 text-lg text-muted-foreground">
                 Your support helps vulnerable individuals find emotional safety, mentorship, crisis support resources,
-                and meaningful human connection through MyTrueSiblings Initiative.
+                and meaningful human connection through My True Siblings Initiative.
               </p>
               <div className="mt-8 flex flex-wrap justify-center gap-3">
                 <Button variant="primary" size="lg" onClick={() => setTab("once")}>
@@ -275,7 +275,7 @@ function DonateContent() {
             <Shield className="h-8 w-8 text-primary mx-auto mb-3" />
             <h2 className="text-3xl md:text-4xl font-display font-bold">Transparency Builds Trust</h2>
             <p className="text-muted-foreground mt-3 max-w-2xl mx-auto">
-              MyTrueSiblings Initiative is committed to responsible, ethical, and community-focused stewardship of every donation.
+              My True Siblings Initiative is committed to responsible, ethical, and community-focused stewardship of every donation.
             </p>
           </div>
 
@@ -411,7 +411,7 @@ function DonateContent() {
             <span className="inline-flex items-center gap-1.5"><Globe className="h-3.5 w-3.5 text-primary" /> Global Giving Enabled</span>
           </div>
           <p className="mt-6 text-xs text-muted-foreground italic max-w-xl mx-auto">
-            MyTrueSiblings Initiative is a nonprofit community platform focused on emotional support, belonging,
+            My True Siblings Initiative is a nonprofit community platform focused on emotional support, belonging,
             mentorship, inclusion, and human connection. Your contribution helps us provide free resources to vulnerable individuals.
           </p>
         </div>

@@ -32,7 +32,7 @@ const testimonials = [
     role: "Safe Space Facilitator",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
     quote:
-      "I gift MyTrueSiblings merch to everyone I mentor. It's a symbol that says 'I see you, I hear you, and you matter.' That changes lives.",
+      "I gift My True Siblings Initiative merch to everyone I mentor. It's a symbol that says 'I see you, I hear you, and you matter.' That changes lives.",
     rating: 5,
   },
 ];

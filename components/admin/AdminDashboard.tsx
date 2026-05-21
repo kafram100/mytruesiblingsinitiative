@@ -3,22 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Activity,
-  LayoutDashboard,
-  Wallet,
-  Users,
-  Settings2,
-  Menu,
-  BarChart3,
-  HeartHandshake,
-  School,
-  ShieldCheck,
-  Gem,
-  Building2,
-  Cpu,
-  ShoppingBag,
-  Calendar,
-  GraduationCap,
+  LayoutDashboard, Users, HeartHandshake, School, Activity, ShieldCheck, Gem, Building2, Wallet, BarChart3, Cpu, ShoppingBag, Calendar, GraduationCap, Settings2, LogOut, Menu, LifeBuoy,
 } from "lucide-react";
 
 import DashboardOverview from "@/components/admin/sections/DashboardOverview";
@@ -47,7 +32,8 @@ type AdminSection =
   | "settings"
   | "store"
   | "events"
-  | "mentors";
+  | "mentors"
+  | "support";
 
 const ADMIN_RESOURCE_SEGMENTS = [
   "users",
@@ -60,6 +46,7 @@ const ADMIN_RESOURCE_SEGMENTS = [
   "store",
   "events",
   "mentors",
+  "support",
 ] as const;
 
 type AdminResourceSegment = (typeof ADMIN_RESOURCE_SEGMENTS)[number];
@@ -121,6 +108,7 @@ const navGroups: NavGroup[] = [
       { label: "Store", section: "store", icon: ShoppingBag },
       { label: "Events", section: "events", icon: Calendar },
       { label: "Approve Mentors", section: "mentors", icon: GraduationCap },
+      { label: "Support", section: "support", icon: LifeBuoy },
       { label: "Settings", section: "settings", icon: Settings2 },
     ],
   },
@@ -281,7 +269,7 @@ export default function AdminDashboard({ user, children }: AdminDashboardProps) 
             <Menu className="h-5 w-5" />
           </button>
           <span className="text-sm font-semibold tracking-tight text-[#1E5F5E]">
-            MyTrueSiblings
+            My True Siblings Initiative
           </span>
         </header>
 

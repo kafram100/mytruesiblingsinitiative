@@ -196,7 +196,7 @@ export default function CrisisSupportPage({
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="container mx-auto px-4 py-2 text-center text-[11px] text-gray-500 leading-relaxed">
           <Shield className="mb-0.5 inline-block h-3 w-3 text-gray-400" />{" "}
-          MyTrueSiblings provides connection, emotional support guidance, and resource navigation. We do not replace emergency services, licensed medical care, crisis intervention, therapy, law enforcement, or hospital care.{" "}
+          My True Siblings Initiative provides connection, emotional support guidance, and resource navigation. We do not replace emergency services, licensed medical care, crisis intervention, therapy, law enforcement, or hospital care.{" "}
           <Button variant="tertiary" type="button" onClick={() => setShowHelpWizard(true)} className="h-auto inline p-0 text-xs font-semibold leading-relaxed text-brand-teal underline shadow-none hover:bg-transparent hover:text-brand-teal motion-safe:hover:translate-y-0">
             Find help now
           </Button>
@@ -216,7 +216,7 @@ export default function CrisisSupportPage({
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600 md:text-lg">
               If you are feeling unsafe, overwhelmed, or in danger, please reach out immediately.
-              MyTrueSiblings can help guide you to trusted crisis support resources, but emergency
+              My True Siblings Initiative can help guide you to trusted crisis support resources, but emergency
               help should always come from licensed professionals and local emergency services.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -715,7 +715,7 @@ export default function CrisisSupportPage({
       <div className="border-t border-gray-200 bg-gray-50">
         <div className="container mx-auto px-4 py-6 text-center text-[11px] leading-relaxed text-gray-500">
           <Shield className="mb-1 inline-block h-3 w-3 text-gray-400" />{" "}
-          MyTrueSiblings provides connection, emotional support guidance, and resource navigation. We do not replace emergency services, licensed medical care, crisis intervention, therapy, law enforcement, or hospital care. Crisis resource data is sourced from official and verified directories including SAMHSA, IASP, Befrienders Worldwide, Find a Helpline, and government health ministries. Last verified April 2026. If you believe any information is outdated or incorrect, please contact us.
+          My True Siblings Initiative provides connection, emotional support guidance, and resource navigation. We do not replace emergency services, licensed medical care, crisis intervention, therapy, law enforcement, or hospital care. Crisis resource data is sourced from official and verified directories including SAMHSA, IASP, Befrienders Worldwide, Find a Helpline, and government health ministries. Last verified April 2026. If you believe any information is outdated or incorrect, please contact us.
         </div>
       </div>
     </div>

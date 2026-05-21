@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 const STORAGE_KEY = "mtsi-welcome-dismissed-v4";
 
 const firstTimeMessages = [
-  { text: "Welcome to MyTrueSiblings.", emoji: "🫂", sub: "A safe space built for belonging." },
+  { text: "Welcome to My True Siblings Initiative.", emoji: "🫂", sub: "A safe space built for belonging." },
   { text: "You are not alone.", emoji: "💛", sub: "A whole community is here for you." },
   { text: "You belong here.", emoji: "🌟", sub: "Exactly as you are, right now." },
   { text: "Someone cares about you.", emoji: "💙", sub: "And always will." },
@@ -23,7 +23,7 @@ const returningMessages = [
 ];
 
 const allMessages = [
-  { text: "You belong here.", emoji: "💛", sub: "MyTrueSiblings" },
+  { text: "You belong here.", emoji: "💛", sub: "My True Siblings Initiative" },
   { text: "You are never alone.", emoji: "🤗", sub: "We are all here for you." },
   { text: "One conversation can change a life.", emoji: "💬", sub: "Yours matters." },
   { text: "The world is gentler because of you.", emoji: "🌸", sub: "Never forget that." },
@@ -145,7 +145,7 @@ export default function WelcomeModal() {
                 </motion.div>
               </AnimatePresence>
               <p className="mt-6 text-xs font-semibold uppercase tracking-[0.2em] text-brand-teal">
-                MyTrueSiblings
+                My True Siblings Initiative
               </p>
               <Button
                 ref={primaryRef}
@@ -192,7 +192,7 @@ export default function WelcomeModal() {
                 className="mt-8 h-auto min-h-[3.25rem] w-full gap-2 rounded-full bg-gradient-to-r from-brand-teal to-brand-pink-hex px-6 py-3.5 text-base font-bold text-white shadow-xl hover:shadow-2xl"
               >
                 <Heart className="h-4 w-4 shrink-0 fill-current" aria-hidden />
-                Enter MyTrueSiblings
+                Enter My True Siblings Initiative
               </Button>
             </div>
           )}

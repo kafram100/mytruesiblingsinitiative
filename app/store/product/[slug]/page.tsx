@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Heart, ShoppingBag, Check, Share2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -11,19 +11,73 @@ import { getProductById, ALL_PRODUCTS } from "@/lib/store";
 import { useCart } from "@/context/cart";
 import { useWishlist } from "@/context/wishlist";
 
+interface DbProduct {
+  id: string;
+  title: string;
+  price: number;
+  comparePrice: number | null;
+  description: string;
+  imageUrl: string;
+  category: string;
+  tags: string[];
+}
+
 export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
-  const product = getProductById(slug);
+  const staticProduct = getProductById(slug);
   const { addItem } = useCart();
   const { hasItem, toggleItem } = useWishlist();
 
-  const [selectedColor, setSelectedColor] = useState(product?.colors?.[0] || "");
-  const [selectedSize, setSelectedSize] = useState(product?.sizes?.[2] || product?.sizes?.[0] || "");
+  const [dbProduct, setDbProduct] = useState<DbProduct | null>(null);
+  const [loading, setLoading] = useState(!staticProduct);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (staticProduct) return;
+    fetch(`/api/store/products/${encodeURIComponent(slug)}`)
+      .then((r) => {
+        if (r.status === 404) { setNotFound(true); return null; }
+        return r.json();
+      })
+      .then((data) => {
+        if (data?.id) setDbProduct(data);
+        else if (!staticProduct) setNotFound(true);
+      })
+      .catch(() => setNotFound(true))
+      .finally(() => setLoading(false));
+  }, [slug, staticProduct]);
+
+  const product = staticProduct || null;
+  const db = dbProduct;
+
+  const imageUrl = product ? product.images[0] : db?.imageUrl || "";
+  const productId = product?.id || db?.id || "";
+  const title = product?.title || db?.title || "";
+  const price = product?.price ?? db?.price ?? 0;
+  const description = product?.description || db?.description || "";
+  const category = product?.category || db?.category || "";
+  const slogan = product?.slogan;
+  const colors = product?.colors;
+  const sizes = product?.sizes;
+  const material = product?.material;
+  const isBestseller = product?.isBestseller;
+  const comparePrice = product?.comparePrice ?? db?.comparePrice;
+
+  const [selectedColor, setSelectedColor] = useState(colors?.[0] || "");
+  const [selectedSize, setSelectedSize] = useState(sizes?.[2] || sizes?.[0] || "");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
-  if (!product) {
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-teal border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (notFound || (!product && !db)) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <h1 className="font-display text-2xl font-bold text-gray-900">Product not found</h1>
@@ -35,16 +89,16 @@ export default function ProductDetailPage() {
   }
 
   const relatedProducts = ALL_PRODUCTS.filter(
-    (p) => p.category === product.category && p.id !== product.id
+    (p) => p.category === category && p.id !== productId
   ).slice(0, 4);
 
   const handleAddToCart = () => {
     addItem({
-      productId: product.id,
-      title: product.title,
-      price: product.price,
+      productId,
+      title,
+      price,
       quantity,
-      image: product.images[0],
+      image: imageUrl,
       color: selectedColor,
       size: selectedSize,
     });
@@ -52,17 +106,26 @@ export default function ProductDetailPage() {
     setTimeout(() => setAdded(false), 2000);
   };
 
-  const wishlisted = hasItem(product.id);
+  const handleShare = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      await navigator.share({ title, url });
+    } else {
+      await navigator.clipboard.writeText(url);
+    }
+  };
+
+  const wishlisted = hasItem(productId);
 
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4 py-6">
         <Link
-          href={`/store/categories/${product.category}`}
+          href={`/store/categories/${category}`}
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition-colors hover:text-brand-teal"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to {product.category}
+          Back to {category}
         </Link>
       </div>
 
@@ -71,9 +134,9 @@ export default function ProductDetailPage() {
           <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-teal/10 via-white to-brand-pink-hex/5">
             <div
               className="aspect-[4/5] bg-cover bg-center"
-              style={{ backgroundImage: `url(${product.images[0]})` }}
+              style={{ backgroundImage: `url(${imageUrl})` }}
             />
-            {product.isBestseller && (
+            {isBestseller && (
               <span className="absolute left-4 top-4 rounded-full bg-brand-orange-hex px-3 py-1 text-xs font-bold text-white shadow-lg">
                 Best Seller
               </span>
@@ -82,7 +145,7 @@ export default function ProductDetailPage() {
               type="button"
               variant="tertiary"
               size="icon"
-              onClick={() => toggleItem(product.id)}
+              onClick={() => toggleItem(productId)}
               aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
               className="absolute right-4 top-4 h-10 w-10 rounded-full border-0 bg-white/80 shadow-lg backdrop-blur-sm hover:scale-110 hover:bg-white hover:shadow-lg"
             >
@@ -97,39 +160,41 @@ export default function ProductDetailPage() {
 
           <div className="flex flex-col gap-6">
             <div>
-              <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-teal/10 px-3 py-1 text-xs font-medium text-brand-teal">
-                {product.slogan}
-              </div>
+              {slogan && (
+                <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-brand-teal/10 px-3 py-1 text-xs font-medium text-brand-teal">
+                  {slogan}
+                </div>
+              )}
               <h1 className="font-display text-3xl font-bold text-gray-900 md:text-4xl">
-                {product.title}
+                {title}
               </h1>
-              <p className="mt-2 text-sm text-gray-500 capitalize">{product.category}</p>
+              <p className="mt-2 text-sm text-gray-500 capitalize">{category}</p>
             </div>
 
             <div className="flex items-baseline gap-3">
               <span className="font-display text-3xl font-bold text-brand-teal">
-                ${product.price.toFixed(2)}
+                ${price.toFixed(2)}
               </span>
-              {product.comparePrice && (
+              {comparePrice && (
                 <span className="text-lg text-gray-400 line-through">
-                  ${product.comparePrice.toFixed(2)}
+                  ${comparePrice.toFixed(2)}
                 </span>
               )}
             </div>
 
-            <p className="text-base leading-relaxed text-gray-600">{product.description}</p>
+            <p className="text-base leading-relaxed text-gray-600">{description}</p>
 
-            {product.material && (
+            {material && (
               <p className="text-sm text-gray-500">
-                <span className="font-semibold">Material:</span> {product.material}
+                <span className="font-semibold">Material:</span> {material}
               </p>
             )}
 
-            {product.colors && product.colors.length > 0 && (
+            {colors && colors.length > 0 && (
               <div>
                 <p className="mb-2 text-sm font-semibold text-gray-800">Color: {selectedColor}</p>
                 <div className="flex gap-2">
-                  {product.colors.map((c) => (
+                  {colors.map((c) => (
                     <Button
                       key={c}
                       type="button"
@@ -147,11 +212,11 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {product.sizes && product.sizes.length > 0 && (
+            {sizes && sizes.length > 0 && (
               <div>
                 <p className="mb-2 text-sm font-semibold text-gray-800">Size: {selectedSize}</p>
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((s) => (
+                  {sizes.map((s) => (
                     <Button
                       key={s}
                       type="button"
@@ -218,7 +283,7 @@ export default function ProductDetailPage() {
                 ) : (
                   <>
                     <ShoppingBag className="h-5 w-5" />
-                    Add to Cart: ${(product.price * quantity).toFixed(2)}
+                    Add to Cart: ${(price * quantity).toFixed(2)}
                   </>
                 )}
               </Button>
@@ -226,7 +291,7 @@ export default function ProductDetailPage() {
                 variant="secondary"
                 size="lg"
                 className="rounded-full px-6 py-6"
-                onClick={() => toggleItem(product.id)}
+                onClick={() => toggleItem(productId)}
               >
                 <Heart
                   className={cn(
@@ -239,6 +304,7 @@ export default function ProductDetailPage() {
                 type="button"
                 variant="tertiary"
                 size="lg"
+                onClick={handleShare}
                 className="rounded-full px-6 py-6 shadow-none hover:shadow-sm"
               >
                 <Share2 className="h-5 w-5" />
@@ -284,7 +350,7 @@ export default function ProductDetailPage() {
         <div className="container mx-auto px-4">
           <Heart className="mx-auto h-8 w-8 text-brand-pink-hex" />
           <p className="mt-4 text-lg font-medium text-gray-700">
-            &ldquo;MyTrueSiblings exists to create spaces where people feel seen, heard, valued, and supported.&rdquo;
+            &ldquo;My True Siblings Initiative exists to create spaces where people feel seen, heard, valued, and supported.&rdquo;
           </p>
           <Button asChild variant="primary" className="mt-6 rounded-full bg-brand-orange-hex text-white hover:bg-brand-orange-hex/90">
             <Link href="/store">Continue Shopping</Link>

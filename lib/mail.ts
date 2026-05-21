@@ -151,6 +151,221 @@ export async function sendMatchNotificationEmail(
   }
 }
 
+export async function sendMentorApprovalEmail(
+  email: string,
+  name: string,
+  approved: boolean
+) {
+  const settings = await getSettings();
+  const transporter = await createTransporter();
+  if (!transporter) return;
+
+  const from = settings.smtp_from || settings.smtp_user;
+  if (!from) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  if (approved) {
+    const html = `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+        <h2 style="color:#175550;">My True Siblings Initiative</h2>
+        <p>Dear ${escapeHtml(name)},</p>
+        <p><strong>Congratulations!</strong> Your mentor application has been approved. You can now log in and start mentoring siblings who need your guidance.</p>
+        <p style="margin:24px 0;">
+          <a href="${siteUrl}/login" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+            Log In to Your Account
+          </a>
+        </p>
+        <p style="font-size:12px;color:#888;">
+          If the button doesn't work, copy this link: ${siteUrl}/login
+        </p>
+        <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;" />
+        <p style="font-size:12px;color:#888;">My True Siblings Initiative</p>
+      </div>
+    `;
+
+    try {
+      await transporter.sendMail({
+        from,
+        to: email,
+        subject: "Mentor Application Approved - My True Siblings Initiative",
+        html,
+      });
+    } catch (err) {
+      console.error("Failed to send mentor approval email:", err);
+    }
+  } else {
+    const html = `
+      <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+        <h2 style="color:#175550;">My True Siblings Initiative</h2>
+        <p>Dear ${escapeHtml(name)},</p>
+        <p>Thank you for your interest in becoming a mentor with My True Siblings Initiative.</p>
+        <p>After careful review, we regret to inform you that your mentor application was not approved at this time.</p>
+        <p>This decision does not reflect your qualifications. We receive many applications and must prioritize based on current community needs. You are welcome to reapply in the future.</p>
+        <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;" />
+        <p style="font-size:12px;color:#888;">My True Siblings Initiative</p>
+      </div>
+    `;
+
+    try {
+      await transporter.sendMail({
+        from,
+        to: email,
+        subject: "Update on Your Mentor Application - My True Siblings Initiative",
+        html,
+      });
+    } catch (err) {
+      console.error("Failed to send mentor rejection email:", err);
+    }
+  }
+}
+
+export async function sendNewMentorPendingEmail(
+  mentorName: string,
+  mentorEmail: string,
+  occupation: string | null,
+  organization: string | null
+) {
+  const settings = await getSettings();
+  const to = settings.notification_email;
+  if (!to) return;
+
+  const transporter = await createTransporter();
+  if (!transporter) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#175550;">New Mentor Application Pending</h2>
+      <p>A new mentor application has been submitted and requires your review.</p>
+      <table style="border-collapse:collapse;width:100%;max-width:600px;margin:16px 0;">
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #ddd;">Name</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(mentorName)}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #ddd;">Email</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(mentorEmail)}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #ddd;">Occupation</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(occupation || "Not provided")}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;">Organization</td><td style="padding:8px;">${escapeHtml(organization || "Not provided")}</td></tr>
+      </table>
+      <p style="margin:24px 0;">
+        <a href="${siteUrl}/admin/mentors" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          Review Applications
+        </a>
+      </p>
+      <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;" />
+      <p style="font-size:12px;color:#888;">My True Siblings Initiative</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: settings.smtp_from || settings.smtp_user,
+      to,
+      subject: "New Mentor Application - My True Siblings Initiative",
+      html,
+    });
+  } catch (err) {
+    console.error("Failed to send new mentor pending email:", err);
+  }
+}
+
+export async function sendNewSupportRequestEmail(
+  userName: string,
+  userEmail: string,
+  type: string,
+  subject: string,
+  description: string
+) {
+  const settings = await getSettings();
+  const to = settings.notification_email;
+  if (!to) return;
+
+  const transporter = await createTransporter();
+  if (!transporter) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const typeLabels: Record<string, string> = {
+    financial_assistance: "Financial Assistance",
+    general_support: "General Support",
+    other: "Other",
+  };
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#175550;">New Support Request</h2>
+      <p>A sibling has submitted a support request.</p>
+      <table style="border-collapse:collapse;width:100%;max-width:600px;margin:16px 0;">
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #ddd;">From</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(userName)} (${escapeHtml(userEmail)})</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #ddd;">Type</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(typeLabels[type] || type)}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;border-bottom:1px solid #ddd;">Subject</td><td style="padding:8px;border-bottom:1px solid #ddd;">${escapeHtml(subject)}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;">Description</td><td style="padding:8px;">${escapeHtml(description)}</td></tr>
+      </table>
+      <p style="margin:24px 0;">
+        <a href="${siteUrl}/admin/support" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          View Support Requests
+        </a>
+      </p>
+      <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;" />
+      <p style="font-size:12px;color:#888;">My True Siblings Initiative</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from: settings.smtp_from || settings.smtp_user,
+      to,
+      subject: `New Support Request: ${subject} - My True Siblings Initiative`,
+      html,
+    });
+  } catch (err) {
+    console.error("Failed to send support request email:", err);
+  }
+}
+
+export async function sendSupportReplyEmail(
+  toEmail: string,
+  toName: string,
+  requestSubject: string,
+  replyMessage: string
+) {
+  const settings = await getSettings();
+  const transporter = await createTransporter();
+  if (!transporter) return;
+
+  const from = settings.smtp_from || settings.smtp_user;
+  if (!from) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#175550;">My True Siblings Initiative</h2>
+      <p>Dear ${escapeHtml(toName)},</p>
+      <p>You have received a reply regarding your support request: <strong>${escapeHtml(requestSubject)}</strong></p>
+      <div style="background:#f5f5f5;border-radius:8px;padding:16px;margin:16px 0;">
+        <p style="margin:0;white-space:pre-wrap;">${escapeHtml(replyMessage)}</p>
+      </div>
+      <p style="margin:24px 0;">
+        <a href="${siteUrl}/account/support" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          View Your Request
+        </a>
+      </p>
+      <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;" />
+      <p style="font-size:12px;color:#888;">My True Siblings Initiative</p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from,
+      to: toEmail,
+      subject: `Reply to Your Support Request - My True Siblings Initiative`,
+      html,
+    });
+  } catch (err) {
+    console.error("Failed to send support reply email:", err);
+  }
+}
+
 export async function sendTestEmail(to: string) {
   const transporter = await createTransporter();
   if (!transporter) {
