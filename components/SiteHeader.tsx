@@ -423,7 +423,7 @@ export default function SiteHeader() {
             <>
               <Button
                 variant="primary"
-                className="hidden rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90 sm:inline-flex"
+                className="hidden rounded-full bg-warm-gold px-5 text-[#1a1a1a] hover:bg-warm-gold/90 sm:inline-flex"
                 asChild
               >
                 <Link href="/register">Join</Link>
@@ -551,7 +551,7 @@ export default function SiteHeader() {
                   <>
                     <Button
                       variant="primary"
-                      className="mt-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                      className="mt-1 rounded-full bg-warm-gold text-[#1a1a1a] hover:bg-warm-gold/90"
                       asChild
                     >
                       <Link href="/register" onClick={closeMobile}>
