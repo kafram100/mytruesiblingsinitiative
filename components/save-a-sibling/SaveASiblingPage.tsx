@@ -332,42 +332,49 @@ function DonationFormSection({
           </div>
         </div>
 
-        <div className="mx-auto mt-14 grid max-w-4xl gap-8 rounded-3xl border border-[#555555]/10 bg-white p-6 shadow-sm md:grid-cols-2 md:p-10">
-          <div>
-            <label htmlFor={`${formId}-currency`} className="flex items-center gap-2 text-sm font-bold text-[#555555]">
-              <Globe2 className="h-4 w-4" style={{ color: C.teal }} aria-hidden /> Support in your preferred currency
-            </label>
-            <select id={`${formId}-currency`} value={currency} onChange={(e) => handleCurrencyChange(e.target.value as CurrencyCode)}
-              className="mt-3 w-full rounded-xl border border-[#555555]/20 bg-[#F2F2F2] px-4 py-3 text-[#555555] outline-none focus:ring-2 focus:ring-[#009FAF]/40">
-              {CURRENCY_CODES.map((code) => (
-                <option key={code} value={code}>{CURRENCY_CONFIG[code].label}</option>
-              ))}
-            </select>
-            <p className="mt-2 text-xs text-[#555555]/75">Package previews update to match your selected currency. Final conversion and fees are shown securely at checkout.</p>
-          </div>
-          <div>
-            <p className="flex items-center gap-2 text-sm font-bold text-[#555555]">
-              <RefreshCw className="h-4 w-4" style={{ color: C.orange }} aria-hidden /> Recurring gift
-            </p>
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row" role="group" aria-label="Donation frequency">
-              {([["once", "One time donation", Calendar], ["monthly", "Monthly donation", Heart], ["annual", "Annual donation", Sparkles]] as const).map(([key, label, Icon]) => {
-                const k = key as Recurrence;
-                const on = recurrence === k;
-                return (
-                  <Button
-                    key={key}
-                    type="button"
-                    variant={on ? "secondary" : "tertiary"}
-                    onClick={() => setRecurrence(k)}
-                    className={cn(
-                      "flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 px-3 py-3 text-xs font-semibold shadow-none hover:shadow-sm motion-safe:hover:-translate-y-0 md:text-sm",
-                      on ? "border-[#FF7A00] bg-[#FF7A00]/10 text-[#555555]" : "border-[#555555]/12 bg-[#F2F2F2] text-[#555555]/90 hover:border-[#FF7A00]/40"
-                    )}
-                  >
-                    <Icon className="h-4 w-4 shrink-0" aria-hidden /> {label}
-                  </Button>
-                );
-              })}
+        <div className="mx-auto mt-14 w-full max-w-6xl rounded-3xl border border-[#555555]/10 bg-white p-6 shadow-sm md:p-8 lg:p-10">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+            <div className="min-w-0">
+              <label htmlFor={`${formId}-currency`} className="flex items-center gap-2 text-sm font-bold text-[#555555]">
+                <Globe2 className="h-4 w-4 shrink-0" style={{ color: C.teal }} aria-hidden /> Support in your preferred currency
+              </label>
+              <select id={`${formId}-currency`} value={currency} onChange={(e) => handleCurrencyChange(e.target.value as CurrencyCode)}
+                className="mt-3 w-full rounded-xl border border-[#555555]/20 bg-[#F2F2F2] px-4 py-3 text-[#555555] outline-none focus:ring-2 focus:ring-[#009FAF]/40">
+                {CURRENCY_CODES.map((code) => (
+                  <option key={code} value={code}>{CURRENCY_CONFIG[code].label}</option>
+                ))}
+              </select>
+              <p className="mt-2 text-xs leading-relaxed text-[#555555]/75">Package previews update to match your selected currency. Final conversion and fees are shown securely at checkout.</p>
+            </div>
+            <div className="min-w-0">
+              <p className="flex items-center gap-2 text-sm font-bold text-[#555555]">
+                <RefreshCw className="h-4 w-4 shrink-0" style={{ color: C.orange }} aria-hidden /> Recurring gift
+              </p>
+              <div
+                className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
+                role="group"
+                aria-label="Donation frequency"
+              >
+                {([["once", "One time donation", Calendar], ["monthly", "Monthly donation", Heart], ["annual", "Annual donation", Sparkles]] as const).map(([key, label, Icon]) => {
+                  const k = key as Recurrence;
+                  const on = recurrence === k;
+                  return (
+                    <Button
+                      key={key}
+                      type="button"
+                      variant={on ? "secondary" : "tertiary"}
+                      onClick={() => setRecurrence(k)}
+                      className={cn(
+                        "flex h-auto min-w-0 w-full items-center justify-center gap-1.5 rounded-2xl border-2 px-2 py-2.5 text-center text-[11px] font-semibold leading-snug shadow-none hover:shadow-sm motion-safe:hover:-translate-y-0 sm:px-2.5 sm:text-xs lg:px-3 lg:py-3 lg:text-sm",
+                        on ? "border-[#FF7A00] bg-[#FF7A00]/10 text-[#555555]" : "border-[#555555]/12 bg-[#F2F2F2] text-[#555555]/90 hover:border-[#FF7A00]/40"
+                      )}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                      <span className="min-w-0">{label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
