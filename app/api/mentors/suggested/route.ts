@@ -36,6 +36,8 @@ export async function GET() {
         mp.certification,
         mp.max_mentees,
         mp.current_mentees,
+        mp.occupation,
+        mp.organization,
         p.full_name,
         p.display_name,
         p.avatar_url,
@@ -44,7 +46,7 @@ export async function GET() {
         p.location_city
        FROM mentor_profiles mp
        JOIN profiles p ON p.id = mp.user_id
-       WHERE mp.is_available = 1 AND mp.current_mentees < mp.max_mentees
+       WHERE mp.is_available = 1 AND mp.approved = 1 AND mp.current_mentees < mp.max_mentees
        ORDER BY mp.current_mentees ASC, mp.experience_years DESC
        LIMIT 10`
     );
@@ -73,6 +75,8 @@ export async function GET() {
         expertiseAreas: expertise,
         experienceYears: m.experience_years,
         certification: m.certification,
+        occupation: m.occupation,
+        organization: m.organization,
         maxMentees: m.max_mentees,
         currentMentees: m.current_mentees,
         score: Math.round(score),

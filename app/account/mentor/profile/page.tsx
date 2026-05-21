@@ -29,6 +29,8 @@ export default function MentorProfilePage() {
     certification: "",
     maxMentees: "5",
     isAvailable: true,
+    occupation: "",
+    organization: "",
   });
 
   useEffect(() => {
@@ -44,6 +46,8 @@ export default function MentorProfilePage() {
             certification: mp.certification || "",
             maxMentees: String(mp.maxMentees || 5),
             isAvailable: mp.isAvailable,
+            occupation: mp.occupation || "",
+            organization: mp.organization || "",
           });
         }
         setLoading(false);
@@ -77,6 +81,8 @@ export default function MentorProfilePage() {
           certification: form.certification || null,
           maxMentees: parseInt(form.maxMentees) || 5,
           isAvailable: form.isAvailable,
+          occupation: form.occupation || null,
+          organization: form.organization || null,
         }),
       });
       if (!res.ok) {
@@ -122,6 +128,29 @@ export default function MentorProfilePage() {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-sm font-semibold mb-1.5">Occupation *</label>
+          <input
+            type="text"
+            value={form.occupation}
+            onChange={(e) => setForm((prev) => ({ ...prev, occupation: e.target.value }))}
+            className="w-full rounded-xl border-2 border-border bg-card px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            placeholder="e.g. Social Worker, Therapist, Teacher"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold mb-1.5">Organization (optional)</label>
+          <input
+            type="text"
+            value={form.organization}
+            onChange={(e) => setForm((prev) => ({ ...prev, organization: e.target.value }))}
+            className="w-full rounded-xl border-2 border-border bg-card px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+            placeholder="e.g. Nonprofit name, School, Agency"
+          />
+        </div>
+
         <div>
           <label className="block text-sm font-semibold mb-1.5">Years of Experience *</label>
           <input

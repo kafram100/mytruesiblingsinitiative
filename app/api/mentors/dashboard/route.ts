@@ -21,7 +21,7 @@ export async function GET() {
 
     const [mentorRows] = await db.execute(
       `SELECT id, expertise_areas, experience_years, mentorship_bio, certification,
-              max_mentees, current_mentees, is_available
+              max_mentees, current_mentees, is_available, occupation, organization, approved
        FROM mentor_profiles WHERE user_id = ?`,
       [user.id]
     );
@@ -74,6 +74,9 @@ export async function GET() {
         maxMentees: mp.max_mentees,
         currentMentees: mp.current_mentees,
         isAvailable: Boolean(mp.is_available),
+        occupation: mp.occupation,
+        organization: mp.organization,
+        approved: Boolean(mp.approved),
       },
       pendingRequests: pendingRows,
       activeMentees: activeRows,
@@ -93,7 +96,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { expertiseAreas, experienceYears, mentorshipBio, certification, maxMentees, isAvailable } = body;
+    const { expertiseAreas, experienceYears, mentorshipBio, certification, maxMentees, isAvailable, occupation, organization } = body;
 
     const [mentorRows] = await db.execute(
       `SELECT id, current_mentees FROM mentor_profiles WHERE user_id = ?`,
@@ -111,6 +114,7 @@ export async function PUT(request: Request) {
       `UPDATE mentor_profiles
        SET expertise_areas = ?, experience_years = ?, mentorship_bio = ?,
            certification = ?, max_mentees = ?, is_available = ?,
+           occupation = ?, organization = ?,
            updated_at = NOW()
        WHERE id = ?`,
       [
@@ -120,6 +124,8 @@ export async function PUT(request: Request) {
         certification || null,
         maxM,
         isAvailable ? 1 : 0,
+        occupation || null,
+        organization || null,
         mp.id,
       ]
     );

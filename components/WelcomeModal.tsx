@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 
-const STORAGE_KEY = "mtsi-welcome-dismissed-v3";
+const STORAGE_KEY = "mtsi-welcome-dismissed-v4";
 
 const firstTimeMessages = [
   { text: "Welcome to MyTrueSiblings.", emoji: "🫂", sub: "A safe space built for belonging." },
@@ -41,7 +41,7 @@ const allMessages = [
 ];
 
 export default function WelcomeModal() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [isFirstVisit, setIsFirstVisit] = useState(true);
   const [messageIndex, setMessageIndex] = useState(0);
   const [phase, setPhase] = useState<"initial" | "rotating" | "closed">("initial");
@@ -50,14 +50,18 @@ export default function WelcomeModal() {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored === "true") {
-        setIsFirstVisit(false);
-        return;
-      }
+      setIsFirstVisit(stored !== "true");
     } catch { }
-    setOpen(true);
-    setIsFirstVisit(true);
   }, []);
+
+  useEffect(() => {
+    if (!open || phase !== "initial") return;
+    const messages = isFirstVisit ? firstTimeMessages : returningMessages;
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % messages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [open, phase, isFirstVisit]);
 
   const dismiss = useCallback(() => {
     setPhase("closed");
@@ -130,7 +134,7 @@ export default function WelcomeModal() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.25 }}
                   className="mt-6 text-center"
                 >
                   <span className="text-4xl">{currentMsg?.emoji}</span>

@@ -31,8 +31,11 @@ export default function OnboardingWizard() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    fetch("/api/account/onboarding")
-      .then((r) => r.json())
+    fetch("/api/auth/sibling/me")
+      .then((r) => {
+        if (!r.ok) throw new Error("not logged in");
+        return fetch("/api/account/onboarding").then((r2) => r2.json());
+      })
       .then((data) => {
         if (!data.onboardingComplete && !dismissed) {
           setOpen(true);

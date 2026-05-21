@@ -430,6 +430,11 @@ export default function MatchesPage() {
                         <span className="flex items-center gap-1"><GraduationCap className="h-3 w-3" /> {mentor.experienceYears}y experience</span>
                         {mentor.pronouns && <><span>&middot;</span><span>{mentor.pronouns}</span></>}
                       </div>
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground mt-0.5">
+                        {mentor.occupation && <span>{mentor.occupation}</span>}
+                        {mentor.organization && <><span>&middot;</span><span>{mentor.organization}</span></>}
+                        {mentor.certification && <><span>&middot;</span><span className="text-primary">{mentor.certification}</span></>}
+                      </div>
                     </div>
                   </div>
                   <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary text-xs px-2.5 py-1 shrink-0">

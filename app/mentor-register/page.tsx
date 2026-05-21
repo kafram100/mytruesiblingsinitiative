@@ -30,6 +30,8 @@ export default function MentorRegisterPage() {
     expertiseAreas: [] as string[],
     experienceYears: "",
     mentorshipBio: "",
+    occupation: "",
+    organization: "",
   });
 
   const update = (fields: Partial<typeof form>) => setForm((prev) => ({ ...prev, ...fields }));
@@ -68,6 +70,8 @@ export default function MentorRegisterPage() {
           expertiseAreas: form.expertiseAreas,
           experienceYears: parseInt(form.experienceYears) || 0,
           mentorshipBio: form.mentorshipBio || null,
+          occupation: form.occupation || null,
+          organization: form.organization || null,
         }),
       });
       const data = await res.json();
@@ -87,7 +91,7 @@ export default function MentorRegisterPage() {
 
   const canContinue = () => {
     if (step === 0) return form.fullName.length >= 2 && form.email.includes("@") && form.password.length >= 8 && form.password === form.confirmPassword;
-    if (step === 1) return form.expertiseAreas.length > 0 && form.experienceYears !== "";
+    if (step === 1) return form.expertiseAreas.length > 0 && form.experienceYears !== "" && form.occupation.trim().length >= 2;
     return true;
   };
 
@@ -141,6 +145,14 @@ export default function MentorRegisterPage() {
 
           {step === 1 && (
             <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-semibold mb-1.5">Occupation *</label>
+                <input type="text" value={form.occupation} onChange={(e) => update({ occupation: e.target.value })} className="w-full rounded-xl border-2 border-border bg-card px-4 py-2.5 text-sm focus:border-primary focus:outline-none" placeholder="e.g. Social Worker, Therapist, Teacher" required />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1.5">Organization (optional)</label>
+                <input type="text" value={form.organization} onChange={(e) => update({ organization: e.target.value })} className="w-full rounded-xl border-2 border-border bg-card px-4 py-2.5 text-sm focus:border-primary focus:outline-none" placeholder="e.g. Nonprofit name, School, Agency" />
+              </div>
               <div>
                 <label className="block text-sm font-semibold mb-1.5">Years of Experience *</label>
                 <input type="number" min="0" max="70" value={form.experienceYears} onChange={(e) => update({ experienceYears: e.target.value })} className="w-full rounded-xl border-2 border-border bg-card px-4 py-2.5 text-sm focus:border-primary focus:outline-none" placeholder="e.g. 5" required />

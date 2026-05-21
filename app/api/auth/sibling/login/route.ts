@@ -60,6 +60,21 @@ export async function POST(request: Request) {
       );
     }
 
+    // Block mentor/coach accounts that haven't been approved by admin
+    if (user.role === "sibling_coach") {
+      const [mentorRows] = await db.execute(
+        "SELECT approved FROM mentor_profiles WHERE user_id = ?",
+        [user.id]
+      );
+      const mentorProfile = (mentorRows as { approved: number }[])[0];
+      if (!mentorProfile || !mentorProfile.approved) {
+        return NextResponse.json(
+          { error: "Your mentor account is pending admin approval. You will be notified once approved." },
+          { status: 403 }
+        );
+      }
+    }
+
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
       return NextResponse.json(

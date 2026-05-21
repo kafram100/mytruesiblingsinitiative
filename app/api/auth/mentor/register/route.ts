@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { fullName, email, password, expertiseAreas, experienceYears, mentorshipBio } = body;
+    const { fullName, email, password, expertiseAreas, experienceYears, mentorshipBio, occupation, organization } = body;
 
     if (!fullName || typeof fullName !== "string" || fullName.trim().length < 2) {
       return NextResponse.json({ error: "Name must be at least 2 characters" }, { status: 400 });
@@ -66,9 +66,9 @@ export async function POST(request: Request) {
     );
 
     await db.execute(
-      `INSERT INTO mentor_profiles (id, user_id, expertise_areas, experience_years, mentorship_bio)
-       VALUES (?, ?, ?, ?, ?)`,
-      [mentorId, id, JSON.stringify(expertiseAreas), experienceYears, mentorshipBio || null]
+      `INSERT INTO mentor_profiles (id, user_id, expertise_areas, experience_years, mentorship_bio, occupation, organization, approved)
+       VALUES (?, ?, ?, ?, ?, ?, ?, 0)`,
+      [mentorId, id, JSON.stringify(expertiseAreas), experienceYears, mentorshipBio || null, occupation || null, organization || null]
     );
 
     const sessionId = randomUUID();

@@ -18,6 +18,7 @@ import {
   Cpu,
   ShoppingBag,
   Calendar,
+  GraduationCap,
 } from "lucide-react";
 
 import DashboardOverview from "@/components/admin/sections/DashboardOverview";
@@ -30,6 +31,7 @@ import ActivitySection from "@/components/admin/sections/ActivitySection";
 import SettingsSection from "@/components/admin/sections/SettingsSection";
 import StoreSection from "@/components/admin/sections/StoreSection";
 import EventsSection from "@/components/admin/sections/EventsSection";
+import ApproveMentorsSection from "@/components/admin/sections/ApproveMentorsSection";
 import RealStatsBar from "@/components/admin/RealStatsBar";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import type { SidebarItem } from "@/components/admin/AdminSidebar";
@@ -44,7 +46,8 @@ type AdminSection =
   | "activity"
   | "settings"
   | "store"
-  | "events";
+  | "events"
+  | "mentors";
 
 const ADMIN_RESOURCE_SEGMENTS = [
   "users",
@@ -56,6 +59,7 @@ const ADMIN_RESOURCE_SEGMENTS = [
   "settings",
   "store",
   "events",
+  "mentors",
 ] as const;
 
 type AdminResourceSegment = (typeof ADMIN_RESOURCE_SEGMENTS)[number];
@@ -116,6 +120,7 @@ const navGroups: NavGroup[] = [
       { label: "Integrations", section: "dashboard", icon: Cpu, scrollId: "integrations" },
       { label: "Store", section: "store", icon: ShoppingBag },
       { label: "Events", section: "events", icon: Calendar },
+      { label: "Approve Mentors", section: "mentors", icon: GraduationCap },
       { label: "Settings", section: "settings", icon: Settings2 },
     ],
   },
@@ -243,6 +248,8 @@ export default function AdminDashboard({ user, children }: AdminDashboardProps) 
         return <StoreSection />;
       case "events":
         return <EventsSection />;
+      case "mentors":
+        return <ApproveMentorsSection />;
       case "settings":
         return <SettingsSection />;
       default:
