@@ -218,7 +218,7 @@ export default function ProductDetailPage() {
                 ) : (
                   <>
                     <ShoppingBag className="h-5 w-5" />
-                    Add to Cart — ${(product.price * quantity).toFixed(2)}
+                    Add to Cart: ${(product.price * quantity).toFixed(2)}
                   </>
                 )}
               </Button>

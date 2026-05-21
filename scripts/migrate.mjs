@@ -1,20 +1,17 @@
-import mysql from "mysql2/promise";
+import pg from "pg";
 
 async function main() {
-  const host = process.env.MYSQL_HOST || "localhost";
-  const user = process.env.MYSQL_USER || "root";
-  const password = process.env.MYSQL_PASSWORD || "";
-  const database = process.env.MYSQL_DATABASE || "my_siblings";
+  const connectionString = process.env.PG_CONNECTION_STRING;
 
-  const pool = mysql.createPool({
-    host,
-    user,
-    password,
-    database,
-    waitForConnections: true,
-    connectionLimit: 1,
-    queueLimit: 0,
-  });
+  const pool = connectionString
+    ? new pg.Pool({ connectionString })
+    : new pg.Pool({
+        host: process.env.PG_HOST || "localhost",
+        user: process.env.PG_USER || "postgres",
+        password: process.env.PG_PASSWORD || "",
+        database: process.env.PG_DATABASE || "my_siblings",
+        max: 1,
+      });
 
   console.log("Running schema migrations...");
 
@@ -26,8 +23,8 @@ async function main() {
       email VARCHAR(254) NOT NULL,
       subject VARCHAR(200) NOT NULL,
       message TEXT NOT NULL,
-      \`read\` TINYINT(1) NOT NULL DEFAULT 0,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      "read" SMALLINT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS donations (
       id VARCHAR(36) PRIMARY KEY,
@@ -40,79 +37,85 @@ async function main() {
       donor_email VARCHAR(254),
       donor_name VARCHAR(100),
       stripe_payment_intent_id VARCHAR(255),
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS profiles (
       id VARCHAR(36) PRIMARY KEY,
-      email VARCHAR(254),
+      email VARCHAR(254) NOT NULL UNIQUE,
       full_name VARCHAR(100),
       role VARCHAR(20) NOT NULL DEFAULT 'user',
       password_hash VARCHAR(255) NOT NULL,
-      must_change_password TINYINT(1) NOT NULL DEFAULT 0,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      must_change_password SMALLINT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS sessions (
       id VARCHAR(36) PRIMARY KEY,
       user_id VARCHAR(36) NOT NULL,
       token VARCHAR(255) NOT NULL,
-      expires_at DATETIME NOT NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      expires_at TIMESTAMP NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS settings (
-      \`key\` VARCHAR(100) PRIMARY KEY,
-      \`value\` TEXT
+      "key" VARCHAR(100) PRIMARY KEY,
+      "value" TEXT
     )`,
     `CREATE TABLE IF NOT EXISTS reset_tokens (
       id VARCHAR(36) PRIMARY KEY,
       email VARCHAR(254) NOT NULL,
       token VARCHAR(255) NOT NULL,
-      expires_at DATETIME NOT NULL,
-      used TINYINT(1) NOT NULL DEFAULT 0,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      expires_at TIMESTAMP NOT NULL,
+      used SMALLINT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS password_resets (
       id VARCHAR(36) PRIMARY KEY,
       user_id VARCHAR(36) NOT NULL,
       token VARCHAR(36) NOT NULL,
       ip_address VARCHAR(45) DEFAULT NULL,
-      expires_at DATETIME NOT NULL,
-      used TINYINT NOT NULL DEFAULT 0,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      expires_at TIMESTAMP NOT NULL,
+      used SMALLINT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS activity_log (
       id VARCHAR(36) PRIMARY KEY,
       admin_email VARCHAR(255) NOT NULL,
       action VARCHAR(100) NOT NULL,
       details TEXT,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS newsletter_subscribers (
       id VARCHAR(36) PRIMARY KEY,
       email VARCHAR(254) NOT NULL UNIQUE,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS orders (
       id VARCHAR(36) PRIMARY KEY,
-      items JSON NOT NULL,
+      items JSONB NOT NULL,
       total_amount DECIMAL(10,2) NOT NULL,
       currency VARCHAR(10) NOT NULL DEFAULT 'USD',
       status VARCHAR(20) NOT NULL DEFAULT 'pending',
       stripe_session_id VARCHAR(255),
       stripe_payment_intent_id VARCHAR(255),
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS rate_limits (
-      \`key\` VARCHAR(255) PRIMARY KEY,
-      \`count\` INT NOT NULL DEFAULT 1,
+      "key" VARCHAR(255) PRIMARY KEY,
+      "count" INTEGER NOT NULL DEFAULT 1,
       reset_at BIGINT NOT NULL,
-      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS page_views (
+      id VARCHAR(36) PRIMARY KEY,
+      path VARCHAR(500) NOT NULL DEFAULT '/',
+      visitor_id VARCHAR(255),
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
   ];
 
   for (const sql of tables) {
     try {
-      await pool.execute(sql);
+      await pool.query(sql);
     } catch (err) {
       console.error("  ! Failed to create table:", err.message);
     }
@@ -121,8 +124,8 @@ async function main() {
 
   // Add must_change_password column if not present (legacy migration)
   try {
-    await pool.execute(
-      "ALTER TABLE profiles ADD COLUMN must_change_password TINYINT(1) NOT NULL DEFAULT 1"
+    await pool.query(
+      "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS must_change_password SMALLINT NOT NULL DEFAULT 1"
     );
     console.log("  + Added must_change_password column to profiles");
   } catch {
@@ -131,10 +134,56 @@ async function main() {
 
   // Add ip_address to password_resets if not present (legacy migration)
   try {
-    await pool.execute(
-      "ALTER TABLE password_resets ADD COLUMN ip_address VARCHAR(45) DEFAULT NULL"
+    await pool.query(
+      "ALTER TABLE password_resets ADD COLUMN IF NOT EXISTS ip_address VARCHAR(45) DEFAULT NULL"
     );
     console.log("  + Added ip_address column to password_resets");
+  } catch {
+    // column already exists
+  }
+
+  // Match requests for sibling matching
+  const matchTables = [
+    `CREATE TABLE IF NOT EXISTS match_requests (
+      id VARCHAR(36) PRIMARY KEY,
+      user_id VARCHAR(36),
+      pillar VARCHAR(50) NOT NULL,
+      age_range VARCHAR(20) NOT NULL,
+      gender VARCHAR(50),
+      language VARCHAR(100) NOT NULL DEFAULT 'English',
+      country VARCHAR(100),
+      timezone VARCHAR(50),
+      support_type VARCHAR(50) NOT NULL,
+      interests JSONB DEFAULT '[]',
+      anonymous SMALLINT NOT NULL DEFAULT 0,
+      status VARCHAR(20) NOT NULL DEFAULT 'pending',
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS matches (
+      id VARCHAR(36) PRIMARY KEY,
+      request_id VARCHAR(36) NOT NULL REFERENCES match_requests(id),
+      matched_user_id VARCHAR(36),
+      score DECIMAL(5,2),
+      status VARCHAR(20) NOT NULL DEFAULT 'pending',
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`,
+  ];
+
+  for (const sql of matchTables) {
+    try {
+      await pool.query(sql);
+    } catch (err) {
+      console.error("  ! Failed to create match table:", err.message);
+    }
+  }
+  console.log(`  + Ensured ${matchTables.length} match tables exist`);
+
+  // Add user_id column to existing match_requests (for backward compat)
+  try {
+    await pool.query(
+      "ALTER TABLE match_requests ADD COLUMN IF NOT EXISTS user_id VARCHAR(36)"
+    );
+    console.log("  + Added user_id column to match_requests");
   } catch {
     // column already exists
   }

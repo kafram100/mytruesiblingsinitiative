@@ -1,20 +1,13 @@
 import { cookies } from "next/headers";
 import db from "@/lib/db";
+import { createHash } from "crypto";
 
-export interface SessionUser {
+interface SessionUser {
   id: string;
   email: string;
   full_name: string;
   role: string;
-  password_hash?: string;
   must_change_password?: number;
-}
-
-export interface SessionRow {
-  id: string;
-  user_id: string;
-  token: string;
-  expires_at: string;
 }
 
 export interface ProfileRow {
@@ -45,10 +38,6 @@ export interface ContactRowWithBool {
   message: string;
   read: boolean;
   created_at: string;
-}
-
-export interface AggregateResult {
-  total: number;
 }
 
 export interface DonationRow {
@@ -88,17 +77,21 @@ export interface SubscriberRow {
   updated_at: string;
 }
 
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
 export async function getSessionUser(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin_token")?.value;
   if (!token) return null;
 
   const [rows] = await db.execute(
-    `SELECT p.id, p.email, p.full_name, p.role, p.password_hash, p.must_change_password
+    `SELECT p.id, p.email, p.full_name, p.role, p.must_change_password
      FROM sessions s
      JOIN profiles p ON p.id = s.user_id
      WHERE s.token = ? AND s.expires_at > NOW()`,
-    [token]
+    [hashToken(token)]
   );
   const result = rows as SessionUser[];
   return result[0] || null;
@@ -110,4 +103,4 @@ export async function checkAdmin(): Promise<string | null> {
   return null;
 }
 
-
+export { hashToken };

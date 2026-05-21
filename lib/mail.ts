@@ -96,6 +96,61 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
   }
 }
 
+export async function sendMatchNotificationEmail(
+  toEmail: string,
+  toName: string,
+  type: "match_found" | "match_accepted" | "match_declined",
+  otherName: string
+) {
+  const settings = await getSettings();
+  const transporter = await createTransporter();
+  if (!transporter) return;
+
+  const from = settings.smtp_from || settings.smtp_user;
+  if (!from) return;
+
+  const subjects: Record<string, string> = {
+    match_found: "You have a new match on My True Siblings!",
+    match_accepted: `${otherName} accepted your match request!`,
+    match_declined: `Update on your match request`,
+  };
+
+  const bodies: Record<string, string> = {
+    match_found: `<p>Great news, ${toName}!</p><p>A potential sibling match has been found for you. Log in to view the match details and decide if you'd like to connect.</p>`,
+    match_accepted: `<p>Exciting news, ${toName}!</p><p><strong>${otherName}</strong> has accepted your match request. You can now start a conversation and build your sibling bond.</p>`,
+    match_declined: `<p>Hi ${toName},</p><p>Unfortunately, <strong>${otherName}</strong> declined the match request. Don't worry — new matches are always being processed. Keep an eye on your account for updates.</p>`,
+  };
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#175550;">My True Siblings</h2>
+      ${bodies[type]}
+      <p style="margin:24px 0;">
+        <a href="${siteUrl}/account/matches" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          View My Matches
+        </a>
+      </p>
+      <p style="font-size:12px;color:#888;">
+        You received this because you have an account on My True Siblings.<br/>
+        <a href="${siteUrl}/account/settings">Manage notification preferences</a>
+      </p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from,
+      to: toEmail,
+      subject: subjects[type],
+      html,
+    });
+  } catch (err) {
+    console.error("Failed to send match notification email:", err);
+  }
+}
+
 export async function sendTestEmail(to: string) {
   const transporter = await createTransporter();
   if (!transporter) {

@@ -5,8 +5,9 @@ import { randomUUID } from "crypto";
 
 import db from "@/lib/db";
 import { ProfileRow } from "@/lib/auth";
+import { hashToken } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
-import { rateLimitByIp } from "@/lib/rate-limit";
+import { rateLimitByIp, rateLimit } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
 
 export async function POST(request: Request) {
@@ -14,8 +15,8 @@ export async function POST(request: Request) {
     const csrf = validateOrigin(request);
     if (!csrf.ok) return csrf.error;
 
-    const { ok, remaining } = await rateLimitByIp(request, "login", 10, 60_000);
-    if (!ok) {
+    const { ok: ipOk } = await rateLimitByIp(request, "login", 10, 60_000);
+    if (!ipOk) {
       return NextResponse.json(
         { error: "Too many attempts. Try again later." },
         { status: 429, headers: { "X-RateLimit-Remaining": "0" } }
@@ -28,6 +29,14 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Email and password are required" },
         { status: 400 }
+      );
+    }
+
+    const { ok: accountOk } = await rateLimit(`login:${email}`, 5, 60_000);
+    if (!accountOk) {
+      return NextResponse.json(
+        { error: "Too many attempts. Try again later." },
+        { status: 429 }
       );
     }
 
@@ -67,14 +76,14 @@ export async function POST(request: Request) {
 
     await db.execute(
       "INSERT INTO sessions (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)",
-      [sessionId, user.id, token, expiresAt]
+      [sessionId, user.id, hashToken(token), expiresAt]
     );
 
     const cookieStore = await cookies();
     cookieStore.set("admin_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       path: "/",
       expires: expiresAt,
     });
@@ -83,7 +92,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      mustChangePassword: !!user.must_change_password,
       user: {
         email: user.email,
         name: user.full_name,

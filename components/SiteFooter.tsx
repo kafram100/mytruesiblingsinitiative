@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -22,7 +24,7 @@ import { FOOTER_LOGO } from "@/lib/footer-logo";
 
 /** Footer logo stays readable without stretching the cleaned mark full-width. */
 const FOOTER_LOGO_CLASS =
-  "h-auto w-auto max-w-full max-h-24 object-contain object-left sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-36";
+  "h-auto w-auto max-w-full max-h-24 object-contain object-start sm:max-h-28 md:max-h-32 lg:max-h-36 xl:max-h-36";
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -37,33 +39,34 @@ function TikTokIcon({ className }: { className?: string }) {
   );
 }
 
-const navigation = [
+const navigation: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
+  { label: "Join", href: "/register" },
   { label: "Crisis Support", href: "/crisis" },
   { label: "About MTSI", href: "/about" },
   { label: "Programs", href: "/programs" },
-  { label: "Match A Sibling", href: "/match" },
+  { label: "Match a Sibling", href: "/match" },
   { label: "Volunteer", href: "/volunteer" },
-  { label: "Save A Sibling", href: "/save-a-sibling" },
+  { label: "Save a Sibling", href: "/save-a-sibling" },
   { label: "Store", href: "/store" },
-  { label: "Donate", href: "/save-a-sibling" },
-  { label: "Impact & Reports", href: "/corporate-partnership" },
+  { label: "Donate", href: "/donate" },
+  { label: "Impact Reports", href: "/impact" },
   { label: "Stories", href: "/#testimonials" },
   { label: "FAQ", href: "/faq" },
   { label: "Contact", href: "/contact" },
 ];
 
-const programLinks = [
+const programLinks: { label: string; href: string }[] = [
   { label: "School Outreach", href: "/programs#school-outreach" },
   { label: "Religious Outreach", href: "/programs#religious-outreach" },
   { label: "Age Stage Support", href: "/programs#age-stage-support" },
   { label: "Emotional Healing", href: "/programs#emotional-healing" },
-  { label: "Adopt A Sibling", href: "/save-a-sibling" },
-  { label: "Sponsor A Sibling", href: "/save-a-sibling#monthly-sponsor" },
+  { label: "Adopt a Sibling", href: "/save-a-sibling" },
+  { label: "Sponsor a Sibling", href: "/save-a-sibling#monthly-sponsor" },
   { label: "Sibling Connect", href: "/sibling-connect" },
-  { label: "Adult Safe Place (18+)", href: "/adult-safe-place" },
+  { label: "Adult Safe Place", href: "/adult-safe-place" },
   { label: "Inclusive Support Hub", href: "/inclusive-support-hub" },
-  { label: "SDG Framework", href: "/contact" },
+  { label: "SDG Framework", href: "/impact" },
   { label: "Membership", href: "/match" },
   { label: "Corporate Partnership", href: "/corporate-partnership" },
 ];
@@ -73,12 +76,36 @@ const socialPlatforms: {
   href: string;
   Icon: LucideIcon | typeof TikTokIcon;
 }[] = [
-  { label: "Facebook", href: "https://www.facebook.com/mytruesiblings", Icon: Facebook },
-  { label: "Instagram", href: "https://www.instagram.com/mytruesiblings", Icon: Instagram },
-  { label: "X (Twitter)", href: "https://x.com/mytruesiblings", Icon: Twitter },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/mytruesiblings", Icon: Linkedin },
-  { label: "YouTube", href: "https://www.youtube.com/@mytruesiblings", Icon: Youtube },
-  { label: "TikTok", href: "https://www.tiktok.com/@mytruesiblings", Icon: TikTokIcon },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/mytruesiblings",
+    Icon: Facebook,
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/mytruesiblings",
+    Icon: Instagram,
+  },
+  {
+    label: "X (Twitter)",
+    href: "https://x.com/mytruesiblings",
+    Icon: Twitter,
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/mytruesiblings",
+    Icon: Linkedin,
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@mytruesiblings",
+    Icon: Youtube,
+  },
+  {
+    label: "TikTok",
+    href: "https://www.tiktok.com/@mytruesiblings",
+    Icon: TikTokIcon,
+  },
   { label: "WhatsApp", href: "/contact", Icon: MessageCircle },
   {
     label: "Telegram",
@@ -102,7 +129,7 @@ export default function SiteFooter() {
             >
               <Image
                 src={FOOTER_LOGO.src}
-                alt="My True Siblings logo, linking to home"
+                alt="MyTrueSiblings logo"
                 width={FOOTER_LOGO.width}
                 height={FOOTER_LOGO.height}
                 sizes="(max-width: 640px) 180px, (max-width: 1024px) 220px, 260px"
@@ -110,18 +137,15 @@ export default function SiteFooter() {
               />
             </Link>
             <p className="mt-6 max-w-xl text-sm leading-relaxed text-zinc-300">
-              Turning loneliness into belonging. A global mentorship and
-              emotional healing network connecting vulnerable individuals with
-              trained volunteer siblings.
+              MyTrueSiblings is a global safe space where strangers become siblings through emotional support, mentorship, inclusion, and belonging.
             </p>
             <p className="mt-6 max-w-xl text-sm italic leading-relaxed text-zinc-200/95">
-              &ldquo;No child, no teen, no adult should grow up without
-              guidance, love, or someone to call a sibling.&rdquo;
+              &ldquo;Turning loneliness into belonging, one sibling at a time.&rdquo;
             </p>
           </div>
 
           {/* Column 2: navigation */}
-          <nav aria-label="Footer navigation" className="min-w-0">
+          <nav aria-label="Footer navigation links" className="min-w-0">
             <h2 className="font-display text-xs font-bold uppercase tracking-[0.28em] text-white">
               Navigation
             </h2>
@@ -140,7 +164,7 @@ export default function SiteFooter() {
           </nav>
 
           {/* Column 3: programs */}
-          <nav aria-label="Programs" className="min-w-0">
+          <nav aria-label="Footer program links" className="min-w-0">
             <h2 className="font-display text-xs font-bold uppercase tracking-[0.28em] text-white">
               Programs
             </h2>
@@ -161,7 +185,7 @@ export default function SiteFooter() {
           {/* Column 4: contact & legal & social */}
           <div className="min-w-0">
             <h2 className="font-display text-xs font-bold uppercase tracking-[0.28em] text-white">
-              Contact &amp; legal
+              Contact &amp; Legal
             </h2>
             <div className="mt-5 space-y-4 text-sm">
               <a
@@ -173,7 +197,7 @@ export default function SiteFooter() {
               </a>
               <p className="flex items-start gap-2.5 text-brand-yellow/90">
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-                <span>Lagos, Nigeria · Chicago, USA | Global</span>
+                <span>United States &amp; Global</span>
               </p>
             </div>
             <ul className="mt-6 flex flex-col gap-2 text-sm text-zinc-400">
@@ -182,7 +206,7 @@ export default function SiteFooter() {
                   href="/safeguarding-policy"
                   className="transition hover:text-white focus-visible:outline-none focus-visible:underline"
                 >
-                  Safeguarding policy
+                  Safeguarding Policy
                 </Link>
               </li>
               <li>
@@ -190,13 +214,13 @@ export default function SiteFooter() {
                   href="/privacy"
                   className="transition hover:text-white focus-visible:outline-none focus-visible:underline"
                 >
-                  Privacy policy
+                  Privacy Policy
                 </Link>
               </li>
             </ul>
 
             <h3 className="mt-8 font-display text-xs font-bold uppercase tracking-[0.28em] text-white">
-              Connect with us
+              Connect With Us
             </h3>
             <div className="mt-4 flex max-w-[220px] flex-wrap gap-2.5">
               {socialPlatforms.map(({ label, href, Icon }, idx) => {
@@ -215,11 +239,7 @@ export default function SiteFooter() {
                     <Icon className={iconClass} aria-hidden />
                   </a>
                 ) : (
-                  <Link
-                    href={href}
-                    aria-label={label}
-                    className={className}
-                  >
+                  <Link href={href} aria-label={label} className={className}>
                     <Icon className={iconClass} aria-hidden />
                   </Link>
                 );
@@ -236,33 +256,41 @@ export default function SiteFooter() {
 
         <div className="mt-14 border-t border-white/10 pt-10 text-center">
           <h3 className="font-display text-lg font-bold text-white">
-            Get the MyTrueSiblings App
+            Get the App
           </h3>
-          <p className="mt-2 text-sm text-zinc-300">
-            Carry your safe space in your pocket. Available on iOS and Android.
-          </p>
+          <p className="mt-2 text-sm text-zinc-300">Available on iOS and Android</p>
           <div className="mt-5 flex items-center justify-center gap-4">
             <a
-              href="#"
+              href={process.env.NEXT_PUBLIC_APP_STORE_URL || "#"}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Download on the App Store"
               className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden>
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-5 w-5"
+                aria-hidden
+              >
+                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
               </svg>
               App Store
             </a>
             <a
-              href="#"
+              href={process.env.NEXT_PUBLIC_PLAY_STORE_URL || "#"}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Get it on Google Play"
               className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5" aria-hidden>
-                <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.807 1.626a1 1 0 0 1 0 1.732l-2.807 1.626L15.206 12l2.492-2.492zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-5 w-5"
+                aria-hidden
+              >
+                <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.807 1.626a1 1 0 0 1 0 1.732l-2.807 1.626L15.206 12l2.492-2.492zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z" />
               </svg>
               Google Play
             </a>
@@ -270,9 +298,7 @@ export default function SiteFooter() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-8 text-center text-xs text-zinc-500">
-          <p>
-            &copy; {year} My True Siblings Initiative. All rights reserved.
-          </p>
+          <p>&copy; {year} MyTrueSiblings Initiative. All rights reserved.</p>
           <p className="mt-1">
             Made with love by{" "}
             <a

@@ -5,7 +5,7 @@ import db from "@/lib/db";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
 
 export async function POST(request: Request) {
   try {
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     const id = randomUUID();
 
     await db.execute(
-      "INSERT INTO newsletter_subscribers (id, email) VALUES (?, ?) ON DUPLICATE KEY UPDATE updated_at = NOW()",
+      "INSERT INTO newsletter_subscribers (id, email) VALUES (?, ?) ON CONFLICT (email) DO UPDATE SET updated_at = NOW()",
       [id, email]
     );
 

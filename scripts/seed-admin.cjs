@@ -1,27 +1,24 @@
-const mysql = require("mysql2/promise");
+const { Pool } = require("pg");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
 async function main() {
-  const host = process.env.MYSQL_HOST || "localhost";
-  const user = process.env.MYSQL_USER;
-  const password = process.env.MYSQL_PASSWORD;
-  const database = process.env.MYSQL_DATABASE || "my_siblings";
+  const connectionString = process.env.PG_CONNECTION_STRING;
 
-  if (!user || !password) {
-    console.error("ERROR: MYSQL_USER and MYSQL_PASSWORD environment variables are required.");
+  const pool = connectionString
+    ? new Pool({ connectionString })
+    : new Pool({
+        host: process.env.PG_HOST || "localhost",
+        user: process.env.PG_USER,
+        password: process.env.PG_PASSWORD,
+        database: process.env.PG_DATABASE || "my_siblings",
+        max: 1,
+      });
+
+  if (!process.env.PG_USER || !process.env.PG_PASSWORD) {
+    console.error("ERROR: PG_USER and PG_PASSWORD environment variables are required.");
     process.exit(1);
   }
-
-  const pool = mysql.createPool({
-    host,
-    user,
-    password,
-    database,
-    waitForConnections: true,
-    connectionLimit: 1,
-    queueLimit: 0,
-  });
 
   const email = process.env.ADMIN_EMAIL || "admin@mysiblings.org";
   const password = process.env.ADMIN_PASSWORD;
@@ -35,8 +32,8 @@ async function main() {
   const hash = await bcrypt.hash(password, 12);
   const id = crypto.randomUUID();
 
-  await pool.execute(
-    "INSERT INTO profiles (id, email, full_name, role, password_hash, must_change_password) VALUES (?, ?, ?, 'admin', ?, 1) ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), full_name = VALUES(full_name)",
+  await pool.query(
+    "INSERT INTO profiles (id, email, full_name, role, password_hash, must_change_password) VALUES ($1, $2, $3, 'admin', $4, 1) ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, full_name = EXCLUDED.full_name",
     [id, email, name, hash]
   );
 

@@ -18,7 +18,7 @@ export async function PUT(
   const { id } = await params;
 
   try {
-    await db.execute("UPDATE contacts SET `read` = true WHERE id = ?", [id]);
+    await db.execute('UPDATE contacts SET "read" = 1 WHERE id = ?', [id]);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Mark read error:", err);

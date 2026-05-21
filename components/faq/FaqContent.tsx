@@ -28,11 +28,11 @@ const sections: FAQSection[] = [
     items: [
       {
         q: "What is MyTrueSiblings?",
-        a: "MyTrueSiblings is a global nonprofit safe space platform where strangers become siblings. We provide emotional support, mentorship, safe conversations, community connection, disability inclusion, and belonging programs to anyone who needs them — completely free of charge.",
+        a: "MyTrueSiblings is a global nonprofit safe space platform where strangers become siblings. We provide emotional support, mentorship, safe conversations, community connection, disability inclusion, and belonging programs to anyone who needs them, completely free of charge.",
       },
       {
         q: "Is MyTrueSiblings free?",
-        a: "Yes. All support services — including mentorship, safe conversations, support circles, and community access — are completely free for anyone seeking help. We are a mission-driven nonprofit, not a paid service.",
+        a: "Yes. All support services, including mentorship, safe conversations, support circles, and community access, are completely free for anyone seeking help. We are a mission-driven nonprofit, not a paid service.",
       },
       {
         q: "Who can join MyTrueSiblings?",
@@ -72,7 +72,7 @@ const sections: FAQSection[] = [
       },
       {
         q: "Are conversations confidential?",
-        a: "Yes. All conversations within MyTrueSiblings are confidential. We take your privacy seriously. The only exception is if someone is at immediate risk of harm — in which case our safeguarding protocol requires us to involve appropriate authorities to ensure everyone's safety.",
+        a: "Yes. All conversations within MyTrueSiblings are confidential. We take your privacy seriously. The only exception is if someone is at immediate risk of harm. In that case our safeguarding protocol requires us to involve appropriate authorities to ensure everyone's safety.",
       },
       {
         q: "How are members protected?",
@@ -96,11 +96,11 @@ const sections: FAQSection[] = [
       },
       {
         q: "Can I choose my interests?",
-        a: "Yes. During registration, you select the areas that matter most to you — whether that's emotional support, mentorship, friendship, disability inclusion, creative collaboration, career guidance, or simply community connection. Your profile reflects what you're looking for and what you can offer.",
+        a: "Yes. During registration, you select the areas that matter most to you, whether that's emotional support, mentorship, friendship, disability inclusion, creative collaboration, career guidance, or simply community connection. Your profile reflects what you're looking for and what you can offer.",
       },
       {
         q: "Can I join support circles?",
-        a: "Absolutely. Support circles are moderated group conversations around specific topics — grief, anxiety, neurodivergence, caregiving, identity, career challenges, and more. Circles meet regularly and provide a safe space to share, listen, and connect with multiple siblings at once.",
+        a: "Absolutely. Support circles are moderated group conversations around specific topics: grief, anxiety, neurodivergence, caregiving, identity, career challenges, and more. Circles meet regularly and provide a safe space to share, listen, and connect with multiple siblings at once.",
       },
       {
         q: "Can families join?",
@@ -196,7 +196,7 @@ const sections: FAQSection[] = [
       },
       {
         q: "Do you support neurodivergent users?",
-        a: "Yes. We celebrate neurodiversity. Our platform is designed with neurodivergent users in mind — offering clear navigation, reduced visual clutter, option to customize communication styles, sensory-friendly modes, and community spaces specifically for neurodivergent siblings and their supporters.",
+        a: "Yes. We celebrate neurodiversity. Our platform is designed with neurodivergent users in mind, offering clear navigation, reduced visual clutter, option to customize communication styles, sensory-friendly modes, and community spaces specifically for neurodivergent siblings and their supporters.",
       },
       {
         q: "Will there be voice and visual accessibility support?",

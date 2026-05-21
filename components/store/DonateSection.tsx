@@ -197,7 +197,7 @@ export default function DonateSection() {
               size="lg"
               className="rounded-full bg-brand-pink-hex px-10 py-6 text-base text-primary-foreground shadow-xl shadow-brand-pink-hex/30 hover:bg-brand-pink-hex/90 hover:shadow-2xl"
             >
-              <Link href={`/save-a-sibling?amount=${selected}&frequency=${frequency}`}>
+              <Link href={`/donate?amount=${selected}&frequency=${frequency}`}>
                 <Heart className="h-5 w-5 fill-white" />
                 {frequency === "monthly" ? "Give Monthly" : "Give Hope"}
                 <ArrowRight className="h-5 w-5" />

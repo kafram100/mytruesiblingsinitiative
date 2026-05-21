@@ -125,7 +125,7 @@ const pillars = [
       "Employer and NGO collaborations",
       "Global ecosystem growth",
     ],
-    cta: { label: "See partnership options", href: "/corporate-partnership" },
+    cta: { label: "Impact & reports", href: "/impact" },
     accent: "from-emerald-500/15 via-background to-transparent",
   },
 ] as const;

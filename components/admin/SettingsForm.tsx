@@ -1,13 +1,12 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import {
   CreditCard,
   Eye,
   EyeOff,
   Key,
   Mail,
-  Settings2,
   Server,
   Webhook,
   Loader2,
@@ -21,19 +20,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { SETTINGS_SECRET_MASK } from "@/lib/settings-constants";
 
 interface SettingsFormProps {
   initial: Record<string, string>;
+  onSaved?: () => void | Promise<void>;
 }
 
-export default function SettingsForm({ initial }: SettingsFormProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const [form, setForm] = useState({
+function buildFormState(initial: Record<string, string>) {
+  return {
     notification_email: initial.notification_email || "",
     smtp_host: initial.smtp_host || "",
     smtp_port: initial.smtp_port || "587",
@@ -43,7 +38,40 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
     stripe_publishable_key: initial.stripe_publishable_key || "",
     stripe_secret_key: initial.stripe_secret_key || "",
     stripe_webhook_secret: initial.stripe_webhook_secret || "",
-  });
+  };
+}
+
+export default function SettingsForm({ initial, onSaved }: SettingsFormProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const serverInitialSig = useMemo(
+    () =>
+      JSON.stringify({
+        notification_email: initial.notification_email ?? "",
+        smtp_host: initial.smtp_host ?? "",
+        smtp_port: initial.smtp_port ?? "",
+        smtp_user: initial.smtp_user ?? "",
+        smtp_pass: initial.smtp_pass ?? "",
+        smtp_from: initial.smtp_from ?? "",
+        stripe_publishable_key: initial.stripe_publishable_key ?? "",
+        stripe_secret_key: initial.stripe_secret_key ?? "",
+        stripe_webhook_secret: initial.stripe_webhook_secret ?? "",
+      }),
+    [initial]
+  );
+
+  const [form, setForm] = useState(() => buildFormState(initial));
+  const [smtpPassDirty, setSmtpPassDirty] = useState(false);
+
+  useEffect(() => {
+    setForm(buildFormState(initial));
+    setSmtpPassDirty(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [serverInitialSig]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -55,6 +83,7 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
   };
 
   const handleFieldChange = (key: string, value: string) => {
+    if (key === "smtp_pass") setSmtpPassDirty(true);
     setForm((prev) => ({ ...prev, [key]: value }));
     if (errors[key]) {
       const err = validateField(key, value);
@@ -86,17 +115,45 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
     setSaving(true);
     setMessage(null);
 
+    const payload: Record<string, string> = {
+      notification_email: form.notification_email,
+      smtp_host: form.smtp_host,
+      smtp_port: form.smtp_port,
+      smtp_user: form.smtp_user,
+      smtp_from: form.smtp_from,
+      stripe_publishable_key: form.stripe_publishable_key,
+    };
+    if (smtpPassDirty) {
+      if (form.smtp_pass === SETTINGS_SECRET_MASK) {
+        setMessage({
+          type: "error",
+          text: "Enter a new SMTP password or leave the field unchanged.",
+        });
+        setSaving(false);
+        return;
+      }
+      payload.smtp_pass = form.smtp_pass;
+    }
+
     try {
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
+      const data = await res.json().catch(() => ({}));
 
       if (res.ok) {
         setMessage({ type: "success", text: "Settings saved successfully." });
+        setSmtpPassDirty(false);
+        await onSaved?.();
       } else {
-        setMessage({ type: "error", text: "Failed to save settings." });
+        setMessage({
+          type: "error",
+          text:
+            (typeof data.error === "string" && data.error) ||
+            "Failed to save settings.",
+        });
       }
     } catch {
       setMessage({ type: "error", text: "Failed to save settings." });
@@ -293,6 +350,11 @@ export default function SettingsForm({ initial }: SettingsFormProps) {
             </p>
           </div>
         </div>
+        {initial.smtp_pass === SETTINGS_SECRET_MASK && !smtpPassDirty ? (
+          <p className="mt-3 text-xs text-muted-foreground">
+            SMTP password is saved on the server. Edit the field only to replace it.
+          </p>
+        ) : null}
       </section>
 
       <section className="rounded-2xl border border-border bg-card p-6 shadow-sm">

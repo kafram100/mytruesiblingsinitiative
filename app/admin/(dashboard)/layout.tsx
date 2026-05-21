@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { getSessionUser } from "@/lib/auth";
-import AdminShell from "@/components/admin/AdminShell";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -18,13 +18,13 @@ export default async function DashboardLayout({
     }
 
     return (
-      <AdminShell
+      <AdminDashboard
         user={{
           email: user.email || "",
         }}
       >
         {children}
-      </AdminShell>
+      </AdminDashboard>
     );
   } catch {
     redirect("/admin/login");

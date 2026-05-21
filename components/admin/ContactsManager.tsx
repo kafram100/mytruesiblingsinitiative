@@ -32,7 +32,7 @@ function formatDate(dateStr: string): string {
   });
 }
 
-export default function ContactsManager({ contacts }: ContactsManagerProps) {
+export default function ContactsManager({ contacts = [] }: ContactsManagerProps) {
   const router = useRouter();
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState<Set<string>>(new Set());

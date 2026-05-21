@@ -15,7 +15,7 @@ export async function logActivity(
 ) {
   await db.execute(
     `INSERT INTO activity_log (id, admin_email, action, details, created_at)
-     VALUES (UUID(), ?, ?, ?, NOW())`,
+           VALUES (gen_random_uuid(), ?, ?, ?, NOW())`,
     [adminEmail, action, details || null]
   );
 }

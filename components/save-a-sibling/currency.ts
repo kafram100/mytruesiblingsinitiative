@@ -1,6 +1,6 @@
 import { CURRENCY_CONFIG, CurrencyCode } from "./config";
 
-export function formatPreviewNumber(amount: number, locale: string): string {
+function formatPreviewNumber(amount: number, locale: string): string {
   const rounded = Math.round(amount * 100) / 100;
   const isWhole = Number.isInteger(rounded);
   return new Intl.NumberFormat(locale, {

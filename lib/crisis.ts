@@ -635,7 +635,7 @@ export const VERIFIED_CRISIS_RESOURCES: CrisisResource[] = [
     website: "https://kidshelpline.com.au",
     hours: "24/7",
     languages: ["English"],
-    audience: ["children", "teens", "young people 5–25"],
+    audience: ["children", "teens", "young people 5 to 25"],
     is24_7: true,
     isFree: true,
     accessibilityOptions: ["Chat", "Phone"],
@@ -1131,37 +1131,6 @@ export function getResourcesByCountry(country: string): CrisisResource[] {
   );
 }
 
-export function getResourcesByCrisisType(type: string): CrisisResource[] {
-  return VERIFIED_CRISIS_RESOURCES.filter(
-    (r) => r.crisisTypes.includes(type) || r.crisisTypes.includes("all-crisis")
-  );
-}
-
-export function getEmergencyResource(country: string): CrisisResource | undefined {
-  const countryMap: Record<string, string[]> = {
-    "United States": ["us-911"],
-    "Canada": ["ca-911"],
-    "United Kingdom": ["uk-999"],
-    "Nigeria": ["ng-112"],
-    "Ghana": ["gh-112"],
-    "Kenya": ["ke-999"],
-    "South Africa": ["za-10111"],
-    "India": ["in-112"],
-    "Australia": ["au-000"],
-    "New Zealand": ["nz-111"],
-    "Germany": ["de-112"],
-    "France": ["fr-112"],
-    "Spain": ["es-112"],
-    "Brazil": ["br-188"],
-    "Mexico": ["mx-911"],
-    "Japan": ["jp-110"],
-    "South Korea": ["kr-112"],
-    "Philippines": ["ph-911"],
-  };
-  const ids = countryMap[country] || ["global-findahelpline"];
-  return VERIFIED_CRISIS_RESOURCES.find((r) => ids.includes(r.id));
-}
-
 export const CRISIS_FAQ_ITEMS = [
   {
     q: "What should I do if I feel like hurting myself?",
@@ -1209,14 +1178,8 @@ export const CRISIS_FAQ_ITEMS = [
   },
   {
     q: "What if I am deaf or hard of hearing?",
-    a: "Many crisis lines offer TTY, text, chat, and video relay services. In the US, 988 can be reached via TTY: 711 then 988. Crisis Text Line (text HOME to 741741) is fully text-based. The Trevor Project offers chat. Many countries have specific services—check our accessibility section for more options."
+    a: "Many crisis lines offer TTY, text, chat, and video relay services. In the US, 988 can be reached via TTY: 711 then 988. Crisis Text Line (text HOME to 741741) is fully text-based. The Trevor Project offers chat. Many countries have specific services. Check our accessibility section for more options."
   },
 ];
 
-export const CRISIS_POPUP_MESSAGES = [
-  { text: "You are not alone.", emoji: "💛" },
-  { text: "Please reach out now.", emoji: "🤝" },
-  { text: "Your safety matters.", emoji: "🛡️" },
-  { text: "Help is available.", emoji: "🌟" },
-  { text: "Someone cares about you.", emoji: "💙" },
-];
+

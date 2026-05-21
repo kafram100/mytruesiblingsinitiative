@@ -72,10 +72,31 @@
   body {
     @apply min-h-screen overflow-x-hidden bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    hyphens: none;
+    -webkit-hyphens: none;
   }
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
     }
   }
+}
+
+@layer utilities {
+  .text-gradient-primary {
+    background: linear-gradient(135deg, #009FAF, #E93D8F);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-warm-gold {
+    color: #FFC400;
+  }
+  .bg-gradient-hero {
+    background: linear-gradient(160deg, hsl(var(--background)) 0%, hsl(var(--secondary)) 50%, hsl(var(--background)) 100%);
+  }
+  .bg-gradient-teal {
+    background: linear-gradient(135deg, #009FAF, #00736B);
+  }
+
 }

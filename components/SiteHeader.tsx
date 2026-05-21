@@ -4,13 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { ChevronDown, Heart, Menu, ShoppingBag, X } from "lucide-react";
+import { Bell, ChevronDown, Heart, Menu, ShoppingBag, X } from "lucide-react";
 
 import { useCart } from "@/context/cart";
+import { useSiblingAuth } from "@/context/sibling-auth";
 
 import BrandLogoImage, {
   BRAND_LOGO_CLASS,
 } from "@/components/BrandLogoImage";
+import NotificationBell from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -23,6 +25,7 @@ type NavChild = { id: string; label: string; href: string };
 interface NavItem {
   label: string;
   href: string;
+  crisisImportant?: boolean;
   children?: NavChild[];
 }
 
@@ -35,14 +38,14 @@ const IMPACT_HOME_HASHES = new Set([
 ]);
 
 function navLinkLabel(item: NavItem): ReactNode {
-  if (item.label !== "Crisis Support") return item.label;
+  if (!item.crisisImportant) return item.label;
   return (
-    <>
-      {item.label}
-      <span className="ml-1.5 inline-flex items-center rounded-full bg-red-600 px-2 py-0.5 text-[9px] font-extrabold uppercase leading-none tracking-wide text-white">
+    <span className="inline-flex shrink-0 flex-nowrap items-center gap-1.5 whitespace-nowrap">
+      <span className="whitespace-nowrap">{item.label}</span>
+      <span className="inline-flex shrink-0 items-center rounded-full bg-red-600 px-2 py-0.5 text-[9px] font-extrabold uppercase leading-none tracking-wide text-white">
         Important
       </span>
-    </>
+    </span>
   );
 }
 
@@ -61,7 +64,7 @@ function hashFromHref(href: string): string | null {
 }
 
 /**
- * Exact route match — homepage "/" only skips "active" when the hash is one of
+ * Exact route match: homepage "/" only skips "active" when the hash is one of
  * the Impact submenu anchors so Impact can highlight instead.
  */
 function linkMatchesRoute(
@@ -83,10 +86,9 @@ function linkMatchesRoute(
   }
 
   if (base === "#" || base === "") return false;
-  if (base === "/")
-    return (
-      pathname === "/" && !(h.length > 0 && IMPACT_HOME_HASHES.has(h))
-    );
+  if (base === "/") {
+    return pathname === "/" && !(h.length > 0 && IMPACT_HOME_HASHES.has(h));
+  }
   return pathname === base || pathname.startsWith(`${base}/`);
 }
 
@@ -112,6 +114,7 @@ const navItems: NavItem[] = [
   {
     label: "Crisis Support",
     href: "/crisis",
+    crisisImportant: true,
   },
   { label: "About", href: "/about" },
   {
@@ -139,10 +142,14 @@ const navItems: NavItem[] = [
         label: "Emotional Healing",
         href: "/programs#emotional-healing",
       },
-      { id: "nav-prog-connect", label: "Sibling Connect", href: "/sibling-connect" },
+      {
+        id: "nav-prog-connect",
+        label: "Sibling Connect",
+        href: "/sibling-connect",
+      },
       {
         id: "nav-prog-adult",
-        label: "Adult Safe Place (18+)",
+        label: "Adult Safe Place",
         href: "/adult-safe-place",
       },
       {
@@ -156,11 +163,31 @@ const navItems: NavItem[] = [
     label: "Get Involved",
     href: "#",
     children: [
-      { id: "nav-inv-match", label: "Match A Sibling", href: "/match" },
-      { id: "nav-inv-adopt", label: "Adopt A Sibling", href: "/save-a-sibling#give" },
-      { id: "nav-inv-sponsor", label: "Sponsor A Sibling", href: "/save-a-sibling#monthly-sponsor" },
-      { id: "nav-inv-volunteer", label: "Volunteer", href: "/volunteer" },
-      { id: "nav-inv-membership", label: "Membership", href: "/match" },
+      {
+        id: "nav-inv-match",
+        label: "Match a Sibling",
+        href: "/match",
+      },
+      {
+        id: "nav-inv-adopt",
+        label: "Adopt a Sibling",
+        href: "/save-a-sibling#give",
+      },
+      {
+        id: "nav-inv-sponsor",
+        label: "Sponsor a Sibling",
+        href: "/save-a-sibling#monthly-sponsor",
+      },
+      {
+        id: "nav-inv-volunteer",
+        label: "Volunteer",
+        href: "/volunteer",
+      },
+      {
+        id: "nav-inv-membership",
+        label: "Membership",
+        href: "/match",
+      },
       {
         id: "nav-inv-corp",
         label: "Corporate Partnership",
@@ -172,19 +199,57 @@ const navItems: NavItem[] = [
     label: "Impact",
     href: "#",
     children: [
-      { id: "nav-impact-save", label: "Save A Sibling", href: "/save-a-sibling" },
-      { id: "nav-impact-promises", label: "Our promises", href: "/#promises" },
-      { id: "nav-impact-how", label: "How it works", href: "/#how-it-works" },
-      { id: "nav-impact-match", label: "Matching", href: "/#matching" },
-      { id: "nav-impact-stories", label: "Stories", href: "/#testimonials" },
+      {
+        id: "nav-impact-reports",
+        label: "Impact Reports",
+        href: "/impact",
+      },
+      {
+        id: "nav-impact-save",
+        label: "Save a Sibling",
+        href: "/save-a-sibling",
+      },
+      {
+        id: "nav-impact-promises",
+        label: "Our Promises",
+        href: "/#promises",
+      },
+      {
+        id: "nav-impact-how",
+        label: "How It Works",
+        href: "/#how-it-works",
+      },
+      {
+        id: "nav-impact-match",
+        label: "Matching Algorithm",
+        href: "/#matching",
+      },
+      {
+        id: "nav-impact-stories",
+        label: "Stories",
+        href: "/#testimonials",
+      },
     ],
   },
   {
     label: "Resources",
     href: "#",
     children: [
-      { id: "nav-res-crisis", label: "🔴 Crisis Support", href: "/crisis" },
-      { id: "nav-res-faq", label: "FAQ", href: "/faq" },
+      {
+        id: "nav-res-crisis",
+        label: "Crisis Support",
+        href: "/crisis",
+      },
+      {
+        id: "nav-res-events",
+        label: "Events",
+        href: "/events",
+      },
+      {
+        id: "nav-res-faq",
+        label: "FAQ",
+        href: "/faq",
+      },
       {
         id: "nav-res-safeguarding",
         label: "Safeguarding Policy",
@@ -197,7 +262,7 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  { label: "Shop", href: "/store" },
+  { label: "Store", href: "/store" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -210,6 +275,7 @@ export default function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [locationHash, setLocationHash] = useState("");
   const { itemCount, openCart } = useCart();
+  const { isLoggedIn, loading } = useSiblingAuth();
 
   useEffect(() => {
     const sync = () => setLocationHash(window.location.hash);
@@ -229,12 +295,12 @@ export default function SiteHeader() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
+    <header className="sticky top-0 z-[60] border-b border-border bg-background/85 backdrop-blur">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-[60] focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:font-semibold focus:text-primary-foreground"
       >
-        Skip to content
+        Skip to main content
       </a>
 
       <div className="container mx-auto flex min-h-[3.75rem] items-center justify-between gap-3 px-4 py-2 md:min-h-[5.75rem] md:py-3">
@@ -243,7 +309,7 @@ export default function SiteHeader() {
             <TooltipTrigger asChild>
               <Link
                 href="/"
-                aria-label="My True Siblings Initiative home"
+                aria-label="Go to homepage"
                 className="shrink-0 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 <BrandLogoImage
@@ -252,12 +318,12 @@ export default function SiteHeader() {
                 />
               </Link>
             </TooltipTrigger>
-            <TooltipContent>Go to homepage</TooltipContent>
+            <TooltipContent>Go to Homepage</TooltipContent>
           </Tooltip>
         </div>
 
         <nav
-          aria-label="Primary"
+          aria-label="Primary navigation"
           className="hidden items-center gap-0.5 lg:flex"
         >
           {navItems.map((item) => {
@@ -279,8 +345,8 @@ export default function SiteHeader() {
                 <Link
                   href={item.href}
                   className={`inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                    parentActive ? navActiveClass : navInactiveClass
-                  }`}
+                    item.crisisImportant ? "shrink-0 whitespace-nowrap" : ""
+                  } ${parentActive ? navActiveClass : navInactiveClass}`}
                   aria-current={parentAriaCurrent}
                   aria-haspopup={hasChildren || undefined}
                 >
@@ -291,7 +357,7 @@ export default function SiteHeader() {
                 </Link>
                 {hasChildren && (
                   <div
-                    className="invisible absolute left-0 top-full mt-1 min-w-[220px] translate-y-1 rounded-2xl border border-border bg-card p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
+                    className="invisible absolute left-0 top-full mt-1 min-w-[220px] translate-y-1 rounded-2xl border border-border bg-card p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 rtl:left-auto rtl:right-0"
                     role="menu"
                   >
                     {item.children!.map((child) => {
@@ -326,7 +392,11 @@ export default function SiteHeader() {
         <div className="flex items-center gap-2">
           <button
             onClick={openCart}
-            aria-label={`Shopping cart with ${itemCount} items`}
+            aria-label={
+              itemCount > 0
+                ? `Shopping cart with ${itemCount > 9 ? "9+" : itemCount} items`
+                : "Open shopping cart"
+            }
             className="relative hidden rounded-full p-2 text-gray-600 transition-colors hover:bg-muted hover:text-brand-teal sm:inline-flex"
           >
             <ShoppingBag className="h-5 w-5" aria-hidden="true" />
@@ -336,12 +406,36 @@ export default function SiteHeader() {
               </span>
             )}
           </button>
+          {!loading && isLoggedIn && (
+            <div className="hidden sm:block">
+              <NotificationBell />
+            </div>
+          )}
+          {!loading && isLoggedIn ? (
+            <Button
+              variant="outline"
+              className="hidden rounded-full border-primary/30 px-4 text-sm sm:inline-flex"
+              asChild
+            >
+              <Link href="/account">My Account</Link>
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="primary"
+                className="hidden rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90 sm:inline-flex"
+                asChild
+              >
+                <Link href="/register">Join</Link>
+              </Button>
+            </>
+          )}
           <Button
             variant="primary"
             className="hidden rounded-full bg-primary px-5 text-primary-foreground hover:bg-primary/90 sm:inline-flex"
             asChild
           >
-            <Link href="/save-a-sibling">
+            <Link href="/donate">
               <Heart className="h-4 w-4" aria-hidden="true" fill="currentColor" />
               Donate
             </Link>
@@ -350,7 +444,7 @@ export default function SiteHeader() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                  aria-label={mobileOpen ? "Close mobile menu" : "Open mobile menu"}
                   onClick={() => setMobileOpen((o) => !o)}
                   className="cursor-pointer rounded-full p-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
@@ -362,12 +456,12 @@ export default function SiteHeader() {
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                {mobileOpen ? "Close menu" : "Open menu"}
+                {mobileOpen ? "Close mobile menu" : "Open mobile menu"}
               </TooltipContent>
             </Tooltip>
             <nav
               id="mobile-nav"
-              aria-label="Mobile"
+              aria-label="Mobile navigation"
               className={`absolute right-0 top-full z-50 mt-2 w-[min(22rem,calc(100vw-2rem))] rounded-3xl border border-border bg-background/95 p-3 shadow-2xl backdrop-blur transition-all duration-200 ${
                 mobileOpen
                   ? "visible translate-y-0 opacity-100"
@@ -404,7 +498,7 @@ export default function SiteHeader() {
                         {navLinkLabel(item)}
                       </Link>
                       {item.children && (
-                        <div className="mt-1 flex flex-col gap-1 pl-4">
+                        <div className="mt-1 flex flex-col gap-1 ps-4">
                           {item.children.map((child) => {
                             const childActive = linkMatchesRoute(
                               child.href,
@@ -432,12 +526,46 @@ export default function SiteHeader() {
                     </div>
                   );
                 })}
+                {!loading && isLoggedIn && (
+                  <Button
+                    variant="outline"
+                    className="mt-1 rounded-full border-primary/30"
+                    asChild
+                  >
+                    <Link href="/account/notifications" onClick={closeMobile}>
+                      <Bell className="h-4 w-4" /> Notifications
+                    </Link>
+                  </Button>
+                )}
+                {!loading && isLoggedIn ? (
+                  <Button
+                    variant="outline"
+                    className="mt-1 rounded-full border-primary/30"
+                    asChild
+                  >
+                    <Link href="/account" onClick={closeMobile}>
+                      My Account
+                    </Link>
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="primary"
+                      className="mt-1 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                      asChild
+                    >
+                      <Link href="/register" onClick={closeMobile}>
+                        Join
+                      </Link>
+                    </Button>
+                  </>
+                )}
                 <Button
                   variant="primary"
                   className="mt-3 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
                   asChild
                 >
-                  <Link href="/save-a-sibling" onClick={closeMobile}>
+                  <Link href="/donate" onClick={closeMobile}>
                     <Heart className="h-4 w-4" aria-hidden="true" fill="currentColor" />
                     Donate
                   </Link>

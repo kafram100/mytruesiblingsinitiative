@@ -1,7 +1,7 @@
 /** Bump when precache/network strategy changes so old caches are dropped. */
-const CACHE = "my-siblings-v5";
+const CACHE = "my-siblings-v6";
 
-/** Precache static assets only — never freeze HTML for `/`; it breaks fresh JS/UI. */
+/** Precache static assets only — never freeze HTML/RSC/route data. */
 const PRECACHE_URLS = ["/site.css"];
 
 self.addEventListener("install", (event) => {
@@ -29,14 +29,23 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
 
   /**
-   * Never cache Next.js build output or the image optimizer. Caching `/_next/*`
-   * caused stale client chunks vs fresh SSR HTML (React hydration mismatches on
-   * className, sizes, etc.) after deploys or local iteration.
+   * Never cache dynamically:
+   * - Next build/runtime assets
+   * - Flight/RSC payloads and React Server PATCH streams
+   * - REST handlers
+   * - SW update checks
+   * Stale caches here caused ChunkLoadError and broken navigations after deploy/HMR.
    */
+  const isFlight =
+    request.headers.get("RSC") === "1" ||
+    request.headers.get("Next-Router-Prefetch") === "1" ||
+    url.searchParams.has("_rsc");
+
   if (
     url.pathname.startsWith("/_next/") ||
+    url.pathname.startsWith("/api/") ||
     url.pathname === "/sw.js" ||
-    url.pathname.startsWith("/sw.js")
+    isFlight
   ) {
     event.respondWith(fetch(request));
     return;
@@ -44,20 +53,14 @@ self.addEventListener("fetch", (event) => {
 
   event.respondWith(
     (async () => {
-      // Always go to network for navigations — full document must have latest markup & scripts.
-      if (request.mode === "navigate") {
-        return fetch(request);
+      if (
+        url.origin === self.location.origin &&
+        PRECACHE_URLS.includes(url.pathname)
+      ) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
       }
-
-      const cached = await caches.match(request);
-      if (cached) return cached;
-
-      const response = await fetch(request);
-      if (response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copy));
-      }
-      return response;
+      return fetch(request);
     })()
   );
 });

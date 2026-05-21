@@ -2,18 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowLeft,
   ArrowRight,
   Clock,
   EyeOff,
   Heart,
-  MessageCircle,
   ShieldCheck,
   Sparkles,
   Users,
 } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import MatchForm from "@/components/matching/MatchForm";
 
 export const metadata: Metadata = {
   title: "Find Your Match",
@@ -204,39 +201,18 @@ export default function MatchPage() {
         </div>
       </section>
 
-      <section className="py-20 md:py-28 bg-gradient-to-br from-primary to-deep-teal text-primary-foreground">
-        <div className="container mx-auto px-4 max-w-3xl text-center">
-          <h2 className="text-3xl md:text-5xl font-display font-bold mb-5 leading-tight">
-            Ready when you are.
-          </h2>
-          <p className="text-primary-foreground/90 leading-relaxed mb-8">
-            The full sign-up + matching flow lives here. We&apos;re still
-            shipping the form (real human review, accessibility first inputs,
-            anonymous mode by default). For now, drop us a note and we&apos;ll
-            walk you through it personally.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button
-              size="lg"
-              className="bg-card text-primary hover:bg-card/90 rounded-full px-7"
-              asChild
-            >
-              <Link href="/contact">
-                <MessageCircle className="h-4 w-4" aria-hidden="true" />
-                Talk to a human
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              className="rounded-full border border-primary-foreground/25 bg-primary-foreground/12 px-7 text-primary-foreground backdrop-blur hover:bg-primary-foreground/20 hover:text-primary-foreground"
-              asChild
-            >
-              <Link href="/">
-                <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Back to home
-              </Link>
-            </Button>
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-brand-pink/5">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
+              Get matched now
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Fill out the form below. A trained sibling coach will review your
+              match before it reaches you.
+            </p>
           </div>
+          <MatchForm />
         </div>
       </section>
     </article>

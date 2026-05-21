@@ -1,19 +1,22 @@
-# Hero video assets (`public/videos`)
+# Video assets (`public/videos`)
 
-The home hero (`components/HeroVideo.tsx`) loads **three local MP4s** (muted, looping):
+The hero carousel can load **remote** MP4s (see `components/HeroVideo.tsx`). **Pexels**
+direct `videos.pexels.com` links often return **403** when embedded on your own domain, so the
+code uses hosts that allow in-browser playback unless you self-host.
 
-| File | Carousel slide |
-|------|----------------|
-| `hero-kids-arcade.mp4` | 1 |
-| `hero-boy-arcade.mp4` | 2 |
-| `hero-girl-dance.mp4` | 3 |
+**Recommended for production:** add short, muted H.264 clips here and point `SLIDES` in
+`HeroVideo.tsx` at paths like `/videos/hero-1.mp4`.
 
-Paths in code look like **`/videos/hero-kids-arcade.mp4`**.
+These **local** MP4s are kept for swapping later or other pages if you want to avoid remote video:
 
-Swap any file while keeping the same name, or rename and update **`HERO_SLIDES`** in `HeroVideo.tsx`.
+| File                    | Notes                          |
+| ----------------------- | ------------------------------ |
+| `hero-kids-arcade.mp4`  | H.264 `.mp4`, keep **muted**   |
+| `hero-boy-arcade.mp4`   | same                           |
+| `hero-girl-dance.mp4`   | same                           |
+
+To use local files in the hero again, add them to the `SLIDES` array in `HeroVideo.tsx`.
 
 ## Specs
 
 - Codec: **H.264** in `.mp4` works everywhere.
-- Mute clips in your editor — the hero always plays **`muted`**.
-- Optional fourth file **`hero-pool-fun.mp4`** is unused by the carousel but kept for future swaps.

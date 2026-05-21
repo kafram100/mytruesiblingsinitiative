@@ -58,7 +58,7 @@ const pillars = [
   {
     icon: Users,
     title: "Sibling Community",
-    desc: "Connection, mentorship, belonging — for youth and general members.",
+    desc: "Connection, mentorship, belonging for youth and general members.",
     color: "brand-yellow" as const,
     href: "/sibling-connect",
   },

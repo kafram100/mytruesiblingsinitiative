@@ -5,18 +5,21 @@ import { checkAdmin, getSessionUser, SettingsRow } from "@/lib/auth";
 import { sendTestEmail } from "@/lib/mail";
 import { logActivity } from "@/lib/activity-log";
 import { validateOrigin } from "@/lib/csrf";
+import { rateLimitByIp } from "@/lib/rate-limit";
+import { SETTINGS_SECRET_MASK } from "@/lib/settings-constants";
 
 export async function GET() {
   if (!(await checkAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const [rows] = await db.execute("SELECT `key`, `value` FROM settings");
+  const [rows] = await db.execute('SELECT "key", "value" FROM settings');
   const raw = rows as SettingsRow[];
   const SENSITIVE_KEYS = new Set(["smtp_pass", "stripe_secret_key", "stripe_webhook_secret"]);
   const settings: Record<string, string> = {};
   for (const row of raw) {
-    settings[row.key] = SENSITIVE_KEYS.has(row.key) && row.value ? "********" : (row.value || "");
+    settings[row.key] =
+      SENSITIVE_KEYS.has(row.key) && row.value ? SETTINGS_SECRET_MASK : row.value || "";
   }
 
   return NextResponse.json({ settings });
@@ -40,16 +43,31 @@ export async function PUT(request: Request) {
       "smtp_pass",
       "smtp_from",
       "stripe_publishable_key",
-      "stripe_secret_key",
-      "stripe_webhook_secret",
     ];
+
+    const envOnly = new Set(["stripe_secret_key", "stripe_webhook_secret"]);
+    for (const key of envOnly) {
+      if (key in body) {
+        return NextResponse.json(
+          { error: `${key} can only be set via environment variable` },
+          { status: 400 }
+        );
+      }
+    }
 
     const updated: string[] = [];
     for (const key of allowed) {
       if (key in body) {
+        const value = body[key];
+        if (
+          key === "smtp_pass" &&
+          (value === SETTINGS_SECRET_MASK || value === "••••••••")
+        ) {
+          continue;
+        }
         await db.execute(
-          "INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)",
-          [key, body[key]]
+          'INSERT INTO settings ("key", "value") VALUES (?, ?) ON CONFLICT ("key") DO UPDATE SET "value" = EXCLUDED.value',
+          [key, value]
         );
         updated.push(key);
       }
@@ -82,6 +100,18 @@ export async function POST(request: Request) {
     const { action, to } = await request.json();
 
     if (action === "test-email") {
+      const { ok } = await rateLimitByIp(
+        request,
+        "settings-test-email",
+        20,
+        60_000
+      );
+      if (!ok) {
+        return NextResponse.json(
+          { error: "Too many test emails. Try again shortly." },
+          { status: 429 }
+        );
+      }
       const result = await sendTestEmail(to);
       const user = await getSessionUser();
       if (user?.email) await logActivity(user.email, "settings.test_email", `To: ${to}`);

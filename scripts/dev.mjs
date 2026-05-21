@@ -25,28 +25,16 @@ function run(name, args) {
   return child;
 }
 
-const tailwind = run("tailwindcss", [
-  path.join("node_modules", "tailwindcss", "lib", "cli.js"),
-  "-i",
-  path.join("app", "globals.css"),
-  "-o",
-  path.join("public", "site.css"),
-  "--watch",
-  "--config",
-  "tailwind.config.ts",
-]);
-
 const next = run("next", [
   path.join("node_modules", "next", "dist", "bin", "next"),
   "dev",
+  "--turbo",
   ...process.argv.slice(2),
 ]);
 
 const shutdown = () => {
-  for (const child of [tailwind, next]) {
-    if (!child.killed) {
-      child.kill();
-    }
+  if (!next.killed) {
+    next.kill();
   }
 };
 

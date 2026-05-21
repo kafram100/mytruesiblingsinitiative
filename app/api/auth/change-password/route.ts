@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 import db from "@/lib/db";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, ProfileRow } from "@/lib/auth";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
 
@@ -16,8 +16,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Too many attempts. Try again later." }, { status: 429 });
     }
 
-    const user = await getSessionUser();
-    if (!user) {
+    const sessionUser = await getSessionUser();
+    if (!sessionUser) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -35,7 +35,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "New password must be different from current" }, { status: 400 });
     }
 
-    const valid = await bcrypt.compare(currentPassword, user.password_hash!);
+    const [rows] = await db.execute(
+      "SELECT password_hash FROM profiles WHERE id = ?",
+      [sessionUser.id]
+    );
+    const profiles = rows as ProfileRow[];
+    const stored = profiles[0];
+    if (!stored) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const valid = await bcrypt.compare(currentPassword, stored.password_hash);
     if (!valid) {
       return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
     }
@@ -43,8 +53,10 @@ export async function POST(request: Request) {
     const hash = await bcrypt.hash(newPassword, 12);
     await db.execute("UPDATE profiles SET password_hash = ?, must_change_password = 0 WHERE id = ?", [
       hash,
-      user.id,
+      sessionUser.id,
     ]);
+
+    await db.execute("DELETE FROM sessions WHERE user_id = ?", [sessionUser.id]);
 
     return NextResponse.json({ success: true });
   } catch (err) {

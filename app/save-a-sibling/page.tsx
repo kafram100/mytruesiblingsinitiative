@@ -5,7 +5,7 @@ import SaveASiblingClient from "@/components/save-a-sibling/SaveASiblingClient";
 export const metadata: Metadata = {
   title: "Save A Sibling",
   description:
-    "Save A Sibling — restore hope and build belonging. Donate to strengthen safe spaces, sibling matching, disability inclusion, mentorship, adult emotional support, emergency help, and outreach worldwide.",
+    "Save A Sibling: restore hope and build belonging. Donate to strengthen safe spaces, sibling matching, disability inclusion, mentorship, adult emotional support, emergency help, and outreach worldwide.",
   openGraph: {
     title: "Save A Sibling · My True Siblings",
     description:

@@ -1,44 +1,57 @@
-import mysql from "mysql2/promise";
+import { Pool } from "pg";
 
-function createPool(): mysql.Pool {
-  const host = process.env.MYSQL_HOST;
-  const user = process.env.MYSQL_USER;
-  const password = process.env.MYSQL_PASSWORD;
-  const database = process.env.MYSQL_DATABASE;
+function createPool(): Pool {
+  const connectionString = process.env.PG_CONNECTION_STRING;
+
+  if (connectionString) {
+    return new Pool({ connectionString });
+  }
+
+  const host = process.env.PG_HOST;
+  const user = process.env.PG_USER;
+  const password = process.env.PG_PASSWORD;
+  const database = process.env.PG_DATABASE;
 
   if (!host || !user || !password || !database) {
     throw new Error(
-      "Missing required MySQL env vars: MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE"
+      "Missing required PG env vars: PG_HOST, PG_USER, PG_PASSWORD, PG_DATABASE (or set PG_CONNECTION_STRING)"
     );
   }
 
-  const sslConfig = process.env.MYSQL_SSL === "true"
+  const sslConfig = process.env.PG_SSL === "true"
     ? { ssl: { rejectUnauthorized: true } }
     : {};
 
-  return mysql.createPool({
+  return new Pool({
     host,
     user,
     password,
     database,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
     ...sslConfig,
   });
 }
 
-let pool: mysql.Pool | null = null;
+let pool: Pool | null = null;
 
-function getPool(): mysql.Pool {
+function getPool(): Pool {
   if (!pool) pool = createPool();
   return pool;
 }
 
-const db: mysql.Pool = new Proxy({} as mysql.Pool, {
-  get(_, prop: string | symbol) {
-    return (getPool() as any)[prop];
+function convertPlaceholders(sql: string): string {
+  let idx = 0;
+  return sql.replace(/\?/g, () => `$${++idx}`);
+}
+
+const db = {
+  execute(sql: string, params?: unknown[]) {
+    const p = getPool();
+    const convertedSql = params ? convertPlaceholders(sql) : sql;
+    return p.query(convertedSql, params).then((result) => [result.rows]);
   },
-});
+};
 
 export default db;

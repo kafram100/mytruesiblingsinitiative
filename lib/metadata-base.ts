@@ -1,6 +1,6 @@
 /**
  * Builds metadataBase safely. Raw `new URL(process.env.NEXT_PUBLIC_SITE_URL)`
- * throws if the env var is missing a scheme / is malformed — which crashes the whole app at boot.
+ * throws if the env var is missing a scheme / is malformed, which crashes the whole app at boot.
  */
 export function getSiteMetadataBase(): URL {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();

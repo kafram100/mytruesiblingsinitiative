@@ -14,7 +14,7 @@ export async function getStripe(): Promise<Stripe> {
 
   if (!key) {
     const [rows] = await db.execute(
-      "SELECT `value` FROM settings WHERE `key` = 'stripe_secret_key'"
+      'SELECT "value" FROM settings WHERE "key" = \'stripe_secret_key\''
     );
     key = (rows as SettingsValueRow[])[0]?.value;
   }
@@ -38,7 +38,7 @@ export async function getStripeWebhookSecret(): Promise<string | null> {
   if (envSecret) return envSecret;
 
   const [rows] = await db.execute(
-    "SELECT `value` FROM settings WHERE `key` = 'stripe_webhook_secret'"
+    'SELECT "value" FROM settings WHERE "key" = \'stripe_webhook_secret\''
   );
   return (rows as SettingsValueRow[])[0]?.value || null;
 }

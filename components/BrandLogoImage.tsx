@@ -1,10 +1,8 @@
 import Image from "next/image";
 
-export const BRAND_LOGO_SRC = "/nav-logo.png";
-/** File on disk: `public/nav-logo.png` (cleaned shared brand lockup). */
-export const BRAND_LOGO_DIMENSIONS = { width: 1200, height: 654 } as const;
-/** Responsive width hint for the updated, taller logo treatment. */
-export const BRAND_LOGO_SIZES =
+const BRAND_LOGO_SRC = "/nav-logo.png";
+const BRAND_LOGO_DIMENSIONS = { width: 1200, height: 654 } as const;
+const BRAND_LOGO_SIZES =
   "(max-width: 768px) 60px, (max-width: 1200px) 74px, 83px";
 
 /**

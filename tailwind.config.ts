@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: ["class"],
@@ -71,6 +72,8 @@ const config: Config = {
         "brand-red-hex": "#F52A3D",
         "brand-dark": "#555555",
         "brand-light": "#F2F2F2",
+        /** Accent gold (SDGs, highlights): alias used on Impact & campaign pages */
+        "warm-gold": "hsl(var(--brand-yellow))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -79,6 +82,7 @@ const config: Config = {
       },
       boxShadow: {
         teal: "0 18px 40px -18px hsl(var(--primary) / 0.45)",
+        warm: "0 4px 20px -6px rgba(233, 61, 143, 0.12), 0 8px 32px -8px rgba(0, 159, 175, 0.08)",
       },
       keyframes: {
         "accordion-down": {
@@ -93,15 +97,25 @@ const config: Config = {
           from: { opacity: "0", transform: "translateY(4px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "pulse-soft": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.92", transform: "scale(1.02)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         slideUpAndFade: "slideUpAndFade 0.2s ease-out",
+        float: "float 5s ease-in-out infinite",
+        "pulse-soft": "pulse-soft 2.8s ease-in-out infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
 
 export default config;

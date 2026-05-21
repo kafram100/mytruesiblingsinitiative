@@ -40,8 +40,15 @@ yarn-error.log*
 .env*
 !.env.example
 
+# dev/error log files
+server_*.txt
+dev-*.log
+
 # vercel
 .vercel
+
+# runtime generated files
+.server-pid.txt
 
 # Capacitor native platforms
 /android/

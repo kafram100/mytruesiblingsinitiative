@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 
 import CrisisSupportPage from "@/components/crisis/CrisisSupportPage";
+import {
+  VERIFIED_CRISIS_RESOURCES,
+  CRISIS_FAQ_ITEMS,
+  COUNTRIES,
+  US_STATES,
+} from "@/lib/crisis";
 
 export const metadata: Metadata = {
   title: "Crisis Support | MyTrueSiblings",
@@ -16,5 +22,12 @@ export const metadata: Metadata = {
 };
 
 export default function CrisisRoute() {
-  return <CrisisSupportPage />;
+  return (
+    <CrisisSupportPage
+      resources={VERIFIED_CRISIS_RESOURCES}
+      countries={COUNTRIES}
+      usStates={US_STATES}
+      faqItems={CRISIS_FAQ_ITEMS}
+    />
+  );
 }

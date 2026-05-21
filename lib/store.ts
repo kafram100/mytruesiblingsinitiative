@@ -1,4 +1,4 @@
-export interface Product {
+interface Product {
   id: string;
   title: string;
   price: number;
@@ -16,7 +16,7 @@ export interface Product {
   isBestseller?: boolean;
 }
 
-export interface StoreCategory {
+interface StoreCategory {
   slug: string;
   title: string;
   subtitle: string;
@@ -31,7 +31,7 @@ export const STORE_CATEGORIES: StoreCategory[] = [
     slug: "apparel",
     title: "Apparel",
     subtitle: "Wear The Movement",
-    description: "Premium tees, hoodies, crewnecks, and more — designed for belonging.",
+    description: "Premium tees, hoodies, crewnecks, and more, designed for belonging.",
     image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80",
     gradient: "from-brand-teal to-brand-teal/80",
     productCount: 12,
@@ -592,7 +592,7 @@ export const ALL_PRODUCTS: Product[] = [
     id: "adaptive-tshirt",
     title: "Adaptive Belonging Tee",
     price: 34.99,
-    description: "Designed for accessibility — magnetic closures, soft seams, and easy on styling.",
+    description: "Designed for accessibility: magnetic closures, soft seams, and easy on styling.",
     images: ["https://images.unsplash.com/photo-1572490122747-0b6a5ff2e1d0?w=600&q=80"],
     slogan: "Belonging For All",
     category: "inclusive",
@@ -756,14 +756,6 @@ export function getProductsByCategory(slug: string): Product[] {
 
 export function getProductById(id: string): Product | undefined {
   return ALL_PRODUCTS.find((p) => p.id === id);
-}
-
-export function getBestsellers(): Product[] {
-  return ALL_PRODUCTS.filter((p) => p.isBestseller);
-}
-
-export function getNewArrivals(): Product[] {
-  return ALL_PRODUCTS.filter((p) => p.isNew);
 }
 
 export function getCategory(slug: string): StoreCategory | undefined {

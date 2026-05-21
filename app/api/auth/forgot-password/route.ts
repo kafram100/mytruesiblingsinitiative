@@ -37,20 +37,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true });
     }
 
-    const forwarded = request.headers.get("x-forwarded-for");
-    const ipAddress = forwarded?.split(",")[0]?.trim() || null;
-
-    const sessionId = randomUUID();
+    const id = randomUUID();
     const token = randomUUID();
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
 
     await db.execute(
-      "INSERT INTO password_resets (id, user_id, token, ip_address, expires_at) VALUES (?, ?, ?, ?, ?)",
-      [sessionId, user.id, token, ipAddress, expiresAt]
+      "INSERT INTO password_resets (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)",
+      [id, user.id, token, expiresAt]
     );
 
     const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    const resetLink = `${origin}/admin/reset-password?session=${sessionId}`;
+    const resetLink = `${origin}/admin/reset-password?session=${token}`;
 
     await sendPasswordResetEmail(user.email, resetLink);
 

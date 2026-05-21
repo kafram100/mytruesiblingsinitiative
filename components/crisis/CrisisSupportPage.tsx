@@ -11,11 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  VERIFIED_CRISIS_RESOURCES, COUNTRIES, US_STATES, CRISIS_TYPES,
-  getResourcesByCountry, CRISIS_FAQ_ITEMS,
-  type CrisisResource,
-} from "@/lib/crisis";
+import { getResourcesByCountry, type CrisisResource } from "@/lib/crisis";
 
 function AccordionItem({ q, a, isOpen, onClick }: { q: string; a: string; isOpen: boolean; onClick: () => void }) {
   return (
@@ -88,7 +84,19 @@ function ResourceCard({ resource, compact }: { resource: CrisisResource; compact
   );
 }
 
-export default function CrisisSupportPage() {
+interface CrisisSupportPageProps {
+  resources: CrisisResource[];
+  countries: { name: string; code: string }[];
+  usStates: string[];
+  faqItems: { q: string; a: string }[];
+}
+
+export default function CrisisSupportPage({
+  resources: VERIFIED_CRISIS_RESOURCES = [],
+  countries: COUNTRIES = [],
+  usStates: US_STATES = [],
+  faqItems: CRISIS_FAQ_ITEMS = [],
+}: CrisisSupportPageProps) {
   const [searchCountry, setSearchCountry] = useState("");
   const [searchCrisisType, setSearchCrisisType] = useState("");
   const [showHelpWizard, setShowHelpWizard] = useState(false);
@@ -107,7 +115,7 @@ export default function CrisisSupportPage() {
       if (searchCrisisType && !r.crisisTypes.includes(searchCrisisType)) return false;
       return true;
     });
-  }, [searchCountry, searchCrisisType]);
+  }, [VERIFIED_CRISIS_RESOURCES, searchCountry, searchCrisisType]);
 
   const countryResources = useMemo(() => {
     if (!selectedCountry) return [];
@@ -125,12 +133,13 @@ export default function CrisisSupportPage() {
       map[r.country].push(r);
     });
     return map;
-  }, []);
+  }, [VERIFIED_CRISIS_RESOURCES]);
 
   return (
     <div className="min-h-screen bg-white">
       {/* QUICK EXIT BAR */}
-      <div className="fixed right-3 top-3 z-50 flex items-start gap-2">
+      {/* z-40: below sticky SiteHeader (z-[60]) so mobile hamburger/menu stay on top */}
+      <div className="fixed right-3 top-3 z-40 flex items-start gap-2">
         {showQuickExit && (
           <div className="rounded-lg bg-black/80 px-3 py-2 text-xs text-white shadow-lg max-w-40">
             <Lock className="mb-1 h-3 w-3" />
@@ -150,7 +159,7 @@ export default function CrisisSupportPage() {
         </Button>
       </div>
 
-      {/* EMERGENCY ALERT BANNER — top, text only */}
+      {/* EMERGENCY ALERT BANNER: top, text only */}
       <div className="bg-brand-red-hex pt-14 md:pt-0">
         <div className="container mx-auto px-4 py-8 md:py-10">
           <div className="flex flex-col items-center gap-3 text-center">
@@ -253,10 +262,10 @@ export default function CrisisSupportPage() {
                   <p className="mt-2 text-sm text-gray-500">This will help us guide you to the right help.</p>
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                     <Button onClick={() => { setWizardDanger(true); setWizardStep(4); }} variant="primary" className="flex-1 rounded-full bg-brand-red-hex text-primary-foreground hover:bg-brand-red-hex/90">
-                      Yes — I need emergency help
+                      Yes, I need emergency help
                     </Button>
                     <Button onClick={() => { setWizardDanger(false); setWizardStep(2); }} variant="secondary" className="flex-1 rounded-full">
-                      No — I need crisis support
+                      No, I need crisis support
                     </Button>
                   </div>
                 </div>
@@ -498,7 +507,7 @@ export default function CrisisSupportPage() {
           <div className="mx-auto max-w-5xl">
             <div className="text-center">
               <MapPin className="mx-auto h-8 w-8 text-brand-teal" />
-              <h2 className="mt-3 font-display text-2xl font-bold text-gray-900 md:text-3xl">United States — State Resources</h2>
+              <h2 className="mt-3 font-display text-2xl font-bold text-gray-900 md:text-3xl">United States: State Resources</h2>
               <p className="mt-2 text-sm text-gray-500">Select a state for local crisis resources. 988 connects you to your local crisis center.</p>
             </div>
 
@@ -633,7 +642,7 @@ export default function CrisisSupportPage() {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Button type="button" variant="primary" onClick={quickExit} className="rounded-full bg-brand-red-hex px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg hover:bg-brand-red-hex/90">
-                <X className="h-4 w-4" />Quick Exit — Leave This Page
+                <X className="h-4 w-4" />Quick Exit: Leave This Page
               </Button>
               <Button asChild variant="secondary" className="rounded-full px-6 py-3 text-sm font-semibold text-gray-700">
                 <a href="https://www.google.com" target="_blank" rel="noopener noreferrer">

@@ -69,8 +69,8 @@ export default function ImpactBanner() {
         </div>
 
         <div className="mt-8 rounded-2xl bg-white/70 p-4 text-center text-sm text-gray-500 backdrop-blur-sm">
-          <span className="font-medium text-brand-teal">Belonging Initiatives</span>
-          {" "}— Every item purchased helps fund our global belonging movement.
+          <span className="font-medium text-brand-teal">Belonging Initiatives.</span>{" "}
+          Every item purchased helps fund our global belonging movement.
         </div>
       </div>
     </section>

@@ -28,6 +28,9 @@ const buttonVariants = cva(
         ghost:
           "border border-transparent bg-transparent text-primary hover:bg-accent hover:text-accent-foreground shadow-none hover:shadow-none motion-safe:hover:translate-y-0",
         link: "border-transparent bg-transparent text-primary underline-offset-4 shadow-none hover:underline hover:bg-transparent hover:shadow-none motion-safe:hover:translate-y-0",
+        hero: "border border-transparent bg-gradient-to-r from-[#009FAF] to-[#00736B] text-white shadow-lg shadow-[#009FAF]/30 hover:shadow-xl hover:shadow-[#009FAF]/40 hover:from-[#009FAF]/90 hover:to-[#00736B]/90",
+        warm: "border border-transparent bg-gradient-to-r from-[#FF7A00] to-[#E93D8F] text-white shadow-lg shadow-[#E93D8F]/25 hover:shadow-xl hover:shadow-[#E93D8F]/35 hover:from-[#FF7A00]/90 hover:to-[#E93D8F]/90",
+        "hero-outline": "border-2 border-[#009FAF]/40 bg-transparent text-[#009FAF] shadow-sm hover:bg-[#009FAF]/10 hover:border-[#009FAF]/60",
       },
       size: {
         default: "h-10 px-4 py-2",

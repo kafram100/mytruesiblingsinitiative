@@ -36,7 +36,7 @@ const safeSteps: SafeStep[] = [
   {
     n: "01",
     title: "Onboarding Complete",
-    text: "User finishes profile setup: age, identity, language, goals captured securely.",
+    text: "User finishes profile setup with age, identity, language, and goals captured securely.",
     Icon: UserRound,
     iconBox: "bg-primary text-primary-foreground",
   },
@@ -71,7 +71,7 @@ const safeSteps: SafeStep[] = [
   {
     n: "06",
     title: "Score Each Candidate",
-    text: "Need — Language — Life Stage — Interest — Availability — Time Zone — Style — Trust.",
+    text: "Need, language, life stage, interest, availability, time zone, style, trust.",
     Icon: ListChecks,
     iconBox: "bg-brand-yellow text-foreground",
   },
@@ -143,16 +143,13 @@ export default function SafeMatchingSections() {
         <div className="container mx-auto px-4">
           <div className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
             <p className="mb-4 inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
-              <span aria-hidden className="mr-1 text-primary/80">
-                #
-              </span>
               Safe Matching Engine
             </p>
             <h2
               id="safe-matching-heading"
               className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl"
             >
-              How We Match Siblings — Safely
+              How We Match Siblings, Safely
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
               A trauma informed, safety first algorithm that prioritises wellbeing
@@ -193,10 +190,10 @@ export default function SafeMatchingSections() {
         </div>
       </section>
 
-      {/* Section 2: Match Score Composition — discrete teal card on page bg (not bundled with muted band above) */}
+      {/* Section 2: Match Score Composition: discrete teal card on page bg (not bundled with muted band above) */}
       <section
         aria-labelledby="match-score-heading"
-        className="bg-background pb-6 pt-6 md:pb-10 md:pt-10"
+        className="bg-background pb-6 pt-12 md:pb-10 md:pt-16"
       >
         <div className="container mx-auto px-4">
           <motion.div

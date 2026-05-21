@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 
 import { getStripe } from "@/lib/stripe";
+import { getProductById } from "@/lib/store";
 import db from "@/lib/db";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
@@ -29,13 +30,58 @@ export async function POST(request: Request) {
       );
     }
 
+    const validatedItems: { title: string; price: number; quantity: number; image?: string }[] = [];
+    let totalAmount = 0;
+
+    for (const item of items) {
+      if (!item.id || !item.quantity || item.quantity < 1) {
+        return NextResponse.json(
+          { error: "Invalid item in cart" },
+          { status: 400 }
+        );
+      }
+
+      const product = getProductById(item.id);
+      if (!product) {
+        return NextResponse.json(
+          { error: `Product not found: ${item.id}` },
+          { status: 400 }
+        );
+      }
+
+      const qty = Math.floor(Number(item.quantity));
+      if (qty < 1 || qty > 100) {
+        return NextResponse.json(
+          { error: "Invalid quantity" },
+          { status: 400 }
+        );
+      }
+
+      validatedItems.push({
+        title: product.title,
+        price: product.price,
+        quantity: qty,
+        image: product.images[0],
+      });
+
+      totalAmount += product.price * qty;
+    }
+
+    totalAmount = Math.round(totalAmount * 100) / 100;
+
+    if (totalAmount <= 0 || totalAmount > 999999.99) {
+      return NextResponse.json(
+        { error: "Invalid total amount" },
+        { status: 400 }
+      );
+    }
+
     const orderId = randomUUID();
-    const totalAmount = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
 
     await db.execute(
       `INSERT INTO orders (id, items, total_amount, currency, status)
        VALUES (?, ?, ?, 'USD', 'pending')`,
-      [orderId, JSON.stringify(items), totalAmount]
+      [orderId, JSON.stringify(validatedItems), totalAmount]
     );
 
     const origin = request.headers.get("origin") || "http://localhost:3000";
@@ -44,7 +90,7 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card", "link"],
-      line_items: items.map((item: any) => ({
+      line_items: validatedItems.map((item) => ({
         price_data: {
           currency: "usd",
           product_data: {

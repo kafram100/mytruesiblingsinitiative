@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 
+import "./globals.css";
 import AppShell from "@/components/AppShell";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getSiteMetadataBase } from "@/lib/metadata-base";
@@ -67,7 +68,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "MyTrueSiblings — A Global Safe Space for Belonging",
+        alt: "MyTrueSiblings: A Global Safe Space for Belonging",
       },
     ],
   },
@@ -79,13 +80,8 @@ export const metadata: Metadata = {
     images: ["/og-image.jpg"],
   },
   icons: {
-    icon: [
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png" }],
+    icon: [{ url: "/my-true-siblings-favicon.png", type: "image/png" }],
+    apple: [{ url: "/my-true-siblings-favicon.png", type: "image/png" }],
   },
   manifest: "/manifest.webmanifest",
 };
@@ -102,7 +98,6 @@ export default async function RootLayout({
       className={`${fontSans.variable} ${fontDisplay.variable}`}
     >
       <head>
-        <link rel="stylesheet" href="/site.css" />
         <meta name="theme-color" content="#009FAF" />
         <meta name="apple-mobile-web-app-title" content="MyTrueSiblings" />
         <script
@@ -132,7 +127,7 @@ export default async function RootLayout({
               __html: `
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/sw.js?v=5").catch(function () {});
+    navigator.serviceWorker.register("/sw.js?v=6").catch(function () {});
   });
 }`,
             }}

@@ -14,7 +14,7 @@ const sections = [
   {
     title: "Information We Collect",
     content:
-      "We collect only the information you voluntarily provide: name, email address, and any messages you send via our contact form. If you make a donation, we collect payment information through Stripe — we do not store credit card numbers on our servers. When you sign up for matching or mentorship, we collect the profile details you choose to share (interests, language, age range, and optional photo).",
+      "We collect only the information you voluntarily provide: name, email address, and any messages you send via our contact form. If you make a donation, we collect payment information through Stripe. We do not store credit card numbers on our servers. When you sign up for matching or mentorship, we collect the profile details you choose to share (interests, language, age range, and optional photo).",
   },
   {
     title: "How We Use Your Information",

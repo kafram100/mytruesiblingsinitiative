@@ -6,10 +6,10 @@ import { rateLimitByIp } from "@/lib/rate-limit";
 import { logActivity } from "@/lib/activity-log";
 
 const PERIOD_SQL: Record<string, string> = {
-  today: "created_at >= CURDATE()",
-  this_week: "created_at >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)",
-  this_month: "created_at >= DATE_SUB(CURDATE(), INTERVAL DAYOFMONTH(CURDATE()) - 1 DAY)",
-  this_year: "created_at >= MAKEDATE(YEAR(CURDATE()), 1)",
+  today: "created_at >= CURRENT_DATE",
+  this_week: "created_at >= date_trunc('week', CURRENT_DATE)",
+  this_month: "created_at >= date_trunc('month', CURRENT_DATE)",
+  this_year: "created_at >= date_trunc('year', CURRENT_DATE)",
 };
 
 const PERIOD_LABELS: Record<string, string> = {
@@ -52,7 +52,7 @@ const EXPORT_CONFIG: Record<
     columns: ["id", "name", "email", "subject", "message", "read", "created_at"],
     table: "contacts",
     select:
-      "id, name, email, subject, message, `read`, created_at",
+      'id, name, email, subject, message, "read", created_at',
   },
   donations: {
     columns: [

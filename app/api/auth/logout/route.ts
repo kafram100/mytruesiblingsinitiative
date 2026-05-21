@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 import db from "@/lib/db";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, hashToken } from "@/lib/auth";
 import { logActivity } from "@/lib/activity-log";
 import { validateOrigin } from "@/lib/csrf";
 
@@ -15,14 +15,14 @@ export async function POST(request: Request) {
 
     if (token) {
       const user = await getSessionUser();
-      await db.execute("DELETE FROM sessions WHERE token = ?", [token]);
+      await db.execute("DELETE FROM sessions WHERE token = ?", [hashToken(token)]);
       if (user?.email) await logActivity(user.email, "logout");
     }
 
     cookieStore.set("admin_token", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       path: "/",
       expires: new Date(0),
     });
