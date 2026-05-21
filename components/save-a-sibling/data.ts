@@ -1,5 +1,5 @@
 export const IMPACT_AMOUNT_PRESETS = [
-  { id: "5", amountUsd: 5, title: "A Meal of Hope", detail: "A warm meal and a kind word\u2014a small gesture that tells someone they are seen." },
+  { id: "5", amountUsd: 5, title: "A Meal of Hope", detail: "A warm meal and a kind word, a small gesture that tells someone they are seen." },
   { id: "10", amountUsd: 10, title: "A Check-In That Matters", detail: "Funds a caring follow-up call so no one slips through silence alone." },
   { id: "25", amountUsd: 25, title: "A Seat at the Circle", detail: "Reserves a place in a safe support circle where real connection begins." },
   { id: "50", amountUsd: 50, title: "Access for All", detail: "Provides accessibility tools so every sibling can fully belong." },
