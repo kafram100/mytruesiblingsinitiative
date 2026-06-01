@@ -234,7 +234,7 @@ export default function MentorDashboard() {
           <GraduationCap className="mx-auto h-12 w-12 text-muted-foreground/40 mb-4" />
           <h2 className="text-xl font-display font-bold mb-2">Welcome to the Mentor Program</h2>
           <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-            Your profile is live. Siblings looking for guidance will find you here. You'll get notified when someone requests your mentorship.
+            Your profile is live. Siblings looking for guidance will find you here. You&apos;ll get notified when someone requests your mentorship.
           </p>
           <Button asChild className="rounded-full">
             <Link href="/account/mentor/profile">
