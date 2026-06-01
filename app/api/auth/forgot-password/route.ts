@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
+import { randomUUID, createHash } from "crypto";
 
 import db from "@/lib/db";
 import { ProfileRow } from "@/lib/auth";
@@ -7,10 +7,19 @@ import { sendPasswordResetEmail } from "@/lib/mail";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
 
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
+
 export async function POST(request: Request) {
   try {
     const csrf = validateOrigin(request);
     if (!csrf.ok) return csrf.error;
+
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 1024) {
+      return NextResponse.json({ error: "Request body too large" }, { status: 413 });
+    }
 
     const { ok } = await rateLimitByIp(request, "forgot-password", 3, 60_000);
     if (!ok) {
@@ -43,11 +52,11 @@ export async function POST(request: Request) {
 
     await db.execute(
       "INSERT INTO password_resets (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)",
-      [id, user.id, token, expiresAt]
+      [id, user.id, hashToken(token), expiresAt]
     );
 
     const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    const resetLink = `${origin}/admin/reset-password?session=${token}`;
+    const resetLink = `${origin}/admin/reset-password/${token}`;
 
     await sendPasswordResetEmail(user.email, resetLink);
 

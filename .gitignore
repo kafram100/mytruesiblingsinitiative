@@ -24,7 +24,7 @@
 
 # dev log files
 .dev-*.log
-.start-*.log
+.startup*
 .tailwind-check.css
 
 # generated build output (Tailwind output)

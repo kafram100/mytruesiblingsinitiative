@@ -62,7 +62,13 @@ export async function rateLimitByIp(
   maxAttempts: number,
   windowMs: number
 ) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || "unknown";
+  const trustProxy = process.env.TRUST_PROXY === "true";
+  let ip: string;
+  if (trustProxy) {
+    const forwarded = request.headers.get("x-forwarded-for");
+    ip = forwarded?.split(",")[0]?.trim() || "unknown";
+  } else {
+    ip = request.headers.get("x-real-ip") || "unknown";
+  }
   return rateLimit(`${endpoint}:${ip}`, maxAttempts, windowMs);
 }

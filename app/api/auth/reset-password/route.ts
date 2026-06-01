@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { createHash } from "crypto";
 
 import db from "@/lib/db";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
+
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
 
 interface PasswordResetRow {
   id: string;
@@ -16,6 +21,11 @@ export async function POST(request: Request) {
   try {
     const csrf = validateOrigin(request);
     if (!csrf.ok) return csrf.error;
+
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 1024) {
+      return NextResponse.json({ error: "Request body too large" }, { status: 413 });
+    }
 
     const { ok } = await rateLimitByIp(request, "reset-password", 5, 60_000);
     if (!ok) {
@@ -37,7 +47,7 @@ export async function POST(request: Request) {
 
     const [rows] = await db.execute(
       "SELECT id, user_id FROM password_resets WHERE token = ? AND used = 0 AND expires_at > NOW()",
-      [session]
+      [hashToken(session)]
     );
     const resets = rows as PasswordResetRow[];
     const reset = resets[0];

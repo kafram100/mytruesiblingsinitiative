@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
+import { randomUUID, createHash } from "crypto";
 import bcrypt from "bcryptjs";
 import db from "@/lib/db";
 import { rateLimitByIp } from "@/lib/rate-limit";
 import { validateOrigin } from "@/lib/csrf";
+import { sendVerificationEmail } from "@/lib/mail";
+
+function hashToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,6 +16,11 @@ export async function POST(request: Request) {
   try {
     const csrf = validateOrigin(request);
     if (!csrf.ok) return csrf.error;
+
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 10_240) {
+      return NextResponse.json({ error: "Request body too large" }, { status: 413 });
+    }
 
     const { ok } = await rateLimitByIp(request, "register", 5, 60_000);
     if (!ok) {
@@ -51,14 +61,25 @@ export async function POST(request: Request) {
     const passwordHash = await bcrypt.hash(password, 12);
 
     await db.execute(
-      `INSERT INTO profiles (id, email, full_name, role, password_hash, must_change_password)
-       VALUES (?, ?, ?, 'user', ?, 0)`,
+      `INSERT INTO profiles (id, email, full_name, role, password_hash, must_change_password, email_verified)
+       VALUES (?, ?, ?, 'user', ?, 0, 0)`,
       [id, email.trim().toLowerCase(), fullName.trim(), passwordHash]
     );
 
+    const verificationToken = randomUUID();
+    const verificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await db.execute(
+      "INSERT INTO verification_tokens (id, user_id, token, expires_at) VALUES (?, ?, ?, ?)",
+      [randomUUID(), id, hashToken(verificationToken), verificationExpiresAt]
+    );
+
+    const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const verificationLink = `${origin}/verify-email/${verificationToken}`;
+    await sendVerificationEmail(email.trim().toLowerCase(), fullName.trim(), verificationLink);
+
     return NextResponse.json({
       success: true,
-      message: "Account created successfully. Welcome to the family!",
+      message: "Account created successfully. Please check your email to verify your account.",
     });
   } catch (err) {
     console.error("Registration error:", err);

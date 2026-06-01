@@ -50,7 +50,8 @@ export async function sendNotificationEmail(
 
   try {
     await transporter.sendMail({
-      from: settings.smtp_from || settings.smtp_user || email,
+      from: settings.smtp_from || settings.smtp_user || 'noreply@mytruesiblingsinitiative.org',
+      replyTo: email,
       to,
       subject: `[Contact Form] ${subject}`,
       html,
@@ -363,6 +364,51 @@ export async function sendSupportReplyEmail(
     });
   } catch (err) {
     console.error("Failed to send support reply email:", err);
+  }
+}
+
+export async function sendVerificationEmail(
+  email: string,
+  name: string,
+  verificationLink: string
+) {
+  const settings = await getSettings();
+  const transporter = await createTransporter();
+  if (!transporter) return;
+
+  const from = settings.smtp_from || settings.smtp_user;
+  if (!from) return;
+
+  const html = `
+    <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#175550;">Welcome to My True Siblings Initiative</h2>
+      <p>Dear ${escapeHtml(name)},</p>
+      <p>Thank you for creating an account. Please verify your email address by clicking the button below.</p>
+      <p style="margin:24px 0;">
+        <a href="${verificationLink}" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          Verify Email Address
+        </a>
+      </p>
+      <p style="font-size:12px;color:#888;">
+        If the button doesn't work, copy this link: ${verificationLink}
+      </p>
+      <hr style="border:none;border-top:1px solid #ddd;margin:16px 0;" />
+      <p style="font-size:12px;color:#888;">
+        If you didn't create an account, you can safely ignore this email.<br/>
+        This link expires in 24 hours.
+      </p>
+    </div>
+  `;
+
+  try {
+    await transporter.sendMail({
+      from,
+      to: email,
+      subject: "Verify your email - My True Siblings Initiative",
+      html,
+    });
+  } catch (err) {
+    console.error("Failed to send verification email:", err);
   }
 }
 

@@ -11,6 +11,11 @@ export async function POST(request: Request) {
     const csrf = validateOrigin(request);
     if (!csrf.ok) return csrf.error;
 
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 2048) {
+      return NextResponse.json({ error: "Request body too large" }, { status: 413 });
+    }
+
     const { ok } = await rateLimitByIp(request, "change-password", 5, 60_000);
     if (!ok) {
       return NextResponse.json({ error: "Too many attempts. Try again later." }, { status: 429 });

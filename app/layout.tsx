@@ -122,20 +122,9 @@ export default async function RootLayout({
           }}
         />
         {process.env.NODE_ENV === "production" ? (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function () {
-    navigator.serviceWorker.register("/sw.js?v=6").catch(function () {});
-  });
-}`,
-            }}
-          />
+          <script src="/sw-register.js" defer />
         ) : null}
-        <script dangerouslySetInnerHTML={{
-          __html: "(function(){function c(){try{var e=document.querySelectorAll('.simulator-pre-loader,div[class*=simulator]');for(var i=0;i<e.length;i++)e[i].remove()}catch(e){}}c();try{new MutationObserver(c).observe(document.documentElement,{childList:true,subtree:true})}catch(e){}})()"
-        }} />
+        <script src="/simulator-fix.js" defer />
       </head>
       <body className={fontSans.className}>
         <TooltipProvider>

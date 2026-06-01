@@ -46,6 +46,7 @@ async function main() {
       role VARCHAR(20) NOT NULL DEFAULT 'user',
       password_hash VARCHAR(255) NOT NULL,
       must_change_password SMALLINT NOT NULL DEFAULT 0,
+      email_verified SMALLINT NOT NULL DEFAULT 0,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`,
     `CREATE TABLE IF NOT EXISTS sessions (
@@ -70,8 +71,16 @@ async function main() {
     `CREATE TABLE IF NOT EXISTS password_resets (
       id VARCHAR(36) PRIMARY KEY,
       user_id VARCHAR(36) NOT NULL,
-      token VARCHAR(36) NOT NULL,
+      token VARCHAR(255) NOT NULL,
       ip_address VARCHAR(45) DEFAULT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      used SMALLINT NOT NULL DEFAULT 0,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`,
+    `CREATE TABLE IF NOT EXISTS verification_tokens (
+      id VARCHAR(36) PRIMARY KEY,
+      user_id VARCHAR(36) NOT NULL,
+      token VARCHAR(255) NOT NULL,
       expires_at TIMESTAMP NOT NULL,
       used SMALLINT NOT NULL DEFAULT 0,
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -140,6 +149,34 @@ async function main() {
     console.log("  + Added ip_address column to password_resets");
   } catch {
     // column already exists
+  }
+
+  // Add email_verified column to profiles if not present
+  try {
+    await pool.query(
+      "ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email_verified SMALLINT NOT NULL DEFAULT 0"
+    );
+    console.log("  + Added email_verified column to profiles");
+  } catch {
+    // column already exists
+  }
+
+  // Set email_verified = 1 for all existing users (backward compatibility)
+  try {
+    await pool.query("UPDATE profiles SET email_verified = 1 WHERE email_verified IS NULL OR email_verified = 0");
+    console.log("  + Set email_verified = 1 for all existing users");
+  } catch {
+    // column may not exist yet
+  }
+
+  // Widen password_resets.token column for SHA-256 hashed tokens
+  try {
+    await pool.query(
+      "ALTER TABLE password_resets ALTER COLUMN token TYPE VARCHAR(255)"
+    );
+    console.log("  + Widened password_resets.token column");
+  } catch {
+    // column may already be wide enough or not exist
   }
 
   // Match requests for sibling matching

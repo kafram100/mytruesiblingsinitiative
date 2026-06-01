@@ -15,6 +15,11 @@ export async function POST(request: Request) {
     const csrf = validateOrigin(request);
     if (!csrf.ok) return csrf.error;
 
+    const contentLength = parseInt(request.headers.get("content-length") || "0", 10);
+    if (contentLength > 10_240) {
+      return NextResponse.json({ error: "Request body too large" }, { status: 413 });
+    }
+
     const { ok: ipOk } = await rateLimitByIp(request, "login", 10, 60_000);
     if (!ipOk) {
       return NextResponse.json(

@@ -14,6 +14,7 @@ export interface SiblingUser {
   timezone: string | null;
   date_of_birth: string | null;
   role: string;
+  email_verified: number;
   created_at: string;
   isPendingMentor?: boolean;
 }
@@ -28,7 +29,7 @@ export async function getSiblingSession(): Promise<SiblingUser | null> {
   if (!token) return null;
 
   const [rows] = await db.execute(
-    `SELECT p.id, p.email, p.full_name, p.display_name, p.bio, p.avatar_url, p.pronouns, p.location_city, p.timezone, p.date_of_birth, p.role, p.created_at,
+    `SELECT p.id, p.email, p.full_name, p.display_name, p.bio, p.avatar_url, p.pronouns, p.location_city, p.timezone, p.date_of_birth, p.role, p.email_verified, p.created_at,
             mp.approved AS mentor_approved
      FROM sessions s
      JOIN profiles p ON p.id = s.user_id
