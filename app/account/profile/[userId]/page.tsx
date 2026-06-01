@@ -93,6 +93,21 @@ export default async function PublicProfilePage({
 
   const displayName = (profile.display_name as string) || (profile.full_name as string) || "Unknown";
   const age = calcAge(profile.date_of_birth as string | null);
+  const pronouns = profile.pronouns as string | undefined;
+  const locationCity = profile.location_city as string | undefined;
+  const avatarUrl = profile.avatar_url as string | undefined;
+  const bio = profile.bio as string | undefined;
+  const role = profile.role as string;
+  const mentorOccupation = mentorDetails?.occupation as string | undefined;
+  const mentorOrganization = mentorDetails?.organization as string | undefined;
+  const mentorCertification = mentorDetails?.certification as string | undefined;
+  const mentorExperienceYears = mentorDetails?.experience_years as number | undefined;
+  const mentorMentorshipBio = mentorDetails?.mentorship_bio as string | undefined;
+  const mrPillar = matchRequest?.pillar as string | undefined;
+  const mrSupportType = matchRequest?.support_type as string | undefined;
+  const mrLanguage = matchRequest?.language as string | undefined;
+  const mrAgeRange = matchRequest?.age_range as string | undefined;
+  const createdAt = profile.created_at as string;
 
   return (
     <div className="max-w-2xl">
@@ -109,8 +124,8 @@ export default async function PublicProfilePage({
         <div className="bg-gradient-to-r from-brand-teal/10 via-brand-pink-hex/10 to-brand-yellow-hex/10 p-6 md:p-8">
           <div className="flex items-center gap-4">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted ring-4 ring-white">
-              {profile.avatar_url ? (
-                <img src={profile.avatar_url as string} alt="" className="h-full w-full object-cover" />
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
               ) : (
                 <UserIcon className="h-8 w-8 text-muted-foreground" />
               )}
@@ -118,7 +133,7 @@ export default async function PublicProfilePage({
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl font-display font-bold truncate">{displayName}</h1>
-                {roleBadge((profile.role as string) || "")}
+                {roleBadge(role)}
               </div>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground mt-1">
                 {age && (
@@ -127,13 +142,13 @@ export default async function PublicProfilePage({
                     {age} years old
                   </span>
                 )}
-                {profile.pronouns && (
-                  <span>{profile.pronouns as string}</span>
+                {pronouns && (
+                  <span>{pronouns}</span>
                 )}
-                {profile.location_city && (
+                {locationCity && (
                   <span className="inline-flex items-center gap-1">
                     <MapPin className="h-3.5 w-3.5" />
-                    {profile.location_city as string}
+                    {locationCity}
                   </span>
                 )}
               </div>
@@ -146,41 +161,41 @@ export default async function PublicProfilePage({
           <div className="px-6 md:px-8 py-4 border-b border-border">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Mentor Profile</h2>
             <div className="flex flex-wrap gap-2 mb-3">
-              {mentorDetails.occupation && (
+              {mentorOccupation && (
                 <span className="inline-flex items-center rounded-full border bg-muted px-3 py-1 text-xs font-medium">
-                  {mentorDetails.occupation as string}
+                  {mentorOccupation}
                 </span>
               )}
-              {mentorDetails.organization && (
+              {mentorOrganization && (
                 <span className="inline-flex items-center rounded-full border bg-muted px-3 py-1 text-xs font-medium">
-                  {mentorDetails.organization as string}
+                  {mentorOrganization}
                 </span>
               )}
-              {mentorDetails.certification && (
+              {mentorCertification && (
                 <span className="inline-flex items-center rounded-full border bg-brand-teal/10 text-brand-teal px-3 py-1 text-xs font-medium">
-                  {mentorDetails.certification as string}
+                  {mentorCertification}
                 </span>
               )}
               <span className="inline-flex items-center gap-1 rounded-full border bg-muted px-3 py-1 text-xs font-medium">
                 <GraduationCap className="h-3 w-3" />
-                {(mentorDetails.experience_years as number) > 0
-                  ? `${mentorDetails.experience_years as number}y experience`
+                {mentorExperienceYears && mentorExperienceYears > 0
+                  ? `${mentorExperienceYears}y experience`
                   : "New mentor"}
               </span>
             </div>
-            {mentorDetails.mentorship_bio && (
+            {mentorMentorshipBio && (
               <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap mt-2">
-                {mentorDetails.mentorship_bio as string}
+                {mentorMentorshipBio}
               </p>
             )}
           </div>
         )}
 
         {/* Bio */}
-        {profile.bio && (
+        {bio && (
           <div className="px-6 md:px-8 py-4 border-b border-border">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">About</h2>
-            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{profile.bio as string}</p>
+            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{bio}</p>
           </div>
         )}
 
@@ -192,20 +207,20 @@ export default async function PublicProfilePage({
             </h2>
             <div className="flex flex-wrap gap-2 mb-3">
               <span className="inline-flex items-center rounded-full border bg-muted px-3 py-1 text-xs font-medium">
-                {pillarLabels[matchRequest.pillar as string] || (matchRequest.pillar as string)}
+                {pillarLabels[mrPillar || ""] || mrPillar}
               </span>
               <span className="inline-flex items-center rounded-full border bg-muted px-3 py-1 text-xs font-medium">
-                {supportLabels[matchRequest.support_type as string] || (matchRequest.support_type as string)}
+                {supportLabels[mrSupportType || ""] || mrSupportType}
               </span>
-              {matchRequest.language && (
+              {mrLanguage && (
                 <span className="inline-flex items-center gap-1 rounded-full border bg-muted px-3 py-1 text-xs font-medium">
                   <Languages className="h-3 w-3" />
-                  {matchRequest.language as string}
+                  {mrLanguage}
                 </span>
               )}
-              {matchRequest.age_range && (
+              {mrAgeRange && (
                 <span className="inline-flex items-center rounded-full border bg-muted px-3 py-1 text-xs font-medium">
-                  Age: {matchRequest.age_range as string}
+                  Age: {mrAgeRange}
                 </span>
               )}
             </div>
@@ -227,7 +242,7 @@ export default async function PublicProfilePage({
         {/* Member since */}
         <div className="px-6 md:px-8 py-3">
           <p className="text-xs text-muted-foreground">
-            Member since {new Date(profile.created_at as string).toLocaleDateString("en-US", {
+            Member since {new Date(createdAt).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",

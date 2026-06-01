@@ -319,7 +319,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
                     displayColors: false,
                     callbacks: {
                       title: (items) => items[0].label,
-                      label: (ctx) => ` ${formatNumber(ctx.parsed.y)} total`,
+                      label: (ctx) => ` ${formatNumber(ctx.parsed.y ?? 0)} total`,
                       afterLabel: (ctx) => {
                         const m = chartData[ctx.dataIndex];
                         return [
@@ -338,7 +338,7 @@ export default function DashboardOverview({ onNavigate }: { onNavigate?: (sectio
                   },
                   y: {
                     beginAtZero: true,
-                    grid: { color: "rgba(0,0,0,0.05)", drawBorder: false },
+                    grid: { color: "rgba(0,0,0,0.05)" },
                     ticks: { font: { size: 10 }, color: "#888", maxTicksLimit: 5 },
                   },
                 },
