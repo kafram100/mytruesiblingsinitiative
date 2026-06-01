@@ -179,6 +179,31 @@ async function main() {
     // column may already be wide enough or not exist
   }
 
+  // Mentor profiles for sibling_coach role
+  const mentorTables = [
+    `CREATE TABLE IF NOT EXISTS mentor_profiles (
+      id VARCHAR(36) PRIMARY KEY,
+      user_id VARCHAR(36) NOT NULL UNIQUE,
+      approved SMALLINT NOT NULL DEFAULT 0,
+      experience_years INTEGER DEFAULT 0,
+      certification VARCHAR(255),
+      occupation VARCHAR(255),
+      organization VARCHAR(255),
+      mentorship_bio TEXT,
+      expertise_areas JSONB DEFAULT '[]',
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    )`,
+  ];
+
+  for (const sql of mentorTables) {
+    try {
+      await pool.query(sql);
+    } catch (err) {
+      console.error("  ! Failed to create mentor table:", err.message);
+    }
+  }
+  console.log(`  + Ensured ${mentorTables.length} mentor table exist`);
+
   // Match requests for sibling matching
   const matchTables = [
     `CREATE TABLE IF NOT EXISTS match_requests (
