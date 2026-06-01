@@ -1,10 +1,17 @@
 import { Pool } from "pg";
 
+const isServerless = !!process.env.VERCEL;
+
 function createPool(): Pool {
-  const connectionString = process.env.PG_CONNECTION_STRING;
+  const connectionString = process.env.PG_CONNECTION_STRING || process.env.POSTGRES_URL;
 
   if (connectionString) {
-    return new Pool({ connectionString });
+    return new Pool({
+      connectionString,
+      max: isServerless ? 1 : 10,
+      idleTimeoutMillis: isServerless ? 0 : 30000,
+      connectionTimeoutMillis: 5000,
+    });
   }
 
   const host = process.env.PG_HOST;
@@ -27,9 +34,9 @@ function createPool(): Pool {
     user,
     password,
     database,
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    max: isServerless ? 1 : 10,
+    idleTimeoutMillis: isServerless ? 0 : 30000,
+    connectionTimeoutMillis: 5000,
     ...sslConfig,
   });
 }

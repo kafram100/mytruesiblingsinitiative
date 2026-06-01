@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LifeBuoy, Plus, MessageCircle, Clock, CheckCircle, XCircle, Loader2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { SupportRequest } from "@/lib/support";
+import type { SupportRequest } from "@/lib/support-types";
 
 const STATUS_BADGES: Record<string, { label: string; class: string }> = {
   pending: { label: "Pending", class: "bg-amber-100 text-amber-700" },

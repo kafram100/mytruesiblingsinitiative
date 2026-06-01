@@ -16,7 +16,7 @@ import {
 } from "chart.js";
 import { Line, Doughnut } from "react-chartjs-2";
 
-import {
+import type {
   DonationRow,
   ProfileRow,
 } from "@/lib/auth";

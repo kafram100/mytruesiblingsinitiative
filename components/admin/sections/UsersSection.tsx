@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Users, Trash2, Loader2 } from "lucide-react";
 
-import { ProfileRow } from "@/lib/auth";
+import type { ProfileRow } from "@/lib/auth";
 import { formatDate } from "@/lib/admin-utils";
 import { Button } from "@/components/ui/button";
 

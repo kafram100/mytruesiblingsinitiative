@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Activity, Clock, Loader2 } from "lucide-react";
 
-import { ActivityEntry } from "@/lib/activity-log";
+import type { ActivityEntry } from "@/lib/activity-log";
 import { actionLabel, actionColor, formatDate } from "@/lib/admin-utils";
 
 function fullDate(dateStr: string): string {

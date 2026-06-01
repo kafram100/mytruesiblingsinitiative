@@ -4,7 +4,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, Clock, Send, User, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { SupportRequest, SupportReply } from "@/lib/support";
+import type { SupportRequest, SupportReply } from "@/lib/support-types";
 
 const STATUS_BADGES: Record<string, { label: string; class: string }> = {
   pending: { label: "Pending", class: "bg-amber-100 text-amber-700" },

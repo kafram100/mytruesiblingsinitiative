@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Mail, Loader2 } from "lucide-react";
 
-import { SubscriberRow } from "@/lib/auth";
+import type { SubscriberRow } from "@/lib/auth";
 import { formatDateTime } from "@/lib/admin-utils";
 
 export default function SubscribersSection() {

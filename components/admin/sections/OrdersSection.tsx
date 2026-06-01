@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ShoppingBag, Loader2 } from "lucide-react";
 
-import { OrderRow } from "@/lib/auth";
+import type { OrderRow } from "@/lib/auth";
 import { formatCurrency, formatDateTime, statusBadge } from "@/lib/admin-utils";
 
 export default function OrdersSection() {

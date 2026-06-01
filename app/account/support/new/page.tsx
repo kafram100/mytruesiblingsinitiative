@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { LifeBuoy, Loader2, Check, ArrowLeft, HandCoins, Heart, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { SUPPORT_TYPES } from "@/lib/support";
+import { SUPPORT_TYPES } from "@/lib/support-types";
 
 export default function NewSupportRequestPage() {
   const router = useRouter();

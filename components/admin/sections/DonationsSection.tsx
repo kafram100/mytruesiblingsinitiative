@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Wallet, Loader2 } from "lucide-react";
 
-import { DonationRow } from "@/lib/auth";
+import type { DonationRow } from "@/lib/auth";
 import { formatCurrency, formatDateTime, statusBadge } from "@/lib/admin-utils";
 
 export default function DonationsSection() {

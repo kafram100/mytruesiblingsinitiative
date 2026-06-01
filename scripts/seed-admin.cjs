@@ -15,8 +15,8 @@ async function main() {
         max: 1,
       });
 
-  if (!process.env.PG_USER || !process.env.PG_PASSWORD) {
-    console.error("ERROR: PG_USER and PG_PASSWORD environment variables are required.");
+  if (!connectionString && (!process.env.PG_USER || !process.env.PG_PASSWORD)) {
+    console.error("ERROR: Set PG_CONNECTION_STRING or PG_USER + PG_PASSWORD environment variables.");
     process.exit(1);
   }
 
