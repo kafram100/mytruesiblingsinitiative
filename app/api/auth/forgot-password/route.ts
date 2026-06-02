@@ -36,10 +36,10 @@ export async function POST(request: Request) {
     }
 
     const [rows] = await db.execute(
-      "SELECT id, email FROM profiles WHERE email = ? AND role = 'admin'",
+      "SELECT id, email, role FROM profiles WHERE email = ?",
       [email]
     );
-    const profiles = rows as ProfileRow[];
+    const profiles = rows as (ProfileRow & { role: string })[];
     const user = profiles[0];
 
     if (!user) {
@@ -56,9 +56,10 @@ export async function POST(request: Request) {
     );
 
     const origin = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-    const resetLink = `${origin}/admin/reset-password/${token}`;
+    const isAdmin = user.role === "admin";
+    const resetLink = `${origin}${isAdmin ? "/admin/reset-password" : "/reset-password"}/${token}`;
 
-    await sendPasswordResetEmail(user.email, resetLink);
+    await sendPasswordResetEmail(user.email, resetLink, isAdmin);
 
     return NextResponse.json({ success: true });
   } catch (err) {

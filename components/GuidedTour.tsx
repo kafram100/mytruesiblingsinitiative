@@ -102,11 +102,9 @@ export default function GuidedTour() {
 
     // Verify user is logged in and not a pending mentor
     fetch("/api/auth/sibling/me")
-      .then((r) => {
-        if (!r.ok) throw new Error("not logged in");
-        return r.json();
-      })
+      .then((r) => r.json())
       .then((data) => {
+        if (!data?.authenticated) throw new Error("not logged in");
         if (data.isPendingMentor) {
           localStorage.removeItem("guided_tour_enabled");
           setDismissed(true);

@@ -61,7 +61,7 @@ export async function sendNotificationEmail(
   }
 }
 
-export async function sendPasswordResetEmail(email: string, resetLink: string) {
+export async function sendPasswordResetEmail(email: string, resetLink: string, isAdmin = false) {
   const settings = await getSettings();
   const transporter = await createTransporter();
   if (!transporter) return;
@@ -69,10 +69,12 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
   const from = settings.smtp_from || settings.smtp_user;
   if (!from) return;
 
+  const label = isAdmin ? "Admin" : "Account";
+
   const html = `
     <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
-      <h2>Admin Password Reset</h2>
-      <p>You requested a password reset for the admin panel.</p>
+      <h2>Password Reset</h2>
+      <p>You requested a password reset for your ${label.toLowerCase()}.</p>
       <p style="margin:24px 0;">
         <a href="${resetLink}" style="display:inline-block;background:#175550;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
           Reset Password
@@ -89,7 +91,7 @@ export async function sendPasswordResetEmail(email: string, resetLink: string) {
     await transporter.sendMail({
       from,
       to: email,
-      subject: "Admin Password Reset - My True Siblings",
+      subject: `${label} Password Reset - My True Siblings`,
       html,
     });
   } catch (err) {

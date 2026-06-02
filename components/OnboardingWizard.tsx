@@ -32,8 +32,9 @@ export default function OnboardingWizard() {
 
   useEffect(() => {
     fetch("/api/auth/sibling/me")
-      .then((r) => {
-        if (!r.ok) throw new Error("not logged in");
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data?.authenticated) throw new Error("not logged in");
         return fetch("/api/account/onboarding").then((r2) => r2.json());
       })
       .then((data) => {

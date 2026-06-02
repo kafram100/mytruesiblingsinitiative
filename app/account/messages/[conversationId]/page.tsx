@@ -42,7 +42,7 @@ export default function ConversationPage() {
       }
       if (meRes.ok) {
         const me = await meRes.json();
-        setCurrentUserId(me.id);
+        if (me?.id) setCurrentUserId(me.id);
       }
     } catch {}
   };
@@ -65,7 +65,7 @@ export default function ConversationPage() {
       }
       if (meRes.ok) {
         const me = await meRes.json();
-        setCurrentUserId(me.id);
+        if (me?.id) setCurrentUserId(me.id);
       }
       setLoading(false);
     });

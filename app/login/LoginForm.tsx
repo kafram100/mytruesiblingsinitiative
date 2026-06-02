@@ -94,6 +94,12 @@ export default function LoginForm() {
         </div>
       </div>
 
+      <div className="text-right text-xs">
+        <Link href="/forgot-password" className="text-primary underline hover:text-primary/80">
+          Forgot password?
+        </Link>
+      </div>
+
       {success && (
         <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm">
           {success}

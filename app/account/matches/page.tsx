@@ -198,7 +198,7 @@ export default function MatchesPage() {
       }
       if (meRes.ok) {
         const me = await meRes.json();
-        setCurrentUserId(me.id);
+        if (me?.id) setCurrentUserId(me.id);
       }
       if (mentorRes.ok) {
         const data = await mentorRes.json();

@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     if (approved) {
       await db.execute(
-        `UPDATE mentor_profiles SET approved = 1, updated_at = NOW() WHERE id = ?`,
+        `UPDATE mentor_profiles SET approved = 1 WHERE id = ?`,
         [mentorProfileId]
       );
       await createNotification(
@@ -48,7 +48,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("Approve mentor error:", err);
-    return NextResponse.json({ error: "Failed" }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Approve mentor error:", message);
+    return NextResponse.json({ error: "Failed", detail: message }, { status: 500 });
   }
 }

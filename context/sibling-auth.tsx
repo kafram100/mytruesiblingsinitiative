@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -17,12 +17,12 @@ export function SiblingAuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetch("/api/auth/sibling/me")
-      .then((r) => r.ok ? r.json() : null)
+      .then((r) => r.json())
       .then((data) => {
         setState({
-          isLoggedIn: !!data,
-          userName: data?.full_name || null,
-          userRole: data?.role || null,
+          isLoggedIn: data?.authenticated === true,
+          userName: data?.full_name ?? null,
+          userRole: data?.role ?? null,
           isPendingMentor: data?.isPendingMentor ?? false,
           loading: false,
         });

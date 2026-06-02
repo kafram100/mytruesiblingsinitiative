@@ -114,8 +114,7 @@ export async function PUT(request: Request) {
       `UPDATE mentor_profiles
        SET expertise_areas = ?, experience_years = ?, mentorship_bio = ?,
            certification = ?, max_mentees = ?, is_available = ?,
-           occupation = ?, organization = ?,
-           updated_at = NOW()
+           occupation = ?, organization = ?
        WHERE id = ?`,
       [
         JSON.stringify(expertiseAreas || []),
