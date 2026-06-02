@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { checkAdmin } from "@/lib/auth";
+import { logActivity } from "@/lib/activity-log";
 
 export const dynamic = "force-dynamic";
 
@@ -8,12 +9,13 @@ export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const admin = await checkAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminEmail = await checkAdmin();
+  if (!adminEmail) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { id } = await params;
     await db.execute("DELETE FROM events WHERE id = ?", [id]);
+    await logActivity(adminEmail, "event.delete", `Deleted event ${id}`);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Event delete error:", err);
@@ -25,8 +27,8 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const admin = await checkAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminEmail = await checkAdmin();
+  if (!adminEmail) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { id } = await params;
@@ -36,6 +38,8 @@ export async function PUT(
       `UPDATE events SET title = ?, description = ?, date = ?, time = ?, location = ?, image_url = ?, registration_url = ?, is_featured = ?, updated_at = NOW() WHERE id = ?`,
       [title, description || null, date, time || null, location || null, imageUrl || null, registrationUrl || null, isFeatured ? 1 : 0, id]
     );
+
+    await logActivity(adminEmail, "event.update", `Updated event ${id} - "${title}"`);
 
     return NextResponse.json({ success: true });
   } catch (err) {

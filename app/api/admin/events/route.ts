@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import db from "@/lib/db";
 import { checkAdmin } from "@/lib/auth";
+import { logActivity } from "@/lib/activity-log";
 
 export const dynamic = "force-dynamic";
 
@@ -21,8 +22,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const admin = await checkAdmin();
-  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const adminEmail = await checkAdmin();
+  if (!adminEmail) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { title, description, date, time, location, imageUrl, registrationUrl, isFeatured } = await request.json();
@@ -37,6 +38,8 @@ export async function POST(request: Request) {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [id, title, description || null, date, time || null, location || null, imageUrl || null, registrationUrl || null, isFeatured ? 1 : 0]
     );
+
+    await logActivity(adminEmail, "event.create", `Created event "${title}" (${id})`);
 
     return NextResponse.json({ success: true, id });
   } catch (err) {

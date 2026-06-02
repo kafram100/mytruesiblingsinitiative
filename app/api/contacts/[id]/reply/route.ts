@@ -6,6 +6,7 @@ import { escapeHtml } from "@/lib/escape";
 import { getSettings } from "@/lib/settings";
 import { createTransporter } from "@/lib/mail";
 import { validateOrigin } from "@/lib/csrf";
+import { logActivity } from "@/lib/activity-log";
 
 export async function POST(
   request: Request,
@@ -14,7 +15,8 @@ export async function POST(
   const csrf = validateOrigin(request);
   if (!csrf.ok) return csrf.error;
 
-  if (!(await checkAdmin())) {
+  const adminEmail = await checkAdmin();
+  if (!adminEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -70,6 +72,7 @@ export async function POST(
       subject,
       html,
     });
+    await logActivity(adminEmail, "contact.reply", `Replied to contact ${id} - subject: "${subject}"`);
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error("Failed to send reply:", err);

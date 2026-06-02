@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import db from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 import { validateOrigin } from "@/lib/csrf";
+import { logActivity } from "@/lib/activity-log";
 
 export async function PATCH(
   request: Request,
@@ -50,6 +51,8 @@ export async function PATCH(
     }
 
     await db.execute("UPDATE profiles SET role = ? WHERE id = ?", [role, id]);
+
+    await logActivity(admin.email, "user.role_update", `Updated user ${id} to role "${role}"`);
 
     return NextResponse.json({ success: true, role });
   } catch (err) {
@@ -105,6 +108,7 @@ export async function DELETE(
 
     await db.execute("DELETE FROM profiles WHERE id = ?", [id]);
     await db.execute("DELETE FROM sessions WHERE user_id = ?", [id]);
+    await logActivity(admin.email, "user.delete", `Deleted user ${id} (role: ${target.role})`);
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Delete user error:", err);

@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/auth";
 import { getSupportRequestById, getSupportReplies, updateSupportRequestStatus, addSupportReply } from "@/lib/support";
 import { createNotification } from "@/lib/notifications";
 import { sendSupportReplyEmail } from "@/lib/mail";
+import { logActivity } from "@/lib/activity-log";
 
 export async function GET(
   _request: Request,
@@ -65,6 +66,8 @@ export async function PATCH(
 
       await updateSupportRequestStatus(id, body.status);
 
+      await logActivity(admin.email, "support.status_update", `Set request ${id} to "${body.status}"`);
+
       if (body.status === "resolved" || body.status === "closed") {
         await createNotification(
           supportRequest.user_id,
@@ -92,6 +95,8 @@ export async function PATCH(
       const userData = (userRows as { full_name: string; email: string }[])[0];
 
       await addSupportReply(id, admin.id, body.message.trim());
+
+      await logActivity(admin.email, "support.reply", `Replied to support request ${id}`);
 
       // Notify the sibling in-app
       await createNotification(

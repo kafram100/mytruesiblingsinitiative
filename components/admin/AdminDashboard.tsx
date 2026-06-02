@@ -107,6 +107,7 @@ const navGroups: NavGroup[] = [
       { label: "Integrations", section: "dashboard", icon: Cpu, scrollId: "integrations" },
       { label: "Store", section: "store", icon: ShoppingBag },
       { label: "Events", section: "events", icon: Calendar },
+      { label: "Audit Logs", section: "activity", icon: Activity },
       { label: "Approve Mentors", section: "mentors", icon: GraduationCap },
       { label: "Support", section: "support", icon: LifeBuoy },
       { label: "Settings", section: "settings", icon: Settings2 },

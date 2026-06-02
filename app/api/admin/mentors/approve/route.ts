@@ -3,6 +3,7 @@ import db from "@/lib/db";
 import { getSessionUser } from "@/lib/auth";
 import { createNotification } from "@/lib/notifications";
 import { sendMentorApprovalEmail } from "@/lib/mail";
+import { logActivity } from "@/lib/activity-log";
 
 export const dynamic = "force-dynamic";
 
@@ -40,10 +41,12 @@ export async function POST(request: Request) {
         "/account/mentor"
       );
       await sendMentorApprovalEmail(profile.email, profile.full_name, true);
+      await logActivity(admin.email, "mentor.approve", `Approved mentor profile ${mentorProfileId} for ${profile.full_name} (${profile.email})`);
     } else {
       await sendMentorApprovalEmail(profile.email, profile.full_name, false);
       await db.execute(`DELETE FROM mentor_profiles WHERE id = ?`, [mentorProfileId]);
       await db.execute(`DELETE FROM profiles WHERE id = ?`, [profile.user_id]);
+      await logActivity(admin.email, "mentor.reject", `Rejected mentor profile ${mentorProfileId} for ${profile.full_name} (${profile.email})`);
     }
 
     return NextResponse.json({ success: true });
